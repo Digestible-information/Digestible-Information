@@ -1,0 +1,31 @@
+.category-page {
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100vh;
+  background: #ffffff;
+  padding: max(20px, env(safe-area-inset-top)) 20px calc(24px + env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.category-page__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  align-self: flex-start;
+  color: #29256a;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.category-page__title {
+  font-size: 20px;
+  margin: 0;
+  color: #1c1c28;
+}
+
+.category-page__body {
+  color: #6b6b76;
+  line-height: 1.6;
+}

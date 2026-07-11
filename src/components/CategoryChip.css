@@ -1,0 +1,81 @@
+.category-chip-container {
+  container-type: inline-size;
+  width: 100%;
+  min-width: 0;
+}
+
+.category-chip {
+  display: flex;
+  align-items: stretch;
+  border: 2px solid var(--chip-color, #29256a);
+  border-radius: 12px;
+  background: #fff;
+  height: 42.41cqw;
+  overflow: hidden;
+  transition: transform 0.1s ease, background-color 0.15s ease;
+}
+
+.category-chip:active {
+  transform: scale(0.97);
+}
+
+.category-chip__tab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 15.19cqw;
+  background: var(--chip-color, #29256a);
+  color: #fff;
+}
+
+.category-chip__chevron {
+  width: 13cqw;
+  height: 7.6cqw;
+  color: #fff;
+}
+
+.category-chip__label {
+  flex: 1;
+  min-width: 0;
+  align-self: center;
+  font-size: 11cqw;
+  font-weight: 600;
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  color: #1c1c28;
+  margin-inline-end: 5cqw;
+  /* overflow-wrap: break-word; */
+  /* Lets a literal \n in the label text (see categories.nutrition in translations.js)
+     force a line break at a specific word, while still wrapping normally at spaces/
+     width for labels that don't have one. */
+  white-space: pre-line;
+}
+
+.category-chip__icon {
+  align-self: center;
+  flex-shrink: 0;
+  margin-inline-start: 2cqw;
+  margin-inline-end: 4cqw;
+  object-fit: contain;
+}
+
+.category-chip__icon--allergens {
+  width: 20.25cqw;
+  height: 23.94cqw;
+}
+
+.category-chip__icon--ingredients {
+  width: 20.25cqw;
+  height: 26.5cqw;
+}
+
+.category-chip__icon--kosher {
+  width: 26.24cqw;
+  height: 17.34cqw;
+}
+
+.category-chip__icon--nutrition {
+  width: 16.15cqw;
+  height: 18.84cqw;
+}

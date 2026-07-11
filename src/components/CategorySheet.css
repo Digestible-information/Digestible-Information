@@ -1,0 +1,756 @@
+.category-sheet__backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.32s ease;
+  z-index: 1100;
+}
+
+.category-sheet__backdrop--open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.category-sheet {
+  --sheet-bg: #fff;
+  --sheet-fg: #000;
+  --sheet-handle: #d9d9d9;
+
+  position: fixed;
+  left: 0;
+  right: 0;
+  /* Generous on short screens (so the allergen grid always fits without scrolling),
+     but capped at 545px of sheet height on tall screens so it doesn't balloon into
+     mostly-empty space there. */
+  top: max(9vh, calc(100vh - 500px));
+  bottom: 0;
+  max-width: 480px;
+  margin: 0 auto;
+  background: var(--sheet-bg);
+  border-radius: 28px 28px 0 0;
+  box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.08);
+  z-index: 1101;
+  transform: translateY(100%);
+  transition: transform 0.32s cubic-bezier(0.32, 0.72, 0, 1), background-color 0.25s ease;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.category-sheet--open {
+  transform: translateY(0);
+}
+
+/* Nutrition sheet has more content than the others (stat cards, fact table,
+   sugar box), so it gets a taller budget — starts higher up the screen —
+   without affecting the ingredients/allergens sheets. */
+.category-sheet--nutrition {
+  top: max(5vh, calc(100vh - 560px));
+}
+
+/* Kosher sheet has 3 stacked certification rows — sized to fit without
+   scrolling at fontStep 0 and to stay within reach up to the font stepper's
+   max (+3), which needs noticeably more room since KOSHER_SCALE is high
+   enough now to make the +3 step's larger text/icons overflow a tighter budget. */
+.category-sheet--kosher {
+  top: max(8vh, calc(100vh - 620px));
+}
+
+/* Manufacturer's text is now scaled up (MANUFACTURER_SCALE) enough to fill a
+   shorter sheet on its own, so this budget was trimmed back down from its
+   earlier, more generous height. */
+.category-sheet--manufacturer {
+  top: max(12vh, calc(100vh - 560px));
+}
+
+/* Storage's 3 rows are now scaled up (STORAGE_SCALE) enough to fill a
+   shorter sheet than the shared default budget above. */
+.category-sheet--storage {
+  top: max(16vh, calc(100vh - 500px));
+}
+
+/* Recycling has only one short block of content (icon + one sentence), so it
+   gets the shortest budget of any sheet — starts much lower than the others. */
+.category-sheet--recycling {
+  top: max(15vh, calc(100vh - 560px));
+}
+
+.category-sheet--high-contrast {
+  --sheet-bg: #000;
+  --sheet-fg: #fff;
+  --sheet-handle: #555;
+}
+
+.category-sheet__handle-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px 20px 16px;
+  touch-action: none;
+  cursor: grab;
+}
+
+.category-sheet__handle {
+  width: 40px;
+  height: 5px;
+  border-radius: 100px;
+  background: var(--sheet-handle);
+  margin-bottom: 18px;
+  transition: background-color 0.25s ease;
+}
+
+.category-sheet__title {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--sheet-fg);
+  text-align: center;
+  transition: color 0.25s ease;
+}
+
+.category-sheet__subtitle {
+  margin: 4px 0 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--sheet-fg);
+  text-align: center;
+  transition: color 0.25s ease;
+}
+
+.category-sheet__controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 4px 24px 20px;
+}
+
+.category-sheet__control {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--sheet-fg);
+  cursor: pointer;
+  transition: color 0.25s ease;
+}
+
+.category-sheet__control--active .category-sheet__control-icon {
+  background: var(--sheet-fg);
+}
+
+.category-sheet__control--active .category-sheet__control-label {
+  font-weight: 700;
+}
+
+.category-sheet__control-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 1.5px solid var(--sheet-fg);
+  transition: border-color 0.25s ease, background-color 0.25s ease;
+}
+
+.contrast-icon {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 51.67%;
+  height: 51.67%;
+  transform: translate(-50%, -50%);
+}
+
+.contrast-icon__ring {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.category-sheet--high-contrast .contrast-icon__ring {
+  filter: invert(1);
+}
+
+.contrast-icon__fill {
+  position: absolute;
+  left: 0;
+  top: 1.6%;
+  width: 50%;
+  height: 96.8%;
+  background: var(--sheet-fg);
+  border-radius: 999px 0 0 999px;
+  transition: background-color 0.25s ease;
+}
+
+.volume-icon {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 49.74%;
+  height: 39.67%;
+  transform: translate(-50%, -50%);
+}
+
+.volume-icon__speaker {
+  position: absolute;
+  left: 0%;
+  top: 0%;
+  width: 57.38%;
+  height: 100%;
+}
+
+.volume-icon__wave1 {
+  position: absolute;
+  left: 75.41%;
+  top: 21.65%;
+  width: 7.03%;
+  height: 56.71%;
+}
+
+.volume-icon__wave2 {
+  position: absolute;
+  left: 88.81%;
+  top: 1.67%;
+  width: 11.17%;
+  height: 96.62%;
+}
+
+.category-sheet__control-label {
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.category-sheet__font-toggle {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  border: 2.5px solid var(--sheet-fg);
+  border-radius: 14px;
+  padding: 8px 18px;
+  transition: border-color 0.25s ease;
+}
+
+.category-sheet__font-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--sheet-fg);
+  cursor: pointer;
+  transition: color 0.25s ease;
+}
+
+.category-sheet__font-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.category-sheet__font-toggle-divider {
+  width: 1.5px;
+  height: 22px;
+  background: var(--sheet-fg);
+  transition: background-color 0.25s ease;
+}
+
+.category-sheet__body {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 8px 24px 32px;
+}
+
+.category-sheet__body p {
+  margin: 0;
+  font-size: 24px;
+  line-height: 1.7;
+  color: var(--sheet-fg);
+  text-align: start;
+  transition: color 0.25s ease;
+}
+
+.category-sheet__body p.category-sheet__body-heading {
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.category-sheet__icon-grid {
+  container-type: inline-size;
+  display: flex;
+  flex-direction: column;
+  gap: 6.5cqw 0;
+  padding-top: 6px;
+}
+
+.category-sheet__icon-row {
+  display: flex;
+  justify-content: center;
+  gap: 4.8cqw;
+}
+
+.category-sheet__icon-item {
+  /* Fixed to a "4 per row" slot width regardless of how many items are in this
+     particular row, so a partial row (e.g. 3 of 7 allergens) centers via the row's
+     own justify-content instead of stretching to fill — and icons stay the same
+     size across rows. */
+  flex: 0 0 calc((100% - 3 * 4.8cqw) / 4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  min-height: 76px;
+}
+
+.category-sheet__icon-item-img {
+  display: block;
+  transition: width 0.15s ease, height 0.15s ease;
+}
+
+.category-sheet__icon-item-label {
+  color: #ea2427;
+  font-weight: 600;
+  text-align: center;
+  transition: font-size 0.15s ease;
+}
+
+.category-sheet__nutrition {
+  container-type: inline-size;
+  padding-top: 6px;
+}
+
+.category-sheet__stat-row {
+  display: flex;
+  gap: 3.5%;
+}
+
+.category-sheet__stat-card {
+  position: relative;
+  flex: 1 1 0;
+  aspect-ratio: 1;
+  border-radius: 16%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2.5cqw 0;
+  color: #fff;
+}
+
+.category-sheet__stat-card-icon {
+  display: block;
+}
+
+.category-sheet__stat-card-bg-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.category-sheet__stat-card-icon-wrap {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.category-sheet__stat-card-label,
+.category-sheet__stat-card-divider,
+.category-sheet__stat-card-value {
+  position: relative;
+}
+
+.category-sheet__stat-card-label {
+  font-weight: 600;
+  text-align: center;
+  transition: font-size 0.15s ease;
+}
+
+.category-sheet__stat-card-divider {
+  width: 100%;
+  height: 1.5px;
+  background: currentColor;
+  opacity: 0.9;
+}
+
+.category-sheet__stat-card-value {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.category-sheet__fact-row {
+  display: flex;
+  gap: 2.8%;
+  margin-top: 3.9%;
+}
+
+.category-sheet__fact-table {
+  flex: 0 0 50%;
+  min-width: 0;
+  height: 31.02cqw;
+  display: flex;
+  align-items: stretch;
+  /* space-between let the labels/divider/values spread out to fill any
+     leftover width, opening a huge gap around the divider — center the
+     (now tightly-gapped) group instead so the divider sits close to both
+     columns of text regardless of how much extra width the card has. */
+  justify-content: center;
+  gap: 4%;
+  background: var(--sheet-bg);
+  border: 1px solid var(--sheet-fg);
+  border-radius: 15px;
+  padding: 2.4% 2.5%;
+  transition: background-color 0.25s ease, border-color 0.25s ease;
+}
+
+/* Figma's rows are a tightly-packed block (leading 0.945, no inter-row gap)
+   that's centered as a whole within the card, not spread edge-to-edge — at
+   our smaller multi-language font scale, `space-between` stretched that same
+   block across the full card height, opening up gaps Figma doesn't have. */
+.category-sheet__fact-table-labels,
+.category-sheet__fact-table-values {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+}
+
+.category-sheet__fact-table-labels-inner,
+.category-sheet__fact-table-values-inner {
+  display: flex;
+  flex-direction: column;
+}
+
+.category-sheet__fact-table-labels-inner {
+  position: relative;
+}
+
+/* Visually groups transFat/cholesterol as sub-items of totalFat — traces
+   Figma's Vector 9 (stem + mid-tick + bottom foot, no top foot). top/height
+   are set inline as exact fractions of the row count. */
+.category-sheet__fact-table-sub-bracket {
+  position: absolute;
+  inset-inline-start: 0;
+  /* Matches the indented rows' marginInlineStart so the tick/foot reach the text. */
+  width: 0.8em;
+}
+
+.category-sheet__fact-table-sub-bracket-stem,
+.category-sheet__fact-table-sub-bracket-tick,
+.category-sheet__fact-table-sub-bracket-foot {
+  position: absolute;
+  inset-inline-start: 0;
+  background: var(--sheet-fg);
+  opacity: 0.9;
+  transition: background-color 0.25s ease;
+}
+
+.category-sheet__fact-table-sub-bracket-stem {
+  top: 0;
+  bottom: 0;
+  width: 1.25px;
+}
+
+.category-sheet__fact-table-sub-bracket-tick,
+.category-sheet__fact-table-sub-bracket-foot {
+  width: 100%;
+  height: 1.25px;
+}
+
+/* Figma's tick sits partway through the first sub-row, not at the row
+   boundary (measured ~29% down the bracket's own height). */
+.category-sheet__fact-table-sub-bracket-tick {
+  top: 29%;
+}
+
+.category-sheet__fact-table-sub-bracket-foot {
+  bottom: 0;
+}
+
+.category-sheet__fact-table-labels span,
+.category-sheet__fact-table-values span {
+  color: var(--sheet-fg);
+  font-weight: 600;
+  line-height: 1.15;
+  white-space: nowrap;
+  transition: color 0.25s ease, font-size 0.15s ease;
+}
+
+.category-sheet__fact-table-divider {
+  width: 1px;
+  align-self: stretch;
+  background: var(--sheet-fg);
+  /* Negative vertical margin bleeds past the table's own vertical padding, so
+     the line reaches the true top/bottom edges regardless of that padding
+     (percentage margins/padding both resolve against the container's width,
+     so -2.4% exactly cancels the table's 2.4% vertical padding). */
+  margin: -5% 1.5%;
+  transition: background-color 0.25s ease;
+}
+
+.category-sheet__sugar-box {
+  flex: 0 0 47.2%;
+  height: 31.02cqw;
+  display: flex;
+  background: #ff000e;
+  border-radius: 14px;
+  color: #fff;
+  padding: 0.5% 0;
+}
+
+.category-sheet__sugar-box-col {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.category-sheet__sugar-box-icon {
+  display: block;
+}
+
+.category-sheet__sugar-box-label {
+  font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: font-size 0.15s ease;
+  padding: 2.5cqw 0;
+}
+
+.category-sheet__sugar-box-icon-wrap {
+  height: 11.08cqw;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.category-sheet__sugar-box-divider {
+  width: 100%;
+  height: 1.5px;
+  flex-shrink: 0;
+  background: currentColor;
+  opacity: 0.9;
+  margin-bottom: 0.3cqw;
+}
+
+.category-sheet__sugar-box-value {
+  font-weight: 600;
+  white-space: nowrap;
+  transition: font-size 0.15s ease;
+}
+
+.category-sheet__kosher {
+  container-type: inline-size;
+  display: flex;
+  flex-direction: column;
+  /* ~64px gap between rows in the Figma reference, converted via the same
+     393px-frame/16px-margin ratio as the nutrition body's FIGMA_PX_TO_CQW,
+     then scaled down to match KOSHER_SCALE so the whole body fits on open
+     without needing to scroll first. */
+  gap: 12.7cqw;
+  padding-top: 6px;
+}
+
+.category-sheet__kosher-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3%;
+}
+
+.category-sheet__kosher-row-text {
+  color: var(--sheet-fg);
+  font-weight: 400;
+  text-align: start;
+  transition: color 0.25s ease;
+  /* Without a cap, English/Arabic's longer wording (vs Hebrew) shrinks to
+     fill essentially the entire row before wrapping, leaving no free space
+     for the row's justify-content: center to actually center the group —
+     it just ends up spanning edge-to-edge instead. */
+  max-width: 50%;
+}
+
+.category-sheet__kosher-row-text p {
+  margin: 0;
+  /* Overrides .category-sheet__body p's fixed 24px — without this, these
+     paragraphs ignore the row's own fontStep-driven inline font-size and the
+     text stops scaling with the font stepper (icons/images still would). */
+  font-size: inherit;
+  line-height: 1.3;
+}
+
+/* First line of each row's text is the "headline" (e.g. "חלב ישראל", "חלבי") —
+   bold, with the rest of that row's lines at normal weight. */
+.category-sheet__kosher-row-text p:first-child {
+  font-weight: 700;
+}
+
+.category-sheet__kosher-icon {
+  display: block;
+  flex-shrink: 0;
+}
+
+/* The OU-D mark and the rabbinical seal are black line-art on transparent
+   backgrounds — invert them in high contrast so they stay visible against the
+   sheet's black background. The badge swatch below is a fixed brand color and
+   deliberately excluded from this treatment (same precedent as nutrition's
+   colored stat cards, which also don't invert). */
+.category-sheet--high-contrast .category-sheet__kosher-icon--invertible {
+  filter: invert(1);
+}
+
+.category-sheet__kosher-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.category-sheet__kosher-badge-label {
+  color: var(--sheet-fg);
+  font-weight: 700;
+  white-space: nowrap;
+  transition: color 0.25s ease;
+}
+
+.category-sheet__kosher-badge-swatch {
+  color: #fff;
+  font-weight: 700;
+  white-space: nowrap;
+  border-radius: 6px;
+  padding: 0.15em 0.5em;
+  margin-top: 0.1em;
+}
+
+.category-sheet__manufacturer {
+  container-type: inline-size;
+  display: flex;
+  flex-direction: column;
+  padding-top: 6px;
+}
+
+.category-sheet__manufacturer-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 6%;
+}
+
+.category-sheet__manufacturer-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  color: var(--sheet-fg);
+  text-align: center;
+  transition: color 0.25s ease;
+}
+
+.category-sheet__manufacturer-pair p {
+  margin: 0;
+  /* Overrides .category-sheet__body p's fixed 24px — without this, these
+     paragraphs ignore the row's own fontStep-driven inline font-size and the
+     text stops scaling with the font stepper (icon still would). */
+  font-size: inherit;
+  line-height: 1.3;
+}
+
+.category-sheet__manufacturer-icon {
+  display: block;
+  flex-shrink: 0;
+}
+
+/* The factory icon is black line-art on a transparent background — invert it
+   in high contrast so it stays visible against the sheet's black background,
+   same precedent as the kosher icons. */
+.category-sheet--high-contrast .category-sheet__manufacturer-icon--invertible {
+  filter: invert(1);
+}
+
+.category-sheet__storage {
+  container-type: inline-size;
+  display: grid;
+  grid-template-columns: auto auto;
+  justify-content: center;
+  align-items: center;
+  column-gap: 4%;
+  row-gap: 0.9em;
+  padding-top: 6px;
+}
+
+/* display: contents lets each row's icon/label become direct grid children of
+   .category-sheet__storage, so every icon lands in the same grid column
+   (aligned one beneath the other) no matter how wide that row's own icon is. */
+.category-sheet__storage-row {
+  display: contents;
+}
+
+.category-sheet__storage-label {
+  color: var(--sheet-fg);
+  font-weight: 400;
+  transition: color 0.25s ease;
+  justify-self: start;
+}
+
+.category-sheet__storage-icon {
+  display: block;
+  flex-shrink: 0;
+  justify-self: center;
+}
+
+/* Same black-line-art-on-transparent icons as kosher/manufacturer — invert in
+   high contrast so they stay visible against the sheet's black background. */
+.category-sheet--high-contrast .category-sheet__storage-icon--invertible {
+  filter: invert(1);
+}
+
+.category-sheet__recycling {
+  container-type: inline-size;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* row-gap % in a column flex container resolves against the container's
+     block size, which is auto here — so it collapses to 0. Use cqw (defined,
+     since container-type: inline-size above) instead of % for a real gap. */
+  gap: 4cqw;
+  padding-top: 6px;
+  text-align: center;
+}
+
+.category-sheet__recycling-icon {
+  display: block;
+}
+
+.category-sheet--high-contrast .category-sheet__recycling-icon--invertible {
+  filter: invert(1);
+}
+
+/* Two classes to out-specificity the .category-sheet__body p default of
+   text-align: start (a class + type selector), which otherwise wins over a
+   single-class selector regardless of source order. */
+.category-sheet__recycling .category-sheet__recycling-text {
+  color: var(--sheet-fg);
+  transition: color 0.25s ease;
+  max-width: 85%;
+  text-align: center;
+  /* Overrides .category-sheet__body p's 1.7 — too much space between this
+     paragraph's wrapped lines at this larger font size. */
+  line-height: 1.3;
+}

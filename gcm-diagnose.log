@@ -1,0 +1,201 @@
+﻿Diagnose log at 2026-07-04T15:27:15Z
+
+AppPath: C:\Program Files\Git\mingw64\bin\git-credential-manager.exe
+InstallDir: C:\Program Files\Git\mingw64\bin\
+Version: 2.4.1
+
+------------
+Diagnostic: Environment
+Skipped: False
+Success: True
+Exception: None
+Log:
+OSType: Windows
+OSVersion: 10.0 (build 22631)
+Reading environment variables... OK
+ Variables:
+HOMEPATH=\Users\idota
+CLAUDE_CODE_CHILD_SESSION=1
+COMPUTERNAME=LAPTOP-9AFT71JA
+DriverData=C:\Windows\System32\Drivers\DriverData
+GIT_TRACE2_PARENT_SID=e618bdfe-8ca2-4e16-a3ee-29fb903634ba
+CommonProgramFiles(x86)=C:\Program Files (x86)\Common Files
+OneDrive=C:\Users\idota\OneDrive
+SESSIONNAME=Console
+CLAUDECODE=1
+SHLVL=1
+VSCODE_INJECTION=1
+CLAUDE_CODE_EXECPATH=C:\Users\idota\.local\bin\claude.exe
+PROCESSOR_REVISION=8e0a
+USERDOMAIN=LAPTOP-9AFT71JA
+PATHEXT=.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC;.CPL
+_=C:/Program Files/Git/mingw64/bin/git-credential-manager
+USERNAME=idota
+TMP=C:\Users\idota\AppData\Local\Temp
+PWD=C:/Users/idota/OneDrive/Desktop/Digestible-information
+CLAUDE_EFFORT=high
+LOCALAPPDATA=C:\Users\idota\AppData\Local
+MSYSTEM=MINGW64
+CLion=C:\Program Files\JetBrains\CLion 2020.2.4\bin;
+PROCESSOR_IDENTIFIER=Intel64 Family 6 Model 142 Stepping 10, GenuineIntel
+GIT_EDITOR=true
+PROGRAMFILES=C:\Program Files (x86)
+ProgramData=C:\ProgramData
+CLAUDE_CODE_ENTRYPOINT=cli
+ProgramFiles(x86)=C:\Program Files (x86)
+SYSTEMROOT=C:\WINDOWS
+AI_AGENT=claude-code_2-1-201_agent
+TERM_PROGRAM=vscode
+PROCESSOR_LEVEL=6
+NUMBER_OF_PROCESSORS=8
+VS140COMNTOOLS=C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\Tools\
+COREPACK_ENABLE_AUTO_PIN=0
+NoDefaultCurrentDirectoryInExePath=1
+SYSTEMDRIVE=C:
+TERM_PROGRAM_VERSION=1.96.0
+VSCODE_GIT_ASKPASS_MAIN=c:\Users\idota\AppData\Local\Programs\Microsoft VS Code\resources\app\extensions\git\dist\askpass-main.js
+PSModulePath=C:\Users\idota\OneDrive\מסמכים\WindowsPowerShell\Modules;C:\Program Files\WindowsPowerShell\Modules;C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules
+PUBLIC=C:\Users\Public
+VSCODE_GIT_IPC_HANDLE=\\.\pipe\vscode-git-02178cdb39-sock
+EFC_10392=1
+CHROME_CRASHPAD_PIPE_NAME=\\.\pipe\crashpad_4040_KYFBIAMWIWSQONAE
+PLINK_PROTOCOL=ssh
+COLORTERM=truecolor
+MSYS=disable_pcon
+PATH=C:\Users\idota\bin;C:\Program Files\Git\mingw64\bin;C:\Program Files\Git\usr\local\bin;C:\Program Files\Git\usr\bin;C:\Program Files\Git\usr\bin;C:\Program Files\Git\mingw64\bin;C:\Program Files\Git\usr\bin;C:\Users\idota\bin;C:\Program Files (x86)\VMware\VMware Player\bin;C:\Program Files\Common Files\Oracle\Java\javapath;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\iCLS;C:\Program Files\Intel\Intel(R) Management Engine Components\iCLS;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0;C:\WINDOWS\System32\OpenSSH;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files\Intel\Intel(R) Management Engine Components\DAL;C:\Users\idota\apache-ant-1.10.9\bin;C:\Program Files\Microsoft SQL Server\150\Tools\Binn;C:\Program Files\Microsoft SQL Server\Client SDK\ODBC\170\Tools\Binn;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0;C:\WINDOWS\System32\OpenSSH;C:\Program Files\dotnet;C:\Program Files\Git\cmd;C:\Program Files\nodejs;C:\Program Files\Tesseract-OCR;C:\Users\idota\.local\bin;C:\Users\idota\AppData\Local\Programs\Python\Python39\Scripts;C:\Users\idota\AppData\Local\Programs\Python\Python39;C:\Users\idota\AppData\Local\Microsoft\WindowsApps;C:\Program Files\JetBrains\CLion 2020.2.4\bin;C:\Users\idota\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\idota\.dotnet\tools;C:\Users\idota\AppData\Local\Microsoft\WinGet\Packages\Schniz.fnm_Microsoft.Winget.Source_8wekyb3d8bbwe;C:\Users\idota\AppData\Roaming\npm;C:\Program Files\Git\usr\bin\vendor_perl;C:\Program Files\Git\usr\bin\core_perl;C:\Users\idota\.claude\plugins\cache\claude-plugins-official\figma\2.2.68\bin
+TEMP=C:\Users\idota\AppData\Local\Temp
+VSCODE_GIT_ASKPASS_NODE=C:\Users\idota\AppData\Local\Programs\Microsoft VS Code\Code.exe
+TERM=xterm-256color
+ORIGINAL_XDG_CURRENT_DESKTOP=undefined
+SHELL=C:\Program Files\Git\bin\bash.exe
+HOME=C:\Users\idota
+VSCODE_GIT_ASKPASS_EXTRA_ARGS=
+COMSPEC=C:\WINDOWS\system32\cmd.exe
+LOGONSERVER=\\LAPTOP-9AFT71JA
+USERPROFILE=C:\Users\idota
+CommonProgramW6432=C:\Program Files\Common Files
+COMMONPROGRAMFILES=C:\Program Files (x86)\Common Files
+USERDOMAIN_ROAMINGPROFILE=LAPTOP-9AFT71JA
+CLAUDE_CODE_SESSION_ID=52001590-b5c8-4315-9cb2-2cccb482ec3e
+APPDATA=C:\Users\idota\AppData\Roaming
+HOMEDRIVE=C:
+VBOX_MSI_INSTALL_PATH=C:\Program Files\Oracle\VirtualBox\
+configsetroot=C:\WINDOWS\ConfigSetRoot
+EXEPATH=C:\Program Files\Git\bin
+LANG=en_US.UTF-8
+PROCESSOR_ARCHITEW6432=AMD64
+WINDIR=C:\WINDOWS
+PROCESSOR_ARCHITECTURE=x86
+OS=Windows_NT
+ProgramW6432=C:\Program Files
+GIT_ASKPASS=c:\Users\idota\AppData\Local\Programs\Microsoft VS Code\resources\app\extensions\git\dist\askpass.sh
+ALLUSERSPROFILE=C:\ProgramData
+
+
+------------
+Diagnostic: File system
+Skipped: False
+Success: True
+Exception: None
+Log:
+Temporary directory is 'C:\Users\idota\AppData\Local\Temp\'...
+Checking basic file I/O...
+Writing to temporary file 'C:\Users\idota\AppData\Local\Temp\227142568ade98dd02198194'... OK
+Reading from temporary file 'C:\Users\idota\AppData\Local\Temp\227142568ade98dd02198194'... OK
+Deleting temporary file 'C:\Users\idota\AppData\Local\Temp\227142568ade98dd02198194'... OK
+Testing IFileSystem instance...
+UserHomePath: C:\Users\idota
+UserDataDirectoryPath: C:\Users\idota\.gcm
+GetCurrentDirectory(): C:\Users\idota\OneDrive\Desktop\Digestible-information
+
+------------
+Diagnostic: Networking
+Skipped: False
+Success: False
+Exception:
+System.Net.Http.HttpRequestException: An error occurred while sending the request. ---> System.Net.WebException: The remote name could not be resolved: 'example.com'
+   at System.Net.HttpWebRequest.EndGetResponse(IAsyncResult asyncResult)
+   at System.Net.Http.HttpClientHandler.GetResponseCallback(IAsyncResult ar)
+   --- End of inner exception stack trace ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   at GitCredentialManager.Diagnostics.NetworkingDiagnostic.<RunInternalAsync>d__4.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   at GitCredentialManager.Diagnostics.Diagnostic.<RunAsync>d__6.MoveNext()
+Log:
+Checking networking and HTTP stack...
+Creating HTTP client... OK
+IsNetworkAvailable: True
+Sending HEAD request to http://example.com...Sending HEAD request to https://example.com... warning: HEAD request failed
+Sending HEAD request to http://httpforever.com...
+------------
+Diagnostic: Git
+Skipped: False
+Success: True
+Exception: None
+Log:
+Getting Git version... OK
+Git version is '2.43.0.windows.1'
+Locating current repository... OK
+Git repository at 'C:/Users/idota/OneDrive/Desktop/Digestible-information/.git'
+Listing all Git configuration... OK
+Git configuration:
+file:C:/Program Files/Git/etc/gitconfig	diff.astextplain.textconv=astextplain
+file:C:/Program Files/Git/etc/gitconfig	filter.lfs.clean=git-lfs clean -- %f
+file:C:/Program Files/Git/etc/gitconfig	filter.lfs.smudge=git-lfs smudge -- %f
+file:C:/Program Files/Git/etc/gitconfig	filter.lfs.process=git-lfs filter-process
+file:C:/Program Files/Git/etc/gitconfig	filter.lfs.required=true
+file:C:/Program Files/Git/etc/gitconfig	http.sslbackend=openssl
+file:C:/Program Files/Git/etc/gitconfig	http.sslcainfo=C:/Program Files/Git/mingw64/etc/ssl/certs/ca-bundle.crt
+file:C:/Program Files/Git/etc/gitconfig	core.autocrlf=true
+file:C:/Program Files/Git/etc/gitconfig	core.fscache=true
+file:C:/Program Files/Git/etc/gitconfig	core.symlinks=false
+file:C:/Program Files/Git/etc/gitconfig	pull.rebase=false
+file:C:/Program Files/Git/etc/gitconfig	credential.helper=manager
+file:C:/Program Files/Git/etc/gitconfig	credential.https://dev.azure.com.usehttppath=true
+file:C:/Program Files/Git/etc/gitconfig	init.defaultbranch=master
+file:C:/Users/idota/.gitconfig	user.name=Ido David Tavron
+file:C:/Users/idota/.gitconfig	user.email=idodavid.tavron@live.biu.ac.il
+file:.git/config	core.repositoryformatversion=0
+file:.git/config	core.filemode=false
+file:.git/config	core.bare=false
+file:.git/config	core.logallrefupdates=true
+file:.git/config	core.symlinks=false
+file:.git/config	core.ignorecase=true
+file:.git/config	remote.origin.url=https://github.com/IdoTav/Digestible-information.git
+file:.git/config	remote.origin.fetch=+refs/heads/*:refs/remotes/origin/*
+file:.git/config	branch.main.remote=origin
+file:.git/config	branch.main.merge=refs/heads/main
+file:.git/config	branch.first-commit.vscode-merge-base=origin/main
+
+
+------------
+Diagnostic: Credential storage
+Skipped: False
+Success: True
+Exception: None
+Log:
+ICredentialStore instance is of type: CredentialStore
+Writing test credential... OK
+Reading test credential... OK
+Deleting test credential... OK
+
+------------
+Diagnostic: Microsoft authentication (AAD/MSA)
+Skipped: False
+Success: True
+Exception: None
+Log:
+Broker is not enabled.
+Flow type is: Auto
+Gathering MSAL token cache data... OK
+CacheDirectory: C:\Users\idota\AppData\Local\.IdentityService
+CacheFileName: msal.cache
+CacheFilePath: C:\Users\idota\AppData\Local\.IdentityService\msal.cache
+Creating cache helper... OK
+Verifying MSAL token cache persistence... OK
+
