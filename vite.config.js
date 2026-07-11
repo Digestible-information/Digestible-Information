@@ -5,4 +5,3 @@ export default defineConfig({
   base: '/Digestible-Information/',
   plugins: [react()],
 })
-
