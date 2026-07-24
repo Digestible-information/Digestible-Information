@@ -222,6 +222,7 @@ export default function HomeScreen() {
           onClose={() => setOpenSheet(null)}
           title={t.ingredientsTitle}
           bodyText={content.ingredientsText}
+          bodyHeightPx={product.ingredientsHeight}
         />
       )}
 

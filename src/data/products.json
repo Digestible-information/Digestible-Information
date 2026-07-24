@@ -4,6 +4,7 @@
       "photo": "products/Energybar/photo.png"
     },
     "categoryIds": ["ingredients", "allergens", "kosher", "nutrition", "storage", "manufacturer", "recycling", "warnings"],
+    "ingredientsHeight": 600,
     "allergensHeight": 780,
     "kosherRowIds": ["ouDairy", "badatzBeitYosef"],
     "kosherHeight": 820,
