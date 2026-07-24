@@ -713,16 +713,19 @@
   flex-direction: column;
   align-items: center;
   flex-shrink: 0;
+  /* Was a fixed nowrap word ("Kosher"/"כשר") for every existing product, but
+     a longer phrase ("Kosher for Passover") overflows the sheet in English —
+     same root cause as .category-sheet__kosher-row-text's max-width comment
+     below. The cap has to live here (a direct flex child of the row, which
+     has a definite width) rather than on the label span one level down —
+     a percentage max-width on the label would resolve against this badge
+     column's own shrink-to-fit width, which is circular and unreliable. */
+  max-width: 40%;
 }
 
 .category-sheet__kosher-badge-label {
   color: var(--sheet-fg);
   font-weight: 700;
-  /* Was a fixed nowrap word ("Kosher"/"כשר") for every existing product, but
-     a longer phrase ("Kosher for Passover") overflows the sheet in English —
-     same root cause as .category-sheet__kosher-row-text's max-width comment
-     above, just for the badge instead of the cert rows. */
-  max-width: 40%;
   text-align: center;
   transition: color 0.25s ease;
 }

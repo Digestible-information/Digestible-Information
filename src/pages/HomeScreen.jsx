@@ -275,6 +275,7 @@ export default function HomeScreen() {
           open={openSheet === 'kosher'}
           onClose={() => setOpenSheet(null)}
           title={t.kosherTitle}
+          bodyHeightPx={product.kosherHeight}
           bodyKosher={{
             badgeSwatchColor: kosherBadgeSwatchColor,
             badge: content.kosherInfo.dairyBadge,

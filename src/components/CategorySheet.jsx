@@ -674,8 +674,11 @@ export default function CategorySheet({
       ? [
           ...inReadingOrder(bodyNutrition.cards).map(factToSpeech),
           ...inReadingOrder(bodyNutrition.table).map(factToSpeech),
-          factToSpeech(bodyNutrition.sugarBox.sugar),
-          factToSpeech(bodyNutrition.sugarBox.teaspoons),
+          // Stacked layout (see data.sugarCards in CategorySheet.jsx's NutritionBody)
+          // has no sugarBox — twist's combined layout still does.
+          ...(bodyNutrition.sugarCards
+            ? inReadingOrder(bodyNutrition.sugarCards).map(factToSpeech)
+            : [factToSpeech(bodyNutrition.sugarBox.sugar), factToSpeech(bodyNutrition.sugarBox.teaspoons)]),
         ].join(', ')
       : bodyKosher
       ? [
