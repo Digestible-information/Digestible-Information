@@ -54,44 +54,27 @@ function buildTextArcPath() {
   return `M ${leftX} ${leftY} A ${TEXT_ARC_RADIUS} ${TEXT_ARC_RADIUS} 0 1 0 ${rightX} ${rightY}`
 }
 
-// Splits into user-perceived characters (not UTF-16 code units), so a
-// combining mark — e.g. the tanwin diacritic in "منتجًا" — reverses as part
-// of its base letter instead of ending up detached and reattached to the
-// wrong neighbor.
-function reverseGraphemes(str) {
-  if (typeof Intl !== 'undefined' && Intl.Segmenter) {
-    const segmenter = new Intl.Segmenter(undefined, { granularity: 'grapheme' })
-    return Array.from(segmenter.segment(str), (s) => s.segment).reverse().join('')
-  }
-  return [...str].reverse().join('')
-}
-
 // A single textPath run of the whole label, relying on the browser's own
 // bidi handling (via `direction`/`unicode-bidi`) to lay Hebrew/Arabic out
-// right-to-left, turned out to render correctly in one engine and come out
-// mirrored — every word, and every letter within each word, backwards — in
-// another. Rather than lean on that inconsistent behavior at all, rtl words
-// are pre-reversed here (see reverseGraphemes) and rendered with no bidi
-// involvement whatsoever (no `direction: rtl` anywhere in this component),
-// so the two engines have nothing left to disagree about.
+// right-to-left, rendered inconsistently across engines. Reversing each rtl
+// word's characters in JS to compensate was tried and made it worse — it
+// breaks Arabic's contextual letter joining (initial/medial/final glyph
+// forms are chosen from logical adjacency, which reversal scrambles),
+// producing disconnected, wrong-shaped letters. So words are always kept in
+// their native, untouched order/shaping here — no bidi styling, no manual
+// reversal — and only which *word* sits in which left-to-right slot changes
+// with direction (see slotWordIndices in ScanBadge below), which is enough
+// to fix reading order without ever touching a word's own characters.
 //
-// This does forgo native contextual shaping for the one or two letters at
-// each Arabic word's boundary (their initial/final glyph form is chosen
-// assuming logical order, which reversal disturbs) — a small cosmetic cost,
-// worth paying to guarantee correct reading order everywhere.
-//
-// And even for plain ltr English, a single run silently drops any glyphs
-// that don't fit within TEXT_ARC_LENGTH once centered — on a device whose
-// font metrics render the label wider than assumed, that clipped the
-// first/last letters. Placing each *word* on the arc individually (measured
-// via getComputedTextLength in the hidden pass below, positioned with an
-// explicit startOffset) sidesteps that too, since nothing depends on how
-// wide the rendered text turns out to be.
-function useWordSlots(label, dir) {
-  const words = useMemo(() => {
-    const logical = label.split(' ').filter(Boolean)
-    return dir === 'rtl' ? logical.map(reverseGraphemes) : logical
-  }, [label, dir])
+// Separately: a single run silently drops any glyphs that don't fit within
+// TEXT_ARC_LENGTH once centered — on a device whose font metrics render the
+// label wider than assumed, that clipped the first/last letters. Placing
+// each word on the arc individually (measured via getComputedTextLength in
+// the hidden pass below, positioned with an explicit startOffset) sidesteps
+// that too, since nothing depends on how wide the rendered text turns out to
+// be.
+function useWordSlots(label) {
+  const words = useMemo(() => label.split(' ').filter(Boolean), [label])
   const measureRefs = useRef([])
   const [widths, setWidths] = useState(null)
 
@@ -104,13 +87,12 @@ function useWordSlots(label, dir) {
 
 function ScanBadge({ label, dir }) {
   const pathId = useId()
-  const { words, measureRefs, widths } = useWordSlots(label, dir)
+  const { words, measureRefs, widths } = useWordSlots(label)
 
   // Slot 0 is the arc's leftmost position. ltr keeps word order as-is; rtl
   // reads right-to-left, so the first (logically-read-first) word belongs in
-  // the rightmost (last) slot instead. (words are already per-word character
-  // order — see useWordSlots — so only which slot each whole word lands in
-  // needs to flip here.)
+  // the rightmost (last) slot instead — each word's own characters are
+  // rendered untouched (see useWordSlots), only this slot assignment changes.
   const slotWordIndices = dir === 'rtl' ? [...words.keys()].reverse() : words.map((_, i) => i)
 
   let slotOffsets = null
