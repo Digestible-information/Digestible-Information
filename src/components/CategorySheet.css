@@ -320,21 +320,18 @@
   min-height: 76px;
 }
 
-/* Rendered as a background-color + mask (see CategorySheet.jsx) rather than
-   an <img>, so each statement group can tint its icons to its own color —
-   the source SVGs have their red baked into the fill, which an <img> can't
-   be recolored past via CSS. High-contrast's white-on-black swap is handled
-   the same way (an inline background-color of white), so no separate
-   `.category-sheet--high-contrast` override is needed here anymore. */
+/* AllergenIcon renders inline (fill="currentColor"), so each statement
+   group tints its icons via ordinary CSS `color` — no mask-image involved.
+   (An earlier version used background-color + CSS mask-image referencing an
+   external SVG to recolor an <img>-based icon; that rendered as plain
+   unmasked solid boxes on at least one real device — mask-image referencing
+   an external resource is one of the less reliable cross-engine CSS
+   features. currentColor has no such ambiguity.) High-contrast's
+   white-on-black swap is handled the same way (an inline color of white), so
+   no separate `.category-sheet--high-contrast` override is needed here. */
 .category-sheet__icon-item-img {
   display: block;
-  mask-repeat: no-repeat;
-  mask-size: contain;
-  mask-position: center;
-  -webkit-mask-repeat: no-repeat;
-  -webkit-mask-size: contain;
-  -webkit-mask-position: center;
-  transition: width 0.15s ease, height 0.15s ease, background-color 0.25s ease;
+  transition: width 0.15s ease, height 0.15s ease, color 0.25s ease;
 }
 
 .category-sheet__icon-item-label {

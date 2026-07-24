@@ -4,6 +4,7 @@ import volumeSpeaker from '../assets/icons/sheet/volume-speaker.svg'
 import volumeWave1 from '../assets/icons/sheet/volume-wave1.svg'
 import volumeWave2 from '../assets/icons/sheet/volume-wave2.svg'
 import { useLanguage } from '../i18n/LanguageContext.jsx'
+import AllergenIcon from './AllergenIcon.jsx'
 import './CategorySheet.css'
 
 const CLOSE_THRESHOLD = 120
@@ -766,19 +767,13 @@ export default function CategorySheet({
                             const iconBudgetCqw = (ICON_BUDGET_CQW / Math.max(item.width, item.height)) * iconScale
                             return (
                               <div key={item.id} className="category-sheet__icon-item">
-                                {/* A mask (not <img>) so the icon can be tinted per statement
-                                    group via background-color — the source SVGs have their red
-                                    baked into the fill, so an <img> can't be recolored via CSS
-                                    the way a currentColor-based inline SVG could. */}
-                                <span
-                                  aria-hidden="true"
+                                <AllergenIcon
+                                  id={item.id}
                                   className="category-sheet__icon-item-img"
                                   style={{
                                     width: `${item.width * iconBudgetCqw}cqw`,
                                     height: `${item.height * iconBudgetCqw}cqw`,
-                                    backgroundColor: highContrast ? '#FFFFFF' : group.headingColor,
-                                    WebkitMaskImage: `url(${item.icon})`,
-                                    maskImage: `url(${item.icon})`,
+                                    color: highContrast ? '#FFFFFF' : group.headingColor,
                                   }}
                                 />
                                 <span
