@@ -366,10 +366,17 @@
    past a threshold two (then one) no longer fit and flex-wrap above drops the
    rest to their own row, with .category-sheet__body's overflow-y handling the
    resulting extra height. */
+/* Square via an explicit inline height (see CategorySheet.jsx: same value as
+   width, just in cqw instead of %) rather than aspect-ratio — aspect-ratio
+   resolving against a percentage width inside a container-query ancestor
+   rendered inconsistently on at least one real device (width grew as
+   intended but height didn't follow, leaving a short, wide card with too
+   little room for its icon). An explicit height in the same cqw unit as the
+   row's own container-query reference doesn't depend on that resolution
+   order at all. */
 .category-sheet__stat-card {
   position: relative;
   flex: 0 0 auto;
-  aspect-ratio: 1;
   border-radius: 16%;
   overflow: hidden;
   display: flex;
@@ -377,7 +384,7 @@
   align-items: center;
   padding: 2.5cqw 0;
   color: #fff;
-  transition: width 0.15s ease;
+  transition: width 0.15s ease, height 0.15s ease;
 }
 
 /* Sized off icon-wrap's own box instead of an independent font-step formula

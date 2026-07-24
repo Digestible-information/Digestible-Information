@@ -171,7 +171,7 @@ function NutritionBody({ data, fontStep, iconScale, dir }) {
           <div
             key={card.id}
             className="category-sheet__stat-card"
-            style={{ backgroundColor: card.bg, width: `${statCardWidthPct}%` }}
+            style={{ backgroundColor: card.bg, width: `${statCardWidthPct}%`, height: `${statCardWidthPct}cqw` }}
           >
             <span className="category-sheet__stat-card-label" style={{ fontSize: fontPx(STAT_CARD_LABEL_BASE_CQW) }}>
               {card.label}
