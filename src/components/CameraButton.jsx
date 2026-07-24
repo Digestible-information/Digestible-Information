@@ -7,7 +7,7 @@ import './CameraButton.css'
 // to it. Height is padded past the reference frame to fit the extra gap
 // added between the ring and the curved label below (see TEXT_ARC_RADIUS).
 const BADGE_WIDTH = 119
-const BADGE_HEIGHT = 152
+const BADGE_HEIGHT = 160
 const CX = 59.5
 const CY = 59.5
 const MAIN_CIRCLE_R = 49.96
@@ -24,7 +24,15 @@ const TEXT_ARC_RADIUS = RING_R + 18
 const TEXT_ARC_HALF_SPAN_DEG = 165
 const TEXT_ARC_LENGTH = TEXT_ARC_RADIUS * ((2 * TEXT_ARC_HALF_SPAN_DEG * Math.PI) / 180)
 // Blank arc-length between words, in the same user-units as the SVG viewBox.
-const WORD_GAP = 4
+const WORD_GAP = 5
+const LABEL_FONT_SIZE = 19
+// However wide the label's own text turns out to be (measured per device/font
+// below), the viewBox's *fixed* width used to just be BADGE_WIDTH — too
+// narrow once a long label's curve swings past the circle's own footprint,
+// silently clipping its outermost letters against the SVG's default
+// overflow: hidden. This is the safety margin added on top of the text's
+// actual measured extent when widening the viewBox to fit it.
+const TEXT_EDGE_MARGIN = 16
 
 function polarPoint(angleDeg) {
   // angleDeg measured clockwise from 12 o'clock, matching how the arc's
@@ -46,24 +54,44 @@ function buildTextArcPath() {
   return `M ${leftX} ${leftY} A ${TEXT_ARC_RADIUS} ${TEXT_ARC_RADIUS} 0 1 0 ${rightX} ${rightY}`
 }
 
-// A single textPath run of the whole label turned out to be unreliable
-// across engines for rtl: reversing the string (or forcing it via
-// unicode-bidi: bidi-override) to read right-to-left worked in one engine's
-// textPath implementation and came out mirrored (every word, and every
-// letter within each word, backwards) in another's. And even for plain ltr
-// English, a single run silently drops any glyphs that don't fit within
-// TEXT_ARC_LENGTH once centered — on a device whose font metrics render the
-// label wider than assumed, that clipped the first/last letters.
+// Splits into user-perceived characters (not UTF-16 code units), so a
+// combining mark — e.g. the tanwin diacritic in "منتجًا" — reverses as part
+// of its base letter instead of ending up detached and reattached to the
+// wrong neighbor.
+function reverseGraphemes(str) {
+  if (typeof Intl !== 'undefined' && Intl.Segmenter) {
+    const segmenter = new Intl.Segmenter(undefined, { granularity: 'grapheme' })
+    return Array.from(segmenter.segment(str), (s) => s.segment).reverse().join('')
+  }
+  return [...str].reverse().join('')
+}
+
+// A single textPath run of the whole label, relying on the browser's own
+// bidi handling (via `direction`/`unicode-bidi`) to lay Hebrew/Arabic out
+// right-to-left, turned out to render correctly in one engine and come out
+// mirrored — every word, and every letter within each word, backwards — in
+// another. Rather than lean on that inconsistent behavior at all, rtl words
+// are pre-reversed here (see reverseGraphemes) and rendered with no bidi
+// involvement whatsoever (no `direction: rtl` anywhere in this component),
+// so the two engines have nothing left to disagree about.
 //
-// Placing each *word* on the arc individually sidesteps both problems: each
-// word is measured (getComputedTextLength, in the same hidden pass below)
-// and positioned with an explicit startOffset, so nothing depends on how
-// wide the rendered text turns out to be, and a word's own characters are
-// never reordered — only which word sits in which left-to-right slot changes
-// with direction — so native text shaping (Hebrew/Arabic letter joining)
-// stays completely intact.
-function useWordSlots(label) {
-  const words = useMemo(() => label.split(' ').filter(Boolean), [label])
+// This does forgo native contextual shaping for the one or two letters at
+// each Arabic word's boundary (their initial/final glyph form is chosen
+// assuming logical order, which reversal disturbs) — a small cosmetic cost,
+// worth paying to guarantee correct reading order everywhere.
+//
+// And even for plain ltr English, a single run silently drops any glyphs
+// that don't fit within TEXT_ARC_LENGTH once centered — on a device whose
+// font metrics render the label wider than assumed, that clipped the
+// first/last letters. Placing each *word* on the arc individually (measured
+// via getComputedTextLength in the hidden pass below, positioned with an
+// explicit startOffset) sidesteps that too, since nothing depends on how
+// wide the rendered text turns out to be.
+function useWordSlots(label, dir) {
+  const words = useMemo(() => {
+    const logical = label.split(' ').filter(Boolean)
+    return dir === 'rtl' ? logical.map(reverseGraphemes) : logical
+  }, [label, dir])
   const measureRefs = useRef([])
   const [widths, setWidths] = useState(null)
 
@@ -76,14 +104,20 @@ function useWordSlots(label) {
 
 function ScanBadge({ label, dir }) {
   const pathId = useId()
-  const { words, measureRefs, widths } = useWordSlots(label)
+  const { words, measureRefs, widths } = useWordSlots(label, dir)
 
   // Slot 0 is the arc's leftmost position. ltr keeps word order as-is; rtl
   // reads right-to-left, so the first (logically-read-first) word belongs in
-  // the rightmost (last) slot instead.
+  // the rightmost (last) slot instead. (words are already per-word character
+  // order — see useWordSlots — so only which slot each whole word lands in
+  // needs to flip here.)
   const slotWordIndices = dir === 'rtl' ? [...words.keys()].reverse() : words.map((_, i) => i)
 
   let slotOffsets = null
+  // Defaults to the circle/QR icon's own footprint — only widened below once
+  // a measured label actually needs more room than that.
+  let viewBoxMinX = 0
+  let viewBoxWidth = BADGE_WIDTH
   if (widths) {
     const slotWidths = slotWordIndices.map((i) => widths[i])
     const totalWidth = slotWidths.reduce((sum, w) => sum + w, 0) + WORD_GAP * Math.max(0, words.length - 1)
@@ -93,11 +127,26 @@ function ScanBadge({ label, dir }) {
       cursor += w + WORD_GAP
       return center
     })
+
+    // Half the label's arc-length, converted back to how far (in degrees)
+    // that reaches around the circle from the bottom, then to the actual x
+    // coordinate that outermost point sits at — same polarPoint math used to
+    // build the arc itself.
+    const halfSpanDeg = (totalWidth / 2 / TEXT_ARC_RADIUS) * (180 / Math.PI)
+    const [rightEdgeX] = polarPoint(180 - halfSpanDeg)
+    const [leftEdgeX] = polarPoint(180 + halfSpanDeg)
+    const neededHalfWidth = Math.max(
+      BADGE_WIDTH / 2,
+      CX - leftEdgeX + TEXT_EDGE_MARGIN,
+      rightEdgeX - CX + TEXT_EDGE_MARGIN,
+    )
+    viewBoxMinX = CX - neededHalfWidth
+    viewBoxWidth = neededHalfWidth * 2
   }
 
   return (
     <svg
-      viewBox={`0 0 ${BADGE_WIDTH} ${BADGE_HEIGHT}`}
+      viewBox={`${viewBoxMinX} 0 ${viewBoxWidth} ${BADGE_HEIGHT}`}
       className="camera-button__badge"
       aria-hidden="true"
       focusable="false"
@@ -134,7 +183,7 @@ function ScanBadge({ label, dir }) {
       {/* Off-canvas measurement pass: plain (non-path) text so
           getComputedTextLength reflects each word's true rendered advance on
           this device/font, independent of anything path-related. */}
-      <text fontSize="15" fontWeight="600" x={-9999} y={-9999} aria-hidden="true">
+      <text fontSize={LABEL_FONT_SIZE} fontWeight="600" x={-9999} y={-9999} aria-hidden="true">
         {words.map((word, i) => (
           <tspan key={i} ref={(el) => (measureRefs.current[i] = el)}>
             {word}
@@ -143,7 +192,7 @@ function ScanBadge({ label, dir }) {
       </text>
       {slotOffsets &&
         slotWordIndices.map((wordIndex, slot) => (
-          <text key={wordIndex} fill={BADGE_COLOR} fontSize="15" fontWeight="600" style={{ direction: dir }}>
+          <text key={wordIndex} fill={BADGE_COLOR} fontSize={LABEL_FONT_SIZE} fontWeight="600">
             <textPath href={`#${pathId}`} startOffset={slotOffsets[slot]} textAnchor="middle">
               {words[wordIndex]}
             </textPath>

@@ -5,14 +5,15 @@
   padding: clamp(4px, 1vh, 8px) 0 clamp(2px, 0.5vh, 4px);
 }
 
-/* Badge is taller than it is wide (circle plus its curved-label tail below —
-   see BADGE_WIDTH/BADGE_HEIGHT in CameraButton.jsx), so it's sized off width
-   (matching the old circle-only diameter) with height following the SVG's
-   own aspect ratio instead of a fixed square. */
+/* The badge's own viewBox widens dynamically for longer labels (see
+   ScanBadge's viewBoxMinX/viewBoxWidth in CameraButton.jsx, which grows past
+   the circle's own footprint whenever a label needs more room than that to
+   avoid clipping its outermost letters) — so its aspect ratio isn't fixed
+   the way a plain circle icon's would be. Sized off a fixed height instead,
+   with width left to follow the SVG's own (variable) intrinsic ratio. */
 .camera-button__trigger {
-  width: clamp(48px, 9vh, 72px);
-  aspect-ratio: 119 / 152;
-  border-radius: 0;
+  height: clamp(48px, 9vh, 72px);
+  width: auto;
   border: none;
   background: transparent;
   padding: 0;
@@ -20,8 +21,8 @@
 }
 
 .camera-button__badge {
-  width: 100%;
   height: 100%;
+  width: auto;
   display: block;
 }
 
