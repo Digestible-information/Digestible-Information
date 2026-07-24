@@ -12,7 +12,7 @@
    the way a plain circle icon's would be. Sized off a fixed height instead,
    with width left to follow the SVG's own (variable) intrinsic ratio. */
 .camera-button__trigger {
-  height: clamp(48px, 9vh, 72px);
+  height: clamp(58px, 11vh, 88px);
   width: auto;
   border: none;
   background: transparent;
