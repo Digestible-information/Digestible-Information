@@ -28,7 +28,6 @@ const ICONS_PER_ROW = 4
 // icon grid above, for the same reason: fixed cards/boxes must not overflow/clip at
 // the max font-size step. Budgets are calibrated against the stat-card row's own
 // content width (matching each icon's footprint in the Figma reference).
-const STAT_CARD_ICON_BUDGET_CQW = 12
 const STAT_CARD_LABEL_BASE_CQW = 4.8
 const STAT_CARD_VALUE_BASE_CQW = 4.6
 // Stat card width now grows with fontStep (not just its text/icons), via the
@@ -178,15 +177,7 @@ function NutritionBody({ data, fontStep, iconScale, dir }) {
               {card.label}
             </span>
             <span className="category-sheet__stat-card-icon-wrap">
-              <img
-                src={card.icon}
-                alt=""
-                className="category-sheet__stat-card-icon"
-                style={{
-                  width: `${card.iconWidth * ((STAT_CARD_ICON_BUDGET_CQW / Math.max(card.iconWidth, card.iconHeight)) * iconScale)}cqw`,
-                  height: `${card.iconHeight * ((STAT_CARD_ICON_BUDGET_CQW / Math.max(card.iconWidth, card.iconHeight)) * iconScale)}cqw`,
-                }}
-              />
+              <img src={card.icon} alt="" className="category-sheet__stat-card-icon" />
             </span>
             <span className="category-sheet__stat-card-divider" />
             <span className="category-sheet__stat-card-value" style={{ fontSize: fontPx(STAT_CARD_VALUE_BASE_CQW) }}>

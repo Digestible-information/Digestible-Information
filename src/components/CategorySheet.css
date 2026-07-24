@@ -380,13 +380,24 @@
   transition: width 0.15s ease;
 }
 
+/* Sized off icon-wrap's own box (max-width/height, not fixed width/height —
+   so it never stretches past its aspect ratio just to fill a taller-than-wide
+   wrap) instead of an independent font-step formula — growing the stat card
+   at larger font-size steps naturally grows this available space too, so the
+   icon scales with its card instead of two independent growth curves
+   drifting apart and letting the icon overrun the label/value text above and
+   below it. */
 .category-sheet__stat-card-icon {
   display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 .category-sheet__stat-card-icon-wrap {
   flex: 1;
   min-height: 0;
+  min-width: 0;
   width: 100%;
   display: flex;
   align-items: center;

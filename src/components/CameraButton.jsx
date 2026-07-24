@@ -2,12 +2,13 @@ import { useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { useLanguage } from '../i18n/LanguageContext.jsx'
 import './CameraButton.css'
 
-// Badge geometry lifted from the Figma reference (frame 119x140.26, circle
-// centered at 59.5,59.5) — see ScanBadge below for how each piece maps back
-// to it. Height is padded past the reference frame to fit the extra gap
-// added between the ring and the curved label below (see TEXT_ARC_RADIUS).
+// Badge geometry lifted from the Figma reference (circle centered at
+// 59.5,59.5) — see ScanBadge below for how each piece maps back to it. The
+// viewBox's y-range extends above y=0 (see BADGE_TOP_Y/BADGE_BOTTOM_Y) to fit
+// the curved label's own gap and ascenders above the ring — the circle/QR
+// icon markup below is unmoved, only which portion of that coordinate space
+// the SVG actually shows changed.
 const BADGE_WIDTH = 119
-const BADGE_HEIGHT = 160
 const CX = 59.5
 const CY = 59.5
 const MAIN_CIRCLE_R = 49.96
@@ -15,10 +16,10 @@ const RING_R = 58.36
 const RING_STROKE = 2.28
 const BADGE_COLOR = '#29256A'
 
-// The curved label sits on its own arc below the circle, wide enough (330°)
+// The curved label sits on its own arc above the circle, wide enough (330°)
 // that even the longest translation (English) never runs out of track —
 // unused track is simply blank, so over-sizing this has no visual cost.
-// Radius is the ring's own radius plus a gap so the label's ascenders don't
+// Radius is the ring's own radius plus a gap so the label's descenders don't
 // touch the ring.
 const TEXT_ARC_RADIUS = RING_R + 18
 const TEXT_ARC_HALF_SPAN_DEG = 165
@@ -33,6 +34,12 @@ const LABEL_FONT_SIZE = 19
 // overflow: hidden. This is the safety margin added on top of the text's
 // actual measured extent when widening the viewBox to fit it.
 const TEXT_EDGE_MARGIN = 16
+// Fixed vertical room above the ring for the label's ascenders (font size is
+// constant, so — unlike width — this doesn't need to vary with label length).
+const TEXT_TOP_MARGIN = 20
+const BADGE_TOP_Y = CY - TEXT_ARC_RADIUS - TEXT_TOP_MARGIN
+const BADGE_BOTTOM_Y = CY + RING_R + 3
+const BADGE_HEIGHT = BADGE_BOTTOM_Y - BADGE_TOP_Y
 
 function polarPoint(angleDeg) {
   // angleDeg measured clockwise from 12 o'clock, matching how the arc's
@@ -41,10 +48,10 @@ function polarPoint(angleDeg) {
   return [CX + TEXT_ARC_RADIUS * Math.sin(rad), CY - TEXT_ARC_RADIUS * Math.cos(rad)]
 }
 
-// Converts an arc-length offset from the bottom-center point (positive =
-// toward the right) into the angleDeg polarPoint expects.
+// Converts an arc-length offset from the top-center point (positive = toward
+// the right) into the angleDeg polarPoint expects.
 function angleForOffset(offsetFromCenter) {
-  return 180 - (offsetFromCenter / TEXT_ARC_RADIUS) * (180 / Math.PI)
+  return (offsetFromCenter / TEXT_ARC_RADIUS) * (180 / Math.PI)
 }
 
 // Each word is placed as a plain (non-path) <text>, rotated to the arc's
@@ -106,12 +113,12 @@ function ScanBadge({ label, dir }) {
     })
 
     // Half the label's arc-length, converted back to how far (in degrees)
-    // that reaches around the circle from the bottom, then to the actual x
+    // that reaches around the circle from the top, then to the actual x
     // coordinate that outermost point sits at — same polarPoint math used to
     // position each word.
     const halfSpanDeg = (totalWidth / 2 / TEXT_ARC_RADIUS) * (180 / Math.PI)
-    const [rightEdgeX] = polarPoint(180 - halfSpanDeg)
-    const [leftEdgeX] = polarPoint(180 + halfSpanDeg)
+    const [rightEdgeX] = polarPoint(halfSpanDeg)
+    const [leftEdgeX] = polarPoint(-halfSpanDeg)
     const neededHalfWidth = Math.max(
       BADGE_WIDTH / 2,
       CX - leftEdgeX + TEXT_EDGE_MARGIN,
@@ -123,7 +130,7 @@ function ScanBadge({ label, dir }) {
 
   return (
     <svg
-      viewBox={`${viewBoxMinX} 0 ${viewBoxWidth} ${BADGE_HEIGHT}`}
+      viewBox={`${viewBoxMinX} ${BADGE_TOP_Y} ${viewBoxWidth} ${BADGE_HEIGHT}`}
       className="camera-button__badge"
       aria-hidden="true"
       focusable="false"
@@ -175,7 +182,7 @@ function ScanBadge({ label, dir }) {
               key={wordIndex}
               x={x}
               y={y}
-              transform={`rotate(${angle - 180} ${x} ${y})`}
+              transform={`rotate(${angle} ${x} ${y})`}
               textAnchor="middle"
               fill={BADGE_COLOR}
               fontSize={LABEL_FONT_SIZE}
