@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import splashGif from '../assets/splash.gif'
 import './SplashScreen.css'
 
-const DISPLAY_MS = 5000
+const DISPLAY_MS = 6000
 const FADE_MS = 500
 const MAX_WAIT_MS = 3000
 
