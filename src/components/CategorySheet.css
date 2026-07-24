@@ -77,6 +77,12 @@
   top: max(15vh, calc(100vh - 560px));
 }
 
+/* Warnings is the same shape of content as recycling's single-bin layout
+   (one icon + one short block of text), so it gets the same budget. */
+.category-sheet--warnings {
+  top: max(15vh, calc(100vh - 560px));
+}
+
 .category-sheet--high-contrast {
   --sheet-bg: #000;
   --sheet-fg: #fff;
@@ -852,4 +858,81 @@
   /* Overrides .category-sheet__body p's 1.7 — too much space between this
      paragraph's wrapped lines at this larger font size. */
   line-height: 1.3;
+}
+
+/* Multi-bin layout (e.g. "Energybar"): one icon+sentence row per bin,
+   stacked — see RecyclingBody's rows.length > 1 branch. Unlike
+   .category-sheet__recycling above, rows are icon-beside-text (not
+   icon-above-text) and start-aligned (not centered), same row shape as
+   .category-sheet__kosher-row / .category-sheet__manufacturer-row. */
+.category-sheet__recycling-rows {
+  container-type: inline-size;
+  display: flex;
+  flex-direction: column;
+  gap: 6cqw;
+  padding-top: 6px;
+}
+
+.category-sheet__recycling-row {
+  display: flex;
+  align-items: center;
+  gap: 4%;
+}
+
+.category-sheet__recycling-row-icon {
+  display: block;
+  flex-shrink: 0;
+}
+
+.category-sheet--high-contrast .category-sheet__recycling-row-icon--invertible {
+  filter: invert(1);
+}
+
+/* Two classes to out-specificity the .category-sheet__body p default of
+   line-height: 1.7, same reasoning as .category-sheet__recycling-text above
+   (text-align: start here already matches that default, so no override
+   needed for it). */
+.category-sheet__recycling-rows .category-sheet__recycling-row-text {
+  color: var(--sheet-fg);
+  transition: color 0.25s ease;
+  line-height: 1.3;
+}
+
+/* Same shape as .category-sheet__recycling above (one centered icon plus one
+   short block of text below it). */
+.category-sheet__warnings {
+  container-type: inline-size;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4cqw;
+  padding-top: 6px;
+  text-align: center;
+}
+
+.category-sheet__warnings-icon {
+  display: block;
+}
+
+/* This icon is solid red (#EA2427), not black line-art, so a plain invert(1)
+   would turn it cyan instead of white — brightness(0) first flattens it to
+   black, then invert(1) flips that to a clean white silhouette. */
+.category-sheet--high-contrast .category-sheet__warnings-icon--invertible {
+  filter: brightness(0) invert(1);
+}
+
+/* Unlike recycling, the whole warning message is red in the Figma design
+   (not just a highlighted clause) — bold/highlight on a segment only ever
+   changes font-weight here, not color. Flips to white in high contrast,
+   same treatment as .category-sheet__body-heading's color prop. */
+.category-sheet__warnings .category-sheet__warnings-text {
+  color: #ea2427;
+  transition: color 0.25s ease;
+  max-width: 85%;
+  text-align: center;
+  line-height: 1.3;
+}
+
+.category-sheet--high-contrast .category-sheet__warnings-text {
+  color: #fff;
 }

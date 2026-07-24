@@ -106,6 +106,18 @@ const STORAGE_TEXT_BASE_CQW = 21 * FIGMA_PX_TO_CQW * STORAGE_SCALE
 const RECYCLING_SCALE = 1.2
 const RECYCLING_TEXT_BASE_CQW = 24 * FIGMA_PX_TO_CQW * RECYCLING_SCALE
 
+// Warnings body: same shape of content as recycling (one centered icon plus a
+// short block of text below it), so it reuses the same sizing approach.
+const WARNINGS_SCALE = 1.2
+const WARNINGS_TEXT_BASE_CQW = 24 * FIGMA_PX_TO_CQW * WARNINGS_SCALE
+
+// Multi-bin recycling rows (e.g. "Energybar": one icon+sentence row per bin,
+// stacked) — sized directly off that Figma frame's own px values, not
+// RECYCLING_SCALE/RECYCLING_TEXT_BASE_CQW above (those were tuned for a
+// single big centered sentence and would be oversized once there's more than
+// one row to fit in the same sheet).
+const RECYCLING_ROW_TEXT_BASE_CQW = 24 * FIGMA_PX_TO_CQW
+
 function NutritionBody({ data, fontStep, iconScale, dir }) {
   const fontPx = (baseCqw) => `calc(${baseCqw}cqw + ${fontStep * FONT_STEP_SIZE}px)`
   const statCardWidthPct = Math.max(10, STAT_CARD_BASE_PCT + fontStep * STAT_CARD_GROWTH_PCT)
@@ -573,26 +585,84 @@ function StorageBody({ data, fontStep, iconScale }) {
 function RecyclingBody({ data, fontStep, iconScale }) {
   const fontPx = (baseCqw) => `max(10px, calc(${baseCqw}cqw + ${fontStep * FONT_STEP_SIZE}px))`
 
+  const renderSegments = (segments, highlightColor) =>
+    segments.map((segment, index) => (
+      <span
+        key={index}
+        style={{
+          fontWeight: segment.bold ? 700 : 400,
+          color: segment.highlight ? highlightColor : undefined,
+        }}
+      >
+        {segment.text}
+      </span>
+    ))
+
+  // A product with a single bin (e.g. "twist") keeps this original centered
+  // layout — one big icon above one sentence — untouched. A product with
+  // more than one bin (e.g. "Energybar") switches to the stacked-rows layout
+  // below, matching the newer multi-bin Figma frame.
+  if (data.rows.length === 1) {
+    const row = data.rows[0]
+    return (
+      <div className="category-sheet__recycling">
+        <img
+          src={row.icon}
+          alt=""
+          className={`category-sheet__recycling-icon${row.invertOnHighContrast ? ' category-sheet__recycling-icon--invertible' : ''}`}
+          style={{
+            width: `${row.iconWidth * FIGMA_PX_TO_CQW * RECYCLING_SCALE * iconScale}cqw`,
+            height: `${row.iconHeight * FIGMA_PX_TO_CQW * RECYCLING_SCALE * iconScale}cqw`,
+          }}
+        />
+        <p className="category-sheet__recycling-text" style={{ fontSize: fontPx(RECYCLING_TEXT_BASE_CQW) }}>
+          {renderSegments(row.segments, row.highlightColor)}
+        </p>
+      </div>
+    )
+  }
+
   return (
-    <div className="category-sheet__recycling">
+    <div className="category-sheet__recycling-rows">
+      {data.rows.map((row, index) => (
+        <div key={index} className="category-sheet__recycling-row">
+          {/* See .claude/skills/rtl-icon-text-order — icon always reads first
+              (DOM order: icon, then text), in every language. */}
+          <img
+            src={row.icon}
+            alt=""
+            className={`category-sheet__recycling-row-icon${row.invertOnHighContrast ? ' category-sheet__recycling-row-icon--invertible' : ''}`}
+            style={{
+              width: `${row.rowIconWidth * FIGMA_PX_TO_CQW * iconScale}cqw`,
+              height: `${row.rowIconHeight * FIGMA_PX_TO_CQW * iconScale}cqw`,
+            }}
+          />
+          <p className="category-sheet__recycling-row-text" style={{ fontSize: fontPx(RECYCLING_ROW_TEXT_BASE_CQW) }}>
+            {renderSegments(row.segments, row.highlightColor)}
+          </p>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+function WarningsBody({ data, fontStep, iconScale }) {
+  const fontPx = (baseCqw) => `max(10px, calc(${baseCqw}cqw + ${fontStep * FONT_STEP_SIZE}px))`
+
+  return (
+    <div className="category-sheet__warnings">
       <img
         src={data.icon}
         alt=""
-        className={`category-sheet__recycling-icon${data.invertOnHighContrast ? ' category-sheet__recycling-icon--invertible' : ''}`}
+        className={`category-sheet__warnings-icon${data.invertOnHighContrast ? ' category-sheet__warnings-icon--invertible' : ''}`}
         style={{
-          width: `${data.iconWidth * FIGMA_PX_TO_CQW * RECYCLING_SCALE * iconScale}cqw`,
-          height: `${data.iconHeight * FIGMA_PX_TO_CQW * RECYCLING_SCALE * iconScale}cqw`,
+          width: `${data.iconWidth * FIGMA_PX_TO_CQW * WARNINGS_SCALE * iconScale}cqw`,
+          height: `${data.iconHeight * FIGMA_PX_TO_CQW * WARNINGS_SCALE * iconScale}cqw`,
         }}
       />
-      <p className="category-sheet__recycling-text" style={{ fontSize: fontPx(RECYCLING_TEXT_BASE_CQW) }}>
+      <p className="category-sheet__warnings-text" style={{ fontSize: fontPx(WARNINGS_TEXT_BASE_CQW) }}>
         {data.segments.map((segment, index) => (
-          <span
-            key={index}
-            style={{
-              fontWeight: segment.bold ? 700 : 400,
-              color: segment.highlight ? '#EF531E' : undefined,
-            }}
-          >
+          <span key={index} style={{ fontWeight: segment.bold ? 700 : 400 }}>
             {segment.text}
           </span>
         ))}
@@ -623,6 +693,7 @@ export default function CategorySheet({
   bodyManufacturer,
   bodyStorage,
   bodyRecycling,
+  bodyWarnings,
   bodyHeightPx,
 }) {
   const { t, dir } = useLanguage()
@@ -706,7 +777,9 @@ export default function CategorySheet({
       : bodyStorage
       ? bodyStorage.rows.map((row) => row.label).join(', ')
       : bodyRecycling
-      ? bodyRecycling.segments.map((segment) => segment.text).join('')
+      ? bodyRecycling.rows.map((row) => row.segments.map((segment) => segment.text).join('')).join(', ')
+      : bodyWarnings
+      ? bodyWarnings.segments.map((segment) => segment.text).join('')
       : bodyIcons
       ? bodyIcons.flatMap((group) => [group.heading, ...group.items.map((item) => item.label)]).join(', ')
       : bodyText
@@ -751,7 +824,7 @@ export default function CategorySheet({
         aria-hidden="true"
       />
       <div
-        className={`category-sheet${bodyNutrition ? ' category-sheet--nutrition' : ''}${bodyKosher ? ' category-sheet--kosher' : ''}${bodyManufacturer ? ' category-sheet--manufacturer' : ''}${bodyStorage ? ' category-sheet--storage' : ''}${bodyRecycling ? ' category-sheet--recycling' : ''}${open ? ' category-sheet--open' : ''}${highContrast ? ' category-sheet--high-contrast' : ''}`}
+        className={`category-sheet${bodyNutrition ? ' category-sheet--nutrition' : ''}${bodyKosher ? ' category-sheet--kosher' : ''}${bodyManufacturer ? ' category-sheet--manufacturer' : ''}${bodyStorage ? ' category-sheet--storage' : ''}${bodyRecycling ? ' category-sheet--recycling' : ''}${bodyWarnings ? ' category-sheet--warnings' : ''}${open ? ' category-sheet--open' : ''}${highContrast ? ' category-sheet--high-contrast' : ''}`}
         style={{
           // Per-product override of the sheet's height budget (see the plain
           // `.category-sheet`/`--<variant>` `top` rules in CategorySheet.css)
@@ -859,6 +932,8 @@ export default function CategorySheet({
             <StorageBody data={bodyStorage} fontStep={fontStep} iconScale={iconScale} />
           ) : bodyRecycling ? (
             <RecyclingBody data={bodyRecycling} fontStep={fontStep} iconScale={iconScale} />
+          ) : bodyWarnings ? (
+            <WarningsBody data={bodyWarnings} fontStep={fontStep} iconScale={iconScale} />
           ) : bodyIcons ? (
             <div className="category-sheet__icon-groups">
               {bodyIcons.map((group) => (

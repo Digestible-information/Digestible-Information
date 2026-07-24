@@ -41,6 +41,7 @@ export const translations = {
     manufacturerTitle: 'פרטי יצרן/יבואן/משווק',
     storageTitle: 'הוראות אחסון',
     recyclingTitle: 'מיחזור',
+    warningsTitle: 'אזהרות',
     categories: {
       ingredients: 'רשימת הרכיבים',
       allergens: 'מידע על אלרגנים',
@@ -49,6 +50,7 @@ export const translations = {
       storage: 'הוראות אחסון',
       manufacturer: 'פרטי יצרן/יבואן/משווק',
       recycling: 'מיחזור',
+      warnings: 'אזהרות',
     },
   },
   en: {
@@ -77,6 +79,7 @@ export const translations = {
     manufacturerTitle: 'Manufacturer/Importer/Distributor details',
     storageTitle: 'Storage instructions',
     recyclingTitle: 'Recycling',
+    warningsTitle: 'Warnings',
     categories: {
       ingredients: 'Ingredients list',
       allergens: 'Allergen info',
@@ -85,6 +88,7 @@ export const translations = {
       storage: 'Storage instructions',
       manufacturer: 'Manufacturer/Importer/Distributor details',
       recycling: 'Recycling',
+      warnings: 'Warnings',
     },
   },
   ar: {
@@ -113,6 +117,7 @@ export const translations = {
     manufacturerTitle: 'تفاصيل المصنّع/المستورد/الموزّع',
     storageTitle: 'تعليمات التخزين',
     recyclingTitle: 'إعادة التدوير',
+    warningsTitle: 'تحذيرات',
     categories: {
       ingredients: 'قائمة المكونات',
       allergens: 'معلومات عن الحساسية',
@@ -121,6 +126,7 @@ export const translations = {
       storage: 'تعليمات التخزين',
       manufacturer: 'تفاصيل المصنّع/المستورد/الموزّع',
       recycling: 'إعادة التدوير',
+      warnings: 'تحذيرات',
     },
   },
 }

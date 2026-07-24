@@ -30,7 +30,7 @@ Top-level key = the product id used in the URL and as `DEFAULT_PRODUCT_ID`'s val
 {
   "<id>": {
     "meta": { "photo": "products/<id>/photo.<ext>" },
-    "categoryIds": ["ingredients", "allergens", "kosher", "nutrition", "storage", "manufacturer", "recycling"],
+    "categoryIds": ["ingredients", "allergens", "kosher", "nutrition", "storage", "manufacturer", "recycling", "warnings"],
     "kosherRowIds": ["ouDairy", "rabbinicalSeal"],
     "storageRowIds": ["shaded", "cool", "dry"],
     "nutritionColors": { "sodium": "#00AE38", "satFat": "#FF000E", "energy": "#FF7E00", "sugarBox": "#FF000E" },
@@ -46,7 +46,7 @@ Top-level key = the product id used in the URL and as `DEFAULT_PRODUCT_ID`'s val
 
 ### `categoryIds` drives everything else
 
-This array controls two things at once: which chips/rows appear on the home screen, **and** which `CategorySheet` panel exists at all (`HomeScreen.jsx` wraps every sheet in `product.categoryIds.includes('<id>') && (...)`). The 7 valid ids (from `src/data/categories.js`) are fixed — don't invent new ones without adding code (see the end of this doc):
+This array controls two things at once: which chips/rows appear on the home screen, **and** which `CategorySheet` panel exists at all (`HomeScreen.jsx` wraps every sheet in `product.categoryIds.includes('<id>') && (...)`). The 8 valid ids (from `src/data/categories.js`) are fixed — don't invent new ones without adding code (see the end of this doc):
 
 | id | group | needs these other top-level/content fields |
 |---|---|---|
@@ -56,7 +56,8 @@ This array controls two things at once: which chips/rows appear on the home scre
 | `nutrition` | primary | top-level `nutritionColors`, `content.<lang>.nutritionSubtitle` + `.nutritionFacts` |
 | `manufacturer` | secondary | `content.<lang>.manufacturerInfo` |
 | `storage` | secondary | top-level `storageRowIds`, `content.<lang>.storageInfo` |
-| `recycling` | secondary | `content.<lang>.recyclingInfo` |
+| `recycling` | secondary | `content.<lang>.recyclingInfo.bins[]` (each `{ color, segments }`, `color` from `src/data/recyclingInfo.js`'s `recyclingBinIcons`: `orange`, `blue`); optional top-level `recyclingHeight` if the sheet needs a taller budget (e.g. more than one bin) |
+| `warnings` | secondary | `content.<lang>.warningsInfo.segments` |
 
 **Only include the fields a category needs if you included that category** — e.g. a product with no `nutrition` in `categoryIds` doesn't need `nutritionColors` at all. But if you *do* include a category, every field in its row above is required — `HomeScreen.jsx` reads them unconditionally (e.g. `product.nutritionColors[item.id]`) once the category is included, so a missing one is a runtime crash (undefined), not a graceful blank.
 
@@ -98,7 +99,8 @@ brand, productName, productNameBreakAfter (string or null — present on the
     contact: { label, detail: [...lines] },
   },
   storageInfo: { heading, labels: { shaded, cool, dry } },  // only the ones in storageRowIds
-  recyclingInfo: { segments: [{ text, bold?, highlight? }, ...] },
+  recyclingInfo: { bins: [{ color, segments: [{ text, bold?, highlight? }, ...] }, ...] },
+  warningsInfo: { segments: [{ text, bold?, highlight? }, ...] },
 ```
 
 `kosherInfo.ouDairy`/`.rabbinicalSeal` and `storageInfo.labels`' keys only need entries for the row ids actually listed in `kosherRowIds`/`storageRowIds` — but `dairyBadge`/`dairySupervision` are unconditional whenever `kosher` is in `categoryIds` (they're not gated by `kosherRowIds`, they're the badge/supervision text shown above the per-row list).
@@ -121,5 +123,5 @@ Visit `/<id>` (e.g. `http://localhost:5173/<id>` — check the actual dev port i
 ## When you'd need code changes (out of scope for a normal new product)
 
 - A genuinely new allergen, kosher row, or storage condition not in the fixed lists above (needs a new icon asset + an entry in the relevant `src/data/*.js` file, plus new keys in every language of `src/i18n/translations.js` — see that file's own comment above `ALLERGEN_STATEMENT_ORDER` for the allergen case specifically).
-- A new *category* (an 8th sheet type beyond the 7 in `src/data/categories.js`) — needs a new icon, a new `CategorySheet` body variant in `CategorySheet.jsx`, and new translation keys.
+- A new *category* (a 9th sheet type beyond the 8 in `src/data/categories.js`) — needs a new icon, a new `CategorySheet` body variant in `CategorySheet.jsx`, and new translation keys.
 - A per-product kosher badge swatch color (currently global — see above).

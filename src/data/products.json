@@ -3,12 +3,13 @@
     "meta": {
       "photo": "products/Energybar/photo.png"
     },
-    "categoryIds": ["ingredients", "allergens", "kosher", "nutrition", "storage", "manufacturer"],
+    "categoryIds": ["ingredients", "allergens", "kosher", "nutrition", "storage", "manufacturer", "recycling", "warnings"],
     "allergensHeight": 780,
     "kosherRowIds": ["ouDairy", "badatzBeitYosef"],
     "kosherHeight": 820,
     "storageRowIds": ["shaded", "cool", "dry"],
     "nutritionHeight": 636,
+    "recyclingHeight": 700,
     "nutritionLayout": "stacked",
     "nutritionColors": {
       "sodium": "#43AA49",
@@ -73,6 +74,34 @@
         "storageInfo": {
           "heading": "יש לשמור במקום:",
           "labels": { "shaded": "מוצל", "cool": "קריר", "dry": "יבש" }
+        },
+        "recyclingInfo": {
+          "bins": [
+            {
+              "color": "orange",
+              "segments": [
+                { "text": "את " },
+                { "text": "עטיפת המוצר", "bold": true },
+                { "text": " יש להשליך " },
+                { "text": "לפח הכתום", "bold": true, "highlight": true }
+              ]
+            },
+            {
+              "color": "blue",
+              "segments": [
+                { "text": "את " },
+                { "text": "מאגדת הקרטון", "bold": true },
+                { "text": " יש להשליך " },
+                { "text": "לפח הכחול", "bold": true, "highlight": true }
+              ]
+            }
+          ]
+        },
+        "warningsInfo": {
+          "segments": [
+            { "text": "סכנת חנק לילדים " },
+            { "text": "מתחת לגיל 5", "bold": true, "highlight": true }
+          ]
         }
       },
       "en": {
@@ -121,6 +150,34 @@
         "storageInfo": {
           "heading": "Store in a place that is:",
           "labels": { "shaded": "Shaded", "cool": "Cool", "dry": "Dry" }
+        },
+        "recyclingInfo": {
+          "bins": [
+            {
+              "color": "orange",
+              "segments": [
+                { "text": "The " },
+                { "text": "product wrapper", "bold": true },
+                { "text": " should be discarded in the " },
+                { "text": "orange bin", "bold": true, "highlight": true }
+              ]
+            },
+            {
+              "color": "blue",
+              "segments": [
+                { "text": "The " },
+                { "text": "cardboard packaging", "bold": true },
+                { "text": " should be discarded in the " },
+                { "text": "blue bin", "bold": true, "highlight": true }
+              ]
+            }
+          ]
+        },
+        "warningsInfo": {
+          "segments": [
+            { "text": "Choking hazard for children " },
+            { "text": "under 5 years old", "bold": true, "highlight": true }
+          ]
         }
       },
       "ar": {
@@ -169,6 +226,34 @@
         "storageInfo": {
           "heading": "يُحفظ في مكان:",
           "labels": { "shaded": "مظلل", "cool": "بارد", "dry": "جاف" }
+        },
+        "recyclingInfo": {
+          "bins": [
+            {
+              "color": "orange",
+              "segments": [
+                { "text": "يجب التخلص من " },
+                { "text": "غلاف المنتج", "bold": true },
+                { "text": " في " },
+                { "text": "السلة البرتقالية", "bold": true, "highlight": true }
+              ]
+            },
+            {
+              "color": "blue",
+              "segments": [
+                { "text": "يجب التخلص من " },
+                { "text": "عبوة الكرتون", "bold": true },
+                { "text": " في " },
+                { "text": "السلة الزرقاء", "bold": true, "highlight": true }
+              ]
+            }
+          ]
+        },
+        "warningsInfo": {
+          "segments": [
+            { "text": "خطر الاختناق للأطفال " },
+            { "text": "دون سن 5 سنوات", "bold": true, "highlight": true }
+          ]
         }
       }
     }
@@ -243,11 +328,16 @@
           "labels": { "shaded": "מוצל", "cool": "קריר", "dry": "יבש" }
         },
         "recyclingInfo": {
-          "segments": [
-            { "text": "את " },
-            { "text": "עטיפת המוצר", "bold": true },
-            { "text": " יש להשליך " },
-            { "text": "לפח הכתום", "bold": true, "highlight": true }
+          "bins": [
+            {
+              "color": "orange",
+              "segments": [
+                { "text": "את " },
+                { "text": "עטיפת המוצר", "bold": true },
+                { "text": " יש להשליך " },
+                { "text": "לפח הכתום", "bold": true, "highlight": true }
+              ]
+            }
           ]
         }
       },
@@ -297,11 +387,16 @@
           "labels": { "shaded": "Shaded", "cool": "Cool", "dry": "Dry" }
         },
         "recyclingInfo": {
-          "segments": [
-            { "text": "The " },
-            { "text": "product wrapper", "bold": true },
-            { "text": " should be discarded in the " },
-            { "text": "orange bin", "bold": true, "highlight": true }
+          "bins": [
+            {
+              "color": "orange",
+              "segments": [
+                { "text": "The " },
+                { "text": "product wrapper", "bold": true },
+                { "text": " should be discarded in the " },
+                { "text": "orange bin", "bold": true, "highlight": true }
+              ]
+            }
           ]
         }
       },
@@ -351,11 +446,16 @@
           "labels": { "shaded": "مظلل", "cool": "بارد", "dry": "جاف" }
         },
         "recyclingInfo": {
-          "segments": [
-            { "text": "يجب التخلص من " },
-            { "text": "غلاف المنتج", "bold": true },
-            { "text": " في " },
-            { "text": "السلة البرتقالية", "bold": true, "highlight": true }
+          "bins": [
+            {
+              "color": "orange",
+              "segments": [
+                { "text": "يجب التخلص من " },
+                { "text": "غلاف المنتج", "bold": true },
+                { "text": " في " },
+                { "text": "السلة البرتقالية", "bold": true, "highlight": true }
+              ]
+            }
           ]
         }
       }

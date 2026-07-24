@@ -16,7 +16,8 @@ import {
 import { kosherRows, kosherBadgeSwatchColor } from '../data/kosherInfo.js'
 import { manufacturerBodyIcon } from '../data/manufacturerInfo.js'
 import { storageRows } from '../data/storageInfo.js'
-import { recyclingBodyIcon } from '../data/recyclingInfo.js'
+import { recyclingBinIcons } from '../data/recyclingInfo.js'
+import { warningsBodyIcon } from '../data/warningsInfo.js'
 import { useLanguage } from '../i18n/LanguageContext.jsx'
 import { ALLERGEN_STATEMENT_ORDER, ALLERGEN_STATEMENT_COLORS } from '../i18n/translations.js'
 import { useProduct } from '../hooks/useProduct.js'
@@ -28,7 +29,7 @@ const LANGUAGES = [
   { code: 'he', label: 'עברית', dir: 'rtl' },
 ]
 
-const SHEET_CATEGORIES = new Set(['ingredients', 'allergens', 'nutrition', 'kosher', 'manufacturer', 'storage', 'recycling'])
+const SHEET_CATEGORIES = new Set(['ingredients', 'allergens', 'nutrition', 'kosher', 'manufacturer', 'storage', 'recycling', 'warnings'])
 
 // Fluid CSS (clamp()-based spacing) handles most short screens on its own. This is the
 // last-resort fallback for the extreme cases where even that isn't enough (e.g. an
@@ -319,9 +320,24 @@ export default function HomeScreen() {
           open={openSheet === 'recycling'}
           onClose={() => setOpenSheet(null)}
           title={t.recyclingTitle}
+          bodyHeightPx={product.recyclingHeight}
           bodyRecycling={{
-            ...recyclingBodyIcon,
-            segments: content.recyclingInfo.segments,
+            rows: content.recyclingInfo.bins.map((bin) => ({
+              ...recyclingBinIcons[bin.color],
+              segments: bin.segments,
+            })),
+          }}
+        />
+      )}
+
+      {product.categoryIds.includes('warnings') && (
+        <CategorySheet
+          open={openSheet === 'warnings'}
+          onClose={() => setOpenSheet(null)}
+          title={t.warningsTitle}
+          bodyWarnings={{
+            ...warningsBodyIcon,
+            segments: content.warningsInfo.segments,
           }}
         />
       )}
