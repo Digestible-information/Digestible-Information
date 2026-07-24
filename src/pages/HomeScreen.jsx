@@ -109,7 +109,7 @@ export default function HomeScreen() {
   const allergenGroups = ALLERGEN_STATEMENT_ORDER.map((statementKey) => ({
     statementKey,
     heading: t.allergenStatements[statementKey],
-    items: product.allergens
+    items: (product.allergens ?? [])
       .filter((allergen) => allergen.statement === statementKey)
       .map((allergen) => ({
         ...allergenIcons.find((icon) => icon.id === allergen.id),

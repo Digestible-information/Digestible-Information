@@ -60,6 +60,8 @@ This array controls two things at once: which chips/rows appear on the home scre
 
 **Only include the fields a category needs if you included that category** — e.g. a product with no `nutrition` in `categoryIds` doesn't need `nutritionColors` at all. But if you *do* include a category, every field in its row above is required — `HomeScreen.jsx` reads them unconditionally (e.g. `product.nutritionColors[item.id]`) once the category is included, so a missing one is a runtime crash (undefined), not a graceful blank.
 
+**Exception: top-level `allergens[]` is read unconditionally, regardless of `categoryIds`.** Unlike `nutritionColors`/`kosherRowIds`/`storageRowIds` (which only get read once their category is in `categoryIds`), `HomeScreen.jsx` computes `allergenGroups` on every render off `product.allergens` directly, with no `categoryIds.includes('allergens')` guard. If you're building a product incrementally (e.g. adding sections one at a time) and haven't gotten to allergens yet, set `"allergens": []` explicitly rather than omitting the key — omitting it crashes the page. (`HomeScreen.jsx` now defaults it to `[]` if missing as a safety net, but don't rely on that — set it explicitly.)
+
 ### Fixed id vocabularies — don't invent new ones here
 
 These four fields' values must come from a **fixed set already wired to icons/components** — an id outside the set silently fails to render (icon/label come back `undefined`) rather than erroring loudly, so double check against these lists:

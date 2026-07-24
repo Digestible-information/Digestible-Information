@@ -1,4 +1,31 @@
 {
+  "Energybar": {
+    "meta": {
+      "photo": "products/Energybar/photo.png"
+    },
+    "categoryIds": [],
+    "allergens": [],
+    "content": {
+      "he": {
+        "brand": "אנרג'י",
+        "productName": "חטיף דגנים עם שברי אגוזים ושוקולד חלב מעולה",
+        "productNameBreakAfter": null,
+        "weightValue": "24 גר'"
+      },
+      "en": {
+        "brand": "Energy",
+        "productName": "Cereal snack with nut pieces and premium milk chocolate",
+        "productNameBreakAfter": null,
+        "weightValue": "24 g"
+      },
+      "ar": {
+        "brand": "إنرجي",
+        "productName": "وجبة خفيفة من الحبوب مع قطع المكسرات وشوكولاتة حليب فاخرة",
+        "productNameBreakAfter": null,
+        "weightValue": "غ 24"
+      }
+    }
+  },
   "twist": {
     "meta": {
       "photo": "products/twist/photo.png"
