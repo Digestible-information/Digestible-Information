@@ -48,6 +48,13 @@ const STAT_CARD_GROWTH_PCT = 6
 const FACT_TABLE_BASE_PCT = 50
 const SUGAR_BOX_BASE_PCT = 47.2
 const FACT_ROW_GROWTH_PCT = 6
+// Stacked layout's fact table (see data.sugarCards) sits alone on its own
+// line instead of sharing a row with a sugar box, so it doesn't need
+// FACT_TABLE_BASE_PCT's 50%-to-share width — stretching it to the full sheet
+// width just left a lot of empty padding around its own (centered) content,
+// so it starts narrower and grows with fontStep the same way, auto-centered
+// via CSS margin.
+const STANDALONE_FACT_TABLE_BASE_PCT = 62
 // Figma's 5-row fact table (totalFat/transFat/cholesterol/totalCarbs/protein,
 // e.g. the "twist" product) is the reference this height was measured against.
 // The fact table's own box has no scrollbar, so a product with extra rows
@@ -104,6 +111,7 @@ function NutritionBody({ data, fontStep, iconScale, dir }) {
   const statCardWidthPct = Math.max(10, STAT_CARD_BASE_PCT + fontStep * STAT_CARD_GROWTH_PCT)
   const factTableWidthPct = Math.max(20, FACT_TABLE_BASE_PCT + fontStep * FACT_ROW_GROWTH_PCT)
   const sugarBoxWidthPct = Math.max(20, SUGAR_BOX_BASE_PCT + fontStep * FACT_ROW_GROWTH_PCT)
+  const standaloneFactTableWidthPct = Math.min(100, STANDALONE_FACT_TABLE_BASE_PCT + fontStep * FACT_ROW_GROWTH_PCT)
   const factRowHeight = `${FACT_ROW_BASE_HEIGHT_CQW * iconScale * (data.table.length / FACT_ROW_BASE_ROW_COUNT)}cqw`
   // At fontStep 0 the two widths + gap add up to exactly 100%, so they still
   // fit side-by-side (table first, matching the original/default layout);
@@ -230,16 +238,6 @@ function NutritionBody({ data, fontStep, iconScale, dir }) {
       <div className="category-sheet__fact-table-labels">
         <div className="category-sheet__fact-table-labels-inner">
           {indentGroups.map((group) => {
-                // A single-child group (e.g. Energybar's totalCarbs → polyols) has
-                // only one row of height to draw a bracket in — every attempt at a
-                // graphic there (tick+foot, or a single centered tick) reads as a
-                // tiny, blocky glitch rather than a clean connector. Real nutrition
-                // labels don't bother bracketing a single sub-item either — the
-                // indentation alone (still applied via childIndentInfo below)
-                // already reads unambiguously as "belongs to the row above," so
-                // multi-child groups keep their bracket and solo ones just skip it.
-                if (group.childIndices.length === 1) return null
-
                 // The two rows' line-boxes include leading below the glyphs, so a
                 // full N-row-tall bracket overshoots past the actual text — trimmed
                 // a quarter row-height short of the full box to land right at the
@@ -247,6 +245,13 @@ function NutritionBody({ data, fontStep, iconScale, dir }) {
                 const bracketTopPct = (100 * group.childIndices[0]) / data.table.length
                 const bracketHeightPct = (100 * (group.childIndices.length - 0.25)) / data.table.length
                 const stemCenterPx = (parentWordWidths[group.parentId] ?? 0) / 2
+                // A single-child group (e.g. Energybar's totalCarbs → polyols) has
+                // only one row of height to draw a bracket in — the regular tick
+                // (29% down) and foot (bottom) sit close enough there to visually
+                // merge into one blocky glyph. One tick, vertically centered, still
+                // reads as the same connector mark the totalFat group has, just
+                // shorter — matching the Figma reference's own smaller mark there.
+                const isSolo = group.childIndices.length === 1
                 return (
                   <span
                     key={group.parentId}
@@ -272,13 +277,15 @@ function NutritionBody({ data, fontStep, iconScale, dir }) {
                         word's width puts it) over to the indented text — a fixed 0.8em
                         beyond the stem, matching how far out that text's own margin starts. */}
                     <span
-                      className="category-sheet__fact-table-sub-bracket-tick"
+                      className={`category-sheet__fact-table-sub-bracket-tick${isSolo ? ' category-sheet__fact-table-sub-bracket-tick--solo' : ''}`}
                       style={{ insetInlineStart: `${stemCenterPx}px`, width: '0.8em' }}
                     />
-                    <span
-                      className="category-sheet__fact-table-sub-bracket-foot"
-                      style={{ insetInlineStart: `${stemCenterPx}px`, width: '0.8em' }}
-                    />
+                    {!isSolo && (
+                      <span
+                        className="category-sheet__fact-table-sub-bracket-foot"
+                        style={{ insetInlineStart: `${stemCenterPx}px`, width: '0.8em' }}
+                      />
+                    )}
                   </span>
                 )
               })}
@@ -345,7 +352,7 @@ function NutritionBody({ data, fontStep, iconScale, dir }) {
           <div
             className="category-sheet__fact-table category-sheet__fact-table--standalone"
             dir={dir}
-            style={{ height: factRowHeight }}
+            style={{ height: factRowHeight, width: `${standaloneFactTableWidthPct}%` }}
           >
             {factTableInner}
           </div>

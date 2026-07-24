@@ -461,10 +461,12 @@
 
 /* Stacked layout's fact table (see data.sugarCards) sits alone on its own
    line below the sugar-card row instead of sharing .category-sheet__fact-row
-   with a sugar-box — full width, same spacing as that row would've had. */
+   with a sugar-box. Width is set inline (see STANDALONE_FACT_TABLE_BASE_PCT
+   in CategorySheet.jsx) — stretching it to the full sheet width left a lot of
+   empty padding on both sides of its (centered) content, so it's narrower and
+   auto-centered instead, same top spacing as that row would've had. */
 .category-sheet__fact-table--standalone {
-  width: 100%;
-  margin-top: 3.9%;
+  margin: 3.9% auto 0;
 }
 
 /* Width/height are set inline (see FACT_TABLE_BASE_PCT/FACT_ROW_GROWTH_PCT in
@@ -553,6 +555,15 @@
 
 .category-sheet__fact-table-sub-bracket-foot {
   bottom: 0;
+}
+
+/* A single-child group (e.g. Energybar's totalCarbs → polyols) only gets one
+   tick, no separate foot (see the `isSolo` check in CategorySheet.jsx) —
+   centered instead of sitting at the regular 29% so it reads as a clean
+   small connector rather than crowding toward the top of its short box. */
+.category-sheet__fact-table-sub-bracket-tick--solo {
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .category-sheet__fact-table-labels span,
