@@ -4,6 +4,7 @@ import volumeSpeaker from '../assets/icons/sheet/volume-speaker.svg'
 import volumeWave1 from '../assets/icons/sheet/volume-wave1.svg'
 import volumeWave2 from '../assets/icons/sheet/volume-wave2.svg'
 import { useLanguage } from '../i18n/LanguageContext.jsx'
+import { nutritionTableIndentGroups } from '../data/nutritionFacts.js'
 import AllergenIcon from './AllergenIcon.jsx'
 import './CategorySheet.css'
 
@@ -47,6 +48,12 @@ const STAT_CARD_GROWTH_PCT = 6
 const FACT_TABLE_BASE_PCT = 50
 const SUGAR_BOX_BASE_PCT = 47.2
 const FACT_ROW_GROWTH_PCT = 6
+// Figma's 5-row fact table (totalFat/transFat/cholesterol/totalCarbs/protein,
+// e.g. the "twist" product) is the reference this height was measured against.
+// The fact table's own box has no scrollbar, so a product with extra rows
+// (e.g. "Energybar" adding polyols/fiber) needs a proportionally taller box —
+// scaled by how many rows its own `nutritionTableRowIds` actually has.
+const FACT_ROW_BASE_ROW_COUNT = 5
 const FACT_ROW_BASE_HEIGHT_CQW = 31.02
 const SUGAR_BOX_ICON_WRAP_BASE_HEIGHT_CQW = 11.08
 // Fact table + sugar box are sized directly off the Figma frame (393px wide iPhone
@@ -63,9 +70,6 @@ const FACT_TABLE_VALUE_BASE_CQW = 21.705 * FIGMA_PX_TO_CQW * FACT_TABLE_FONT_SCA
 const SUGAR_BOX_LABEL_FONT_SCALE = 0.8
 const SUGAR_BOX_LABEL_BASE_CQW = 21.705 * FIGMA_PX_TO_CQW * SUGAR_BOX_LABEL_FONT_SCALE
 const SUGAR_BOX_VALUE_BASE_CQW = STAT_CARD_VALUE_BASE_CQW
-// transFat/cholesterol are sub-items of totalFat in the Figma reference (indented
-// under "סך השומנים"), so their labels get an extra inline-start margin.
-const FACT_TABLE_INDENTED_ROW_IDS = new Set(['transFat', 'cholesterol'])
 
 // Kosher body: 3 certification rows (text + icon/badge), sized off the same
 // Figma frame/conversion as the nutrition body above. The raw Figma sizes
@@ -100,7 +104,7 @@ function NutritionBody({ data, fontStep, iconScale, dir }) {
   const statCardWidthPct = Math.max(10, STAT_CARD_BASE_PCT + fontStep * STAT_CARD_GROWTH_PCT)
   const factTableWidthPct = Math.max(20, FACT_TABLE_BASE_PCT + fontStep * FACT_ROW_GROWTH_PCT)
   const sugarBoxWidthPct = Math.max(20, SUGAR_BOX_BASE_PCT + fontStep * FACT_ROW_GROWTH_PCT)
-  const factRowHeight = `${FACT_ROW_BASE_HEIGHT_CQW * iconScale}cqw`
+  const factRowHeight = `${FACT_ROW_BASE_HEIGHT_CQW * iconScale * (data.table.length / FACT_ROW_BASE_ROW_COUNT)}cqw`
   // At fontStep 0 the two widths + gap add up to exactly 100%, so they still
   // fit side-by-side (table first, matching the original/default layout);
   // any step above that overflows and .category-sheet__fact-row's flex-wrap
@@ -109,43 +113,58 @@ function NutritionBody({ data, fontStep, iconScale, dir }) {
   const factRowStacked = fontStep > 0
   const sugarBoxIconWrapHeight = `${SUGAR_BOX_ICON_WRAP_BASE_HEIGHT_CQW * iconScale}cqw`
 
-  // The bracket only needs to span whichever indented rows are consecutive in
-  // data.table (transFat/cholesterol) — computed as a fraction of the table's
-  // row count rather than a guessed percentage, so it stays exact regardless
-  // of how many rows the table has or what font scale they're rendered at
-  // (all rows share the same line-height, so each is an equal-height slice).
-  // The two rows' line-boxes include leading below the glyphs, so a full
-  // 2-row-tall bracket overshoots past the actual text — trimmed a quarter
-  // row-height short of the full box to land right at the text instead.
-  const firstIndentedIndex = data.table.findIndex((row) => FACT_TABLE_INDENTED_ROW_IDS.has(row.id))
-  const indentedRowCount = data.table.filter((row) => FACT_TABLE_INDENTED_ROW_IDS.has(row.id)).length
-  const bracketTopPct = (100 * firstIndentedIndex) / data.table.length
-  const bracketHeightPct = (100 * (indentedRowCount - 0.25)) / data.table.length
+  // A product's table only gets a bracket for a nutritionTableIndentGroups
+  // entry whose parent AND at least one child row are both present in its own
+  // nutritionTableRowIds — e.g. "twist" only has the totalFat group, while
+  // "Energybar" also has the totalCarbs/polyols group.
+  const indentGroups = nutritionTableIndentGroups
+    .map((group) => {
+      const parentIndex = data.table.findIndex((row) => row.id === group.parentId)
+      const childIndices = group.childIds
+        .map((id) => data.table.findIndex((row) => row.id === id))
+        .filter((index) => index !== -1)
+      if (parentIndex === -1 || childIndices.length === 0) return null
+      return { parentId: group.parentId, parentIndex, childIndices }
+    })
+    .filter(Boolean)
 
-  // The stem is horizontally centered under the parent row's ("totalFat") first
-  // word in every language — measured live since word width depends entirely on
-  // the font/language and isn't a fixed em value. The indented rows' own margin
-  // is pushed out by that same measurement (plus the original 0.8em reach) so
-  // the tick/foot always have room to connect the stem to the text without
-  // ever overlapping it, no matter how wide that first word is.
-  const parentRow = data.table[firstIndentedIndex - 1]
-  const [parentFirstWord, ...parentRestWords] = parentRow.label.split(' ')
-  const parentRest = parentRestWords.join(' ')
-  const firstWordRef = useRef(null)
-  const [firstWordWidthPx, setFirstWordWidthPx] = useState(0)
+  // The stem is horizontally centered under each group's parent row first word,
+  // in every language — measured live since word width depends entirely on the
+  // font/language and isn't a fixed em value. The indented rows' own margin is
+  // pushed out by that same measurement (plus the original 0.8em reach) so the
+  // tick/foot always have room to connect the stem to the text without ever
+  // overlapping it, no matter how wide that first word is. Refs/widths are
+  // keyed by parentId since a table can have more than one bracket group.
+  const parentWordRefs = useRef({})
+  const [parentWordWidths, setParentWordWidths] = useState({})
+  const indentGroupsKey = indentGroups.map((group) => `${group.parentId}:${data.table[group.parentIndex].label}`).join('|')
 
   useLayoutEffect(() => {
-    const el = firstWordRef.current
-    if (!el) return
-    const measure = () => setFirstWordWidthPx(el.getBoundingClientRect().width)
-    measure()
-    const observer = new ResizeObserver(measure)
-    observer.observe(el)
-    return () => observer.disconnect()
-  }, [parentFirstWord, fontStep])
+    const observers = indentGroups
+      .map((group) => {
+        const el = parentWordRefs.current[group.parentId]
+        if (!el) return null
+        const measure = () =>
+          setParentWordWidths((prev) => ({ ...prev, [group.parentId]: el.getBoundingClientRect().width }))
+        measure()
+        const observer = new ResizeObserver(measure)
+        observer.observe(el)
+        return observer
+      })
+      .filter(Boolean)
+    return () => observers.forEach((observer) => observer.disconnect())
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [indentGroupsKey, fontStep])
 
-  const stemCenterPx = firstWordWidthPx / 2
-  const indentMarginStyle = `calc(${stemCenterPx}px + 0.8em)`
+  const childIndentInfo = new Map(
+    indentGroups.flatMap((group) =>
+      group.childIndices.map((index) => [
+        index,
+        `calc(${(parentWordWidths[group.parentId] ?? 0) / 2}px + 0.8em)`,
+      ]),
+    ),
+  )
+  const parentIndexInfo = new Map(indentGroups.map((group) => [group.parentIndex, group.parentId]))
 
   // flexbox (not inline-text bidi) so value-then-unit order is fixed by DOM
   // order + the `direction` below, regardless of what characters the unit
@@ -233,55 +252,77 @@ function NutritionBody({ data, fontStep, iconScale, dir }) {
         >
           <div className="category-sheet__fact-table-labels">
             <div className="category-sheet__fact-table-labels-inner">
-              <span
-                className="category-sheet__fact-table-sub-bracket"
-                aria-hidden="true"
-                style={{
-                  top: `${bracketTopPct}%`,
-                  height: `${bracketHeightPct}%`,
-                  // Same font-size as the rows, so the CSS width (0.8em) matches the
-                  // rows' marginInlineStart exactly and the tick/foot reach the text.
-                  fontSize: fontPx(FACT_TABLE_VALUE_BASE_CQW),
-                }}
-              >
-                {/* Plain CSS lines (not an SVG) so the stem/tick/foot render at the
-                    exact same fixed thickness — an SVG stretched non-uniformly to fit
-                    (via preserveAspectRatio="none") renders anisotropic strokes, making
-                    the horizontal ticks look bolder than the vertical stem. */}
-                <span
-                  className="category-sheet__fact-table-sub-bracket-stem"
-                  style={{ insetInlineStart: `${stemCenterPx - 0.625}px` }}
-                />
-                {/* Tick/foot always reach from the stem's position (wherever the first
-                    word's width puts it) over to the indented text — a fixed 0.8em
-                    beyond the stem, matching how far out that text's own margin starts. */}
-                <span
-                  className="category-sheet__fact-table-sub-bracket-tick"
-                  style={{ insetInlineStart: `${stemCenterPx}px`, width: '0.8em' }}
-                />
-                <span
-                  className="category-sheet__fact-table-sub-bracket-foot"
-                  style={{ insetInlineStart: `${stemCenterPx}px`, width: '0.8em' }}
-                />
-              </span>
-              {data.table.map((row, index) => (
-                <span
-                  key={row.id}
-                  style={{
-                    fontSize: fontPx(FACT_TABLE_VALUE_BASE_CQW),
-                    marginInlineStart: FACT_TABLE_INDENTED_ROW_IDS.has(row.id) ? indentMarginStyle : 0,
-                  }}
-                >
-                  {index === firstIndentedIndex - 1 ? (
-                    <>
-                      <span ref={firstWordRef}>{parentFirstWord}</span>
-                      {parentRest ? ` ${parentRest}` : ''}
-                    </>
-                  ) : (
-                    row.label
-                  )}
-                </span>
-              ))}
+              {indentGroups.map((group) => {
+                // The two rows' line-boxes include leading below the glyphs, so a
+                // full N-row-tall bracket overshoots past the actual text — trimmed
+                // a quarter row-height short of the full box to land right at the
+                // text instead.
+                const bracketTopPct = (100 * group.childIndices[0]) / data.table.length
+                const bracketHeightPct = (100 * (group.childIndices.length - 0.25)) / data.table.length
+                const stemCenterPx = (parentWordWidths[group.parentId] ?? 0) / 2
+                return (
+                  <span
+                    key={group.parentId}
+                    className="category-sheet__fact-table-sub-bracket"
+                    aria-hidden="true"
+                    style={{
+                      top: `${bracketTopPct}%`,
+                      height: `${bracketHeightPct}%`,
+                      // Same font-size as the rows, so the CSS width (0.8em) matches the
+                      // rows' marginInlineStart exactly and the tick/foot reach the text.
+                      fontSize: fontPx(FACT_TABLE_VALUE_BASE_CQW),
+                    }}
+                  >
+                    {/* Plain CSS lines (not an SVG) so the stem/tick/foot render at the
+                        exact same fixed thickness — an SVG stretched non-uniformly to fit
+                        (via preserveAspectRatio="none") renders anisotropic strokes, making
+                        the horizontal ticks look bolder than the vertical stem. */}
+                    <span
+                      className="category-sheet__fact-table-sub-bracket-stem"
+                      style={{ insetInlineStart: `${stemCenterPx - 0.625}px` }}
+                    />
+                    {/* Tick/foot always reach from the stem's position (wherever the first
+                        word's width puts it) over to the indented text — a fixed 0.8em
+                        beyond the stem, matching how far out that text's own margin starts. */}
+                    <span
+                      className="category-sheet__fact-table-sub-bracket-tick"
+                      style={{ insetInlineStart: `${stemCenterPx}px`, width: '0.8em' }}
+                    />
+                    <span
+                      className="category-sheet__fact-table-sub-bracket-foot"
+                      style={{ insetInlineStart: `${stemCenterPx}px`, width: '0.8em' }}
+                    />
+                  </span>
+                )
+              })}
+              {data.table.map((row, index) => {
+                const parentId = parentIndexInfo.get(index)
+                const childMargin = childIndentInfo.get(index)
+                if (parentId) {
+                  const [firstWord, ...restWords] = row.label.split(' ')
+                  const rest = restWords.join(' ')
+                  return (
+                    <span key={row.id} style={{ fontSize: fontPx(FACT_TABLE_VALUE_BASE_CQW) }}>
+                      <span
+                        ref={(el) => {
+                          parentWordRefs.current[parentId] = el
+                        }}
+                      >
+                        {firstWord}
+                      </span>
+                      {rest ? ` ${rest}` : ''}
+                    </span>
+                  )
+                }
+                return (
+                  <span
+                    key={row.id}
+                    style={{ fontSize: fontPx(FACT_TABLE_VALUE_BASE_CQW), marginInlineStart: childMargin ?? 0 }}
+                  >
+                    {row.label}
+                  </span>
+                )
+              })}
             </div>
           </div>
           <span className="category-sheet__fact-table-divider" />

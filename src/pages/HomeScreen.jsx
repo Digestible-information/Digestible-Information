@@ -235,13 +235,17 @@ export default function HomeScreen() {
           onClose={() => setOpenSheet(null)}
           title={t.nutritionTitle}
           subtitle={content.nutritionSubtitle}
+          bodyHeightPx={product.nutritionHeight}
           bodyNutrition={{
             cards: nutritionStatCards.map((item) => ({
               ...item,
               ...content.nutritionFacts[item.id],
               bg: product.nutritionColors[item.id],
             })),
-            table: nutritionTableRowIds.map((id) => ({ id, ...content.nutritionFacts[id] })),
+            table: (product.nutritionTableRowIds ?? nutritionTableRowIds).map((id) => ({
+              id,
+              ...content.nutritionFacts[id],
+            })),
             sugarBox: {
               bg: product.nutritionColors.sugarBox,
               sugar: { ...nutritionSugarBoxIcons.sugar, ...content.nutritionFacts.sugar },

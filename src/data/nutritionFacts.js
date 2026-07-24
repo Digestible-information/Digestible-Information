@@ -15,10 +15,21 @@ export const nutritionStatCards = [
   { id: 'energy', icon: energyIcon, iconWidth: 28.65, iconHeight: 39.94 },
 ]
 
-// Top-to-bottom order, matches the Figma 2-column fact table.
+// Top-to-bottom order, matches the Figma 2-column fact table. Default for
+// products that don't set their own `nutritionTableRowIds` (see products.json).
 export const nutritionTableRowIds = ['totalFat', 'transFat', 'cholesterol', 'totalCarbs', 'protein']
 
 export const nutritionSugarBoxIcons = {
   sugar: { icon: sugarCubesIcon, iconWidth: 39, iconHeight: 37 },
   teaspoons: { icon: spoonIcon, iconWidth: 58, iconHeight: 27 },
 }
+
+// Sub-item groupings within the fact table: each group's parent row is
+// bracketed to its children (e.g. transFat/cholesterol nest under totalFat),
+// matching Figma's connector glyph. Keyed off row id rather than position, so
+// CategorySheet only draws a bracket for a group whose parent+children are
+// actually present in a given product's own `nutritionTableRowIds` order.
+export const nutritionTableIndentGroups = [
+  { parentId: 'totalFat', childIds: ['transFat', 'cholesterol'] },
+  { parentId: 'totalCarbs', childIds: ['polyols'] },
+]

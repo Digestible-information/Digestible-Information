@@ -3,8 +3,16 @@
     "meta": {
       "photo": "products/Energybar/photo.png"
     },
-    "categoryIds": ["ingredients", "allergens"],
+    "categoryIds": ["ingredients", "allergens", "nutrition"],
     "allergensHeight": 780,
+    "nutritionHeight": 675,
+    "nutritionColors": {
+      "sodium": "#43AA49",
+      "satFat": "#F5851F",
+      "energy": "#43AA49",
+      "sugarBox": "#EA2427"
+    },
+    "nutritionTableRowIds": ["totalFat", "transFat", "cholesterol", "totalCarbs", "polyols", "fiber", "protein"],
     "allergens": [
       { "id": "eggs", "statement": "contains" },
       { "id": "nuts", "statement": "contains" },
@@ -29,6 +37,21 @@
           "soy": "סויה",
           "sesame": "שומשום",
           "gluten": "גלוטן"
+        },
+        "nutritionSubtitle": "ל-100 גרם מוצר",
+        "nutritionFacts": {
+          "sodium": { "label": "נתרן", "amount": "164 מ״ג" },
+          "satFat": { "label": "שומן רווי", "amount": "3.9 גר׳" },
+          "energy": { "label": "אנרגיה", "amount": "416 ק״ל" },
+          "totalFat": { "label": "סך השומנים", "amount": "14.7 גר׳" },
+          "transFat": { "label": "שומן טראנס", "amount": "0.5 גר׳" },
+          "cholesterol": { "label": "כולסטרול", "amount": "3.9 מ״ג" },
+          "totalCarbs": { "label": "סך הפחמימות", "amount": "61 גר׳" },
+          "polyols": { "label": "רב כהלים", "amount": "2.5 גר׳" },
+          "fiber": { "label": "סיבים תזונתיים", "amount": "10.8 גר׳" },
+          "protein": { "label": "חלבונים", "amount": "5.9 גר׳" },
+          "sugar": { "label": "סוכרים", "amount": "19.6 גר׳" },
+          "teaspoons": { "label": "כפיות סוכר", "amount": "5" }
         }
       },
       "en": {
@@ -45,6 +68,21 @@
           "soy": "Soy",
           "sesame": "Sesame",
           "gluten": "Gluten"
+        },
+        "nutritionSubtitle": "Per 100g of product",
+        "nutritionFacts": {
+          "sodium": { "label": "Sodium", "amount": "164 mg" },
+          "satFat": { "label": "Saturated fat", "amount": "3.9 g" },
+          "energy": { "label": "Energy", "amount": "416 kcal" },
+          "totalFat": { "label": "Total fat", "amount": "14.7 g" },
+          "transFat": { "label": "Trans fat", "amount": "0.5 g" },
+          "cholesterol": { "label": "Cholesterol", "amount": "3.9 mg" },
+          "totalCarbs": { "label": "Total carbs", "amount": "61 g" },
+          "polyols": { "label": "Polyols", "amount": "2.5 g" },
+          "fiber": { "label": "Dietary fiber", "amount": "10.8 g" },
+          "protein": { "label": "Protein", "amount": "5.9 g" },
+          "sugar": { "label": "Sugars", "amount": "19.6 g" },
+          "teaspoons": { "label": "Sugar teaspoons", "amount": "5" }
         }
       },
       "ar": {
@@ -61,6 +99,21 @@
           "soy": "صويا",
           "sesame": "سمسم",
           "gluten": "غلوتين"
+        },
+        "nutritionSubtitle": "لكل 100 غرام من المنتج",
+        "nutritionFacts": {
+          "sodium": { "label": "الصوديوم", "amount": "164 مغ" },
+          "satFat": { "label": "الدهون المشبعة", "amount": "3.9 غ" },
+          "energy": { "label": "الطاقة", "amount": "416 ك.كال" },
+          "totalFat": { "label": "إجمالي الدهون", "amount": "14.7 غ" },
+          "transFat": { "label": "الدهون المتحولة", "amount": "0.5 غ" },
+          "cholesterol": { "label": "الكوليسترول", "amount": "3.9 مغ" },
+          "totalCarbs": { "label": "إجمالي الكربوهيدرات", "amount": "61 غ" },
+          "polyols": { "label": "البوليولات", "amount": "2.5 غ" },
+          "fiber": { "label": "الألياف الغذائية", "amount": "10.8 غ" },
+          "protein": { "label": "البروتين", "amount": "5.9 غ" },
+          "sugar": { "label": "السكريات", "amount": "19.6 غ" },
+          "teaspoons": { "label": "ملاعق صغيرة من السكر", "amount": "5" }
         }
       }
     }
