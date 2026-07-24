@@ -3,7 +3,7 @@
     "meta": {
       "photo": "products/Energybar/photo.png"
     },
-    "categoryIds": ["allergens"],
+    "categoryIds": ["ingredients", "allergens"],
     "allergensHeight": 780,
     "allergens": [
       { "id": "eggs", "statement": "contains" },
@@ -20,6 +20,7 @@
         "productName": "חטיף דגנים עם שברי אגוזים ושוקולד חלב מעולה",
         "productNameBreakAfter": null,
         "weightValue": "24 גר'",
+        "ingredientsText": "פתיתי דגנים 37% (אורז 30%, קמח תירס 3%, סוכר לבן, מלח), שוקולד חלב מעולה 15%, סירופ גלוקוז, שברי אגוזים 10.2% (שקדים, לוז), סיבים תזונתיים (אינולין), חומרי הלחה (גליצרול, סורביטול), סוכר לבן, שמן צמחי, אבקת רכיבי חלב, מסמיך (אקציה גאם), מים, מתחלבים (לציטין לפתית, E-471), מלח, מווסת חומציות (סודיום ביקרבונט). כלל מוצרי קקאו בשוקולד חלב מעולה: 30% מינימום.",
         "allergenLabels": {
           "eggs": "ביצים",
           "nuts": "אגוזים",
@@ -35,6 +36,7 @@
         "productName": "Cereal snack with nut pieces and premium milk chocolate",
         "productNameBreakAfter": null,
         "weightValue": "24 g",
+        "ingredientsText": "Cereal flakes 37% (rice 30%, corn flour 3%, white sugar, salt), premium milk chocolate 15%, glucose syrup, nut pieces 10.2% (almonds, hazelnuts), dietary fiber (inulin), humectants (glycerol, sorbitol), white sugar, vegetable oil, milk components powder, thickener (acacia gum), water, emulsifiers (soy lecithin, E-471), salt, acidity regulator (sodium bicarbonate). Total cocoa solids in premium milk chocolate: minimum 30%.",
         "allergenLabels": {
           "eggs": "Eggs",
           "nuts": "Nuts",
@@ -50,6 +52,7 @@
         "productName": "وجبة خفيفة من الحبوب مع قطع المكسرات وشوكولاتة حليب فاخرة",
         "productNameBreakAfter": null,
         "weightValue": "غ 24",
+        "ingredientsText": "رقائق حبوب 37% (أرز 30%، دقيق ذرة 3%، سكر أبيض، ملح)، شوكولاتة حليب فاخرة 15%، شراب الجلوكوز، قطع مكسرات 10.2% (لوز، بندق)، ألياف غذائية (إينولين)، مواد ترطيب (غليسرول، سوربيتول)، سكر أبيض، زيت نباتي، مسحوق مكونات الحليب، مكثف (صمغ الأكاسيا)، ماء، مستحلبات (ليسيثين الصويا، E-471)، ملح، منظم حموضة (بيكربونات الصوديوم). إجمالي مواد الكاكاو في شوكولاتة الحليب الفاخرة: 30% كحد أدنى.",
         "allergenLabels": {
           "eggs": "بيض",
           "nuts": "مكسرات",
