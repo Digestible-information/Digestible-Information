@@ -63,8 +63,8 @@
    overflowing, letterboxed on whichever axis doesn't fill, so shrinking this
    container's own height is safe and doesn't reintroduce cropping. */
 .product-card__photo-button {
-  width: 46%;
-  max-width: 184px;
+  width: 42%;
+  max-width: 168px;
   aspect-ratio: 3 / 2;
   flex-shrink: 0;
   padding: 0;

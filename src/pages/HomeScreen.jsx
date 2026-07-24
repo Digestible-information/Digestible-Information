@@ -151,7 +151,12 @@ export default function HomeScreen() {
             </button>
             <div className="product-card__text" dir={dir}>
               <p className="product-card__heading">
-                <span className="product-card__brand">{content.brand}</span>
+                <span
+                  className="product-card__brand"
+                  style={product.brandFontSize ? { fontSize: product.brandFontSize } : undefined}
+                >
+                  {content.brand}
+                </span>
                 <span className="product-card__weight">{content.weightValue}</span>
               </p>
               <p className="product-card__description">{content.productName}</p>

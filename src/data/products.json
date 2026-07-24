@@ -461,5 +461,53 @@
         }
       }
     }
+  },
+  "Tomatosauce": {
+    "meta": {
+      "photo": "products/Tomatosauce/photo.png"
+    },
+    "categoryIds": ["ingredients", "allergens"],
+    "ingredientsHeight": 300,
+    "allergensHeight": 260,
+    "brandFontSize": "6cqw",
+    "allergens": [
+      { "id": "sesame", "statement": "mayContain" },
+      { "id": "soy", "statement": "mayContain" }
+    ],
+    "content": {
+      "he": {
+        "brand": "רוטב עגבניות",
+        "productName": "רוטב עגבניות מרוכז מאוד",
+        "productNameBreakAfter": null,
+        "weightValue": "100 גר'",
+        "ingredientsText": "מחית עגבניות (93%), פרוקטוז, גלוקוז, עמילן תירס מעובד.",
+        "allergenLabels": {
+          "sesame": "שומשום",
+          "soy": "סויה"
+        }
+      },
+      "en": {
+        "brand": "Tomato Sauce",
+        "productName": "Highly concentrated tomato sauce",
+        "productNameBreakAfter": null,
+        "weightValue": "100 g",
+        "ingredientsText": "Tomato paste (93%), fructose, glucose, modified corn starch.",
+        "allergenLabels": {
+          "sesame": "Sesame",
+          "soy": "Soy"
+        }
+      },
+      "ar": {
+        "brand": "صلصة طماطم",
+        "productName": "صلصة طماطم مركزة جداً",
+        "productNameBreakAfter": null,
+        "weightValue": "غ 100",
+        "ingredientsText": "معجون طماطم (93%)، فركتوز، غلوكوز، نشا ذرة معدّل.",
+        "allergenLabels": {
+          "sesame": "سمسم",
+          "soy": "صويا"
+        }
+      }
+    }
   }
 }
