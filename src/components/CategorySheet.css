@@ -351,12 +351,24 @@
 
 .category-sheet__stat-row {
   display: flex;
-  gap: 3.5%;
+  flex-wrap: wrap;
+  justify-content: center;
+  /* row-gap first, column-gap second — row-gap needs a fixed unit since it
+     resolves against this flex container's height, which is indefinite
+     (content-sized), so a percentage there collapses to 0 once cards wrap
+     onto separate rows. */
+  gap: 12px 3.5%;
 }
 
+/* Width is set inline per-card (see STAT_CARD_BASE_PCT/STAT_CARD_GROWTH_PCT in
+   CategorySheet.jsx) so the card itself grows with the font stepper instead of
+   just its text/icons — at fontStep 0 three cards fit per row same as before;
+   past a threshold two (then one) no longer fit and flex-wrap above drops the
+   rest to their own row, with .category-sheet__body's overflow-y handling the
+   resulting extra height. */
 .category-sheet__stat-card {
   position: relative;
-  flex: 1 1 0;
+  flex: 0 0 auto;
   aspect-ratio: 1;
   border-radius: 16%;
   overflow: hidden;
@@ -365,6 +377,7 @@
   align-items: center;
   padding: 2.5cqw 0;
   color: #fff;
+  transition: width 0.15s ease;
 }
 
 .category-sheet__stat-card-icon {
@@ -415,14 +428,24 @@
 
 .category-sheet__fact-row {
   display: flex;
-  gap: 2.8%;
+  flex-wrap: wrap;
+  /* row-gap first, column-gap second — row-gap needs a fixed unit since it
+     resolves against this flex container's height, which is indefinite
+     (content-sized), so a percentage there collapses to 0 once the two boxes
+     wrap onto separate rows. */
+  gap: 12px 2.8%;
   margin-top: 3.9%;
 }
 
+/* Width/height are set inline (see FACT_TABLE_BASE_PCT/FACT_ROW_GROWTH_PCT in
+   CategorySheet.jsx) so this box grows with the font stepper instead of just
+   its text — at fontStep 0 it sits side-by-side with the sugar box same as
+   before; past a threshold their combined width no longer fits and flex-wrap
+   above drops each to its own full-width row. */
 .category-sheet__fact-table {
-  flex: 0 0 50%;
+  flex: 1 1 50%;
   min-width: 0;
-  height: 31.02cqw;
+  transition: height 0.15s ease;
   display: flex;
   align-items: stretch;
   /* space-between let the labels/divider/values spread out to fill any
@@ -524,13 +547,13 @@
 }
 
 .category-sheet__sugar-box {
-  flex: 0 0 47.2%;
-  height: 31.02cqw;
+  flex: 1 1 47.2%;
   display: flex;
   background: #ff000e;
   border-radius: 14px;
   color: #fff;
   padding: 0.5% 0;
+  transition: height 0.15s ease;
 }
 
 .category-sheet__sugar-box-col {
@@ -555,11 +578,11 @@
 }
 
 .category-sheet__sugar-box-icon-wrap {
-  height: 11.08cqw;
   flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: height 0.15s ease;
 }
 
 .category-sheet__sugar-box-divider {

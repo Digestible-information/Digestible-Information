@@ -19,6 +19,6 @@ export const nutritionStatCards = [
 export const nutritionTableRowIds = ['totalFat', 'transFat', 'cholesterol', 'totalCarbs', 'protein']
 
 export const nutritionSugarBoxIcons = {
-  sugar: { icon: spoonIcon, iconWidth: 38, iconHeight: 36 },
-  teaspoons: { icon: sugarCubesIcon, iconWidth: 56.98, iconHeight: 26.97 },
+  sugar: { icon: sugarCubesIcon, iconWidth: 39, iconHeight: 37 },
+  teaspoons: { icon: spoonIcon, iconWidth: 58, iconHeight: 27 },
 }

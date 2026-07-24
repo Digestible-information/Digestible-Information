@@ -31,6 +31,24 @@ const ICONS_PER_ROW = 4
 const STAT_CARD_ICON_BUDGET_CQW = 12
 const STAT_CARD_LABEL_BASE_CQW = 4.8
 const STAT_CARD_VALUE_BASE_CQW = 4.6
+// Stat card width now grows with fontStep (not just its text/icons), via the
+// row's own gap so it stays consistent with the 3.5% CSS gap: 3 cards fit
+// exactly at fontStep 0 (93% / 3), then each step widens every card until
+// flex-wrap (see .category-sheet__stat-row) starts dropping cards to their
+// own row — 2 per row, then 1 — instead of clipping/squeezing their content.
+const STAT_CARD_BASE_PCT = (100 - 2 * 3.5) / 3
+const STAT_CARD_GROWTH_PCT = 6
+// Fact table / sugar box widths grow with fontStep the same way: base 50%/47.2%
+// fits both side-by-side with the row's 2.8% gap exactly at fontStep 0; growing
+// steps push their combined width past 100%, so flex-wrap (see
+// .category-sheet__fact-row) drops each to its own full-width row instead of
+// clipping their nowrap rows. Height scales with iconScale (same multiplier
+// already driving icon/text sizes) so the boxes gain room to match.
+const FACT_TABLE_BASE_PCT = 50
+const SUGAR_BOX_BASE_PCT = 47.2
+const FACT_ROW_GROWTH_PCT = 6
+const FACT_ROW_BASE_HEIGHT_CQW = 31.02
+const SUGAR_BOX_ICON_WRAP_BASE_HEIGHT_CQW = 11.08
 // Fact table + sugar box are sized directly off the Figma frame (393px wide iPhone
 // mockup, 16px side margins either side of the 361px-wide nutrition container), so
 // every px value below is that Figma px divided by 361 and multiplied by 100.
@@ -79,6 +97,17 @@ const RECYCLING_TEXT_BASE_CQW = 24 * FIGMA_PX_TO_CQW * RECYCLING_SCALE
 
 function NutritionBody({ data, fontStep, iconScale, dir }) {
   const fontPx = (baseCqw) => `calc(${baseCqw}cqw + ${fontStep * FONT_STEP_SIZE}px)`
+  const statCardWidthPct = Math.max(10, STAT_CARD_BASE_PCT + fontStep * STAT_CARD_GROWTH_PCT)
+  const factTableWidthPct = Math.max(20, FACT_TABLE_BASE_PCT + fontStep * FACT_ROW_GROWTH_PCT)
+  const sugarBoxWidthPct = Math.max(20, SUGAR_BOX_BASE_PCT + fontStep * FACT_ROW_GROWTH_PCT)
+  const factRowHeight = `${FACT_ROW_BASE_HEIGHT_CQW * iconScale}cqw`
+  // At fontStep 0 the two widths + gap add up to exactly 100%, so they still
+  // fit side-by-side (table first, matching the original/default layout);
+  // any step above that overflows and .category-sheet__fact-row's flex-wrap
+  // drops the table to its own row below — flip the visual order there so
+  // the sugar box leads instead of the table sitting on top alone.
+  const factRowStacked = fontStep > 0
+  const sugarBoxIconWrapHeight = `${SUGAR_BOX_ICON_WRAP_BASE_HEIGHT_CQW * iconScale}cqw`
 
   // The bracket only needs to span whichever indented rows are consecutive in
   // data.table (transFat/cholesterol) — computed as a fraction of the table's
@@ -141,7 +170,11 @@ function NutritionBody({ data, fontStep, iconScale, dir }) {
       <div className="category-sheet__stat-row" dir="ltr">
         {data.cards.map((card) =>
           card.flattenedImage ? (
-            <div key={card.id} className="category-sheet__stat-card category-sheet__stat-card--flattened">
+            <div
+              key={card.id}
+              className="category-sheet__stat-card category-sheet__stat-card--flattened"
+              style={{ width: `${statCardWidthPct}%` }}
+            >
               <img src={card.flattenedImage} alt="" className="category-sheet__stat-card-bg-img" />
               <span className="category-sheet__stat-card-label" style={{ fontSize: fontPx(STAT_CARD_LABEL_BASE_CQW) }}>
                 {card.label}
@@ -156,7 +189,11 @@ function NutritionBody({ data, fontStep, iconScale, dir }) {
               </span>
             </div>
           ) : (
-            <div key={card.id} className="category-sheet__stat-card" style={{ backgroundColor: card.bg }}>
+            <div
+              key={card.id}
+              className="category-sheet__stat-card"
+              style={{ backgroundColor: card.bg, width: `${statCardWidthPct}%` }}
+            >
               <span className="category-sheet__stat-card-label" style={{ fontSize: fontPx(STAT_CARD_LABEL_BASE_CQW) }}>
                 {card.label}
               </span>
@@ -181,7 +218,43 @@ function NutritionBody({ data, fontStep, iconScale, dir }) {
       </div>
 
       <div className="category-sheet__fact-row" dir="ltr">
-        <div className="category-sheet__fact-table" dir={dir}>
+        <div
+          className="category-sheet__sugar-box"
+          dir={dir}
+          style={{ flexBasis: `${sugarBoxWidthPct}%`, height: factRowHeight, order: factRowStacked ? 1 : 2 }}
+        >
+          {[data.sugarBox.sugar, data.sugarBox.teaspoons].map((item, index) => (
+            <div key={index} className="category-sheet__sugar-box-col">
+              <span className="category-sheet__sugar-box-label" style={{ fontSize: fontPx(SUGAR_BOX_LABEL_BASE_CQW) }}>
+                {item.label}
+              </span>
+              <span className="category-sheet__sugar-box-icon-wrap" style={{ height: sugarBoxIconWrapHeight }}>
+                <img
+                  src={item.icon}
+                  alt=""
+                  className="category-sheet__sugar-box-icon"
+                  style={{
+                    width: `${item.iconWidth * FIGMA_PX_TO_CQW * iconScale}cqw`,
+                    height: `${item.iconHeight * FIGMA_PX_TO_CQW * iconScale}cqw`,
+                  }}
+                />
+              </span>
+              <span className="category-sheet__sugar-box-divider" />
+              <span
+                className="category-sheet__sugar-box-value"
+                style={{ fontSize: fontPx(SUGAR_BOX_VALUE_BASE_CQW) }}
+              >
+                {renderAmount(item.amount)}
+              </span>
+            </div>
+          ))}
+        </div>
+
+        <div
+          className="category-sheet__fact-table"
+          dir={dir}
+          style={{ flexBasis: `${factTableWidthPct}%`, height: factRowHeight, order: factRowStacked ? 2 : 1 }}
+        >
           <div className="category-sheet__fact-table-labels">
             <div className="category-sheet__fact-table-labels-inner">
               <span
@@ -245,34 +318,6 @@ function NutritionBody({ data, fontStep, iconScale, dir }) {
               ))}
             </div>
           </div>
-        </div>
-
-        <div className="category-sheet__sugar-box" dir={dir}>
-          {[data.sugarBox.sugar, data.sugarBox.teaspoons].map((item, index) => (
-            <div key={index} className="category-sheet__sugar-box-col">
-              <span className="category-sheet__sugar-box-label" style={{ fontSize: fontPx(SUGAR_BOX_LABEL_BASE_CQW) }}>
-                {item.label}
-              </span>
-              <span className="category-sheet__sugar-box-icon-wrap">
-                <img
-                  src={item.icon}
-                  alt=""
-                  className="category-sheet__sugar-box-icon"
-                  style={{
-                    width: `${item.iconWidth * FIGMA_PX_TO_CQW * iconScale}cqw`,
-                    height: `${item.iconHeight * FIGMA_PX_TO_CQW * iconScale}cqw`,
-                  }}
-                />
-              </span>
-              <span className="category-sheet__sugar-box-divider" />
-              <span
-                className="category-sheet__sugar-box-value"
-                style={{ fontSize: fontPx(SUGAR_BOX_VALUE_BASE_CQW) }}
-              >
-                {renderAmount(item.amount)}
-              </span>
-            </div>
-          ))}
         </div>
       </div>
     </div>
