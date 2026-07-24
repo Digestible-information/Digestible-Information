@@ -384,14 +384,6 @@
   display: block;
 }
 
-.category-sheet__stat-card-bg-img {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
 .category-sheet__stat-card-icon-wrap {
   flex: 1;
   min-height: 0;
@@ -549,11 +541,10 @@
 .category-sheet__sugar-box {
   flex: 1 1 47.2%;
   display: flex;
-  background: #ff000e;
   border-radius: 14px;
   color: #fff;
   padding: 0.5% 0;
-  transition: height 0.15s ease;
+  transition: height 0.15s ease, background-color 0.25s ease;
 }
 
 .category-sheet__sugar-box-col {

@@ -6,6 +6,12 @@
     "categoryIds": ["ingredients", "allergens", "kosher", "nutrition", "storage", "manufacturer", "recycling"],
     "kosherRowIds": ["ouDairy", "rabbinicalSeal"],
     "storageRowIds": ["shaded", "cool", "dry"],
+    "nutritionColors": {
+      "sodium": "#00AE38",
+      "satFat": "#FF000E",
+      "energy": "#FF7E00",
+      "sugarBox": "#FF000E"
+    },
     "allergens": [
       { "id": "eggs", "statement": "contains" },
       { "id": "gluten", "statement": "contains" },

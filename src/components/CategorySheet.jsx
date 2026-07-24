@@ -168,60 +168,44 @@ function NutritionBody({ data, fontStep, iconScale, dir }) {
   return (
     <div className="category-sheet__nutrition">
       <div className="category-sheet__stat-row" dir="ltr">
-        {data.cards.map((card) =>
-          card.flattenedImage ? (
-            <div
-              key={card.id}
-              className="category-sheet__stat-card category-sheet__stat-card--flattened"
-              style={{ width: `${statCardWidthPct}%` }}
-            >
-              <img src={card.flattenedImage} alt="" className="category-sheet__stat-card-bg-img" />
-              <span className="category-sheet__stat-card-label" style={{ fontSize: fontPx(STAT_CARD_LABEL_BASE_CQW) }}>
-                {card.label}
-              </span>
-              {/* The icon is baked into the background image above (already positioned in
-                  this middle zone), so this spacer just reserves the same flexible middle
-                  space the other two cards' real <img> icons occupy — nothing to render. */}
-              <span className="category-sheet__stat-card-icon-wrap" aria-hidden="true" />
-              <span className="category-sheet__stat-card-divider" />
-              <span className="category-sheet__stat-card-value" style={{ fontSize: fontPx(STAT_CARD_VALUE_BASE_CQW) }}>
-                {renderAmount(card.amount)}
-              </span>
-            </div>
-          ) : (
-            <div
-              key={card.id}
-              className="category-sheet__stat-card"
-              style={{ backgroundColor: card.bg, width: `${statCardWidthPct}%` }}
-            >
-              <span className="category-sheet__stat-card-label" style={{ fontSize: fontPx(STAT_CARD_LABEL_BASE_CQW) }}>
-                {card.label}
-              </span>
-              <span className="category-sheet__stat-card-icon-wrap">
-                <img
-                  src={card.icon}
-                  alt=""
-                  className="category-sheet__stat-card-icon"
-                  style={{
-                    width: `${card.iconWidth * ((STAT_CARD_ICON_BUDGET_CQW / Math.max(card.iconWidth, card.iconHeight)) * iconScale)}cqw`,
-                    height: `${card.iconHeight * ((STAT_CARD_ICON_BUDGET_CQW / Math.max(card.iconWidth, card.iconHeight)) * iconScale)}cqw`,
-                  }}
-                />
-              </span>
-              <span className="category-sheet__stat-card-divider" />
-              <span className="category-sheet__stat-card-value" style={{ fontSize: fontPx(STAT_CARD_VALUE_BASE_CQW) }}>
-                {renderAmount(card.amount)}
-              </span>
-            </div>
-          ),
-        )}
+        {data.cards.map((card) => (
+          <div
+            key={card.id}
+            className="category-sheet__stat-card"
+            style={{ backgroundColor: card.bg, width: `${statCardWidthPct}%` }}
+          >
+            <span className="category-sheet__stat-card-label" style={{ fontSize: fontPx(STAT_CARD_LABEL_BASE_CQW) }}>
+              {card.label}
+            </span>
+            <span className="category-sheet__stat-card-icon-wrap">
+              <img
+                src={card.icon}
+                alt=""
+                className="category-sheet__stat-card-icon"
+                style={{
+                  width: `${card.iconWidth * ((STAT_CARD_ICON_BUDGET_CQW / Math.max(card.iconWidth, card.iconHeight)) * iconScale)}cqw`,
+                  height: `${card.iconHeight * ((STAT_CARD_ICON_BUDGET_CQW / Math.max(card.iconWidth, card.iconHeight)) * iconScale)}cqw`,
+                }}
+              />
+            </span>
+            <span className="category-sheet__stat-card-divider" />
+            <span className="category-sheet__stat-card-value" style={{ fontSize: fontPx(STAT_CARD_VALUE_BASE_CQW) }}>
+              {renderAmount(card.amount)}
+            </span>
+          </div>
+        ))}
       </div>
 
       <div className="category-sheet__fact-row" dir="ltr">
         <div
           className="category-sheet__sugar-box"
           dir={dir}
-          style={{ flexBasis: `${sugarBoxWidthPct}%`, height: factRowHeight, order: factRowStacked ? 1 : 2 }}
+          style={{
+            flexBasis: `${sugarBoxWidthPct}%`,
+            height: factRowHeight,
+            order: factRowStacked ? 1 : 2,
+            backgroundColor: data.sugarBox.bg,
+          }}
         >
           {[data.sugarBox.sugar, data.sugarBox.teaspoons].map((item, index) => (
             <div key={index} className="category-sheet__sugar-box-col">
