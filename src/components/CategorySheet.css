@@ -380,15 +380,22 @@
   transition: width 0.15s ease;
 }
 
-/* Sized off icon-wrap's own box (max-width/height, not fixed width/height —
-   so it never stretches past its aspect ratio just to fill a taller-than-wide
-   wrap) instead of an independent font-step formula — growing the stat card
-   at larger font-size steps naturally grows this available space too, so the
-   icon scales with its card instead of two independent growth curves
-   drifting apart and letting the icon overrun the label/value text above and
-   below it. */
+/* Sized off icon-wrap's own box instead of an independent font-step formula
+   — growing the stat card at larger font-size steps naturally grows this
+   available space too, so the icon scales with its card instead of two
+   independent growth curves drifting apart and letting the icon overrun the
+   label/value text above and below it. Filled via position: absolute + inset
+   (against icon-wrap's own position: relative) rather than a plain
+   width/height: 100% — a percentage height inside a flex: 1 item isn't a
+   reliably *definite* size for a percentage-sized child to resolve against
+   across engines, and inconsistently resolving that let the icon render at
+   its own oversized intrinsic size instead of icon-wrap's actual box on at
+   least one real device. Absolute positioning's inset percentages resolve
+   against the containing block unambiguously, sidestepping that. */
 .category-sheet__stat-card-icon {
   display: block;
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: contain;
