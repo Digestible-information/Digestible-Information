@@ -3,10 +3,11 @@
     "meta": {
       "photo": "products/Energybar/photo.png"
     },
-    "categoryIds": ["ingredients", "allergens", "kosher", "nutrition"],
+    "categoryIds": ["ingredients", "allergens", "kosher", "nutrition", "storage", "manufacturer"],
     "allergensHeight": 780,
     "kosherRowIds": ["ouDairy", "badatzBeitYosef"],
     "kosherHeight": 820,
+    "storageRowIds": ["shaded", "cool", "dry"],
     "nutritionHeight": 636,
     "nutritionLayout": "stacked",
     "nutritionColors": {
@@ -61,6 +62,17 @@
           "dairySupervision": { "line1": "חלב ישראל", "line2": "בהשגחת הרבנות נוף הגליל. מכיל קטניות" },
           "ouDairy": { "line1": "Orthodox", "line2Bold": "Union", "line2Light": "- Dairy", "line3Bold": "לימות השנה" },
           "badatzBeitYosef": { "line1": "בד״צ בית יוסף", "line2": "כשר לפסח", "line3": "מכיל קטניות", "line4": "חלבי" }
+        },
+        "manufacturerInfo": {
+          "producedBy": {
+            "label": "מיוצר על ידי:",
+            "detail": ["שטראוס גרופ בע״מ,", "שד׳ מנחם אריאב 10,", "נוף הגליל."]
+          },
+          "contact": { "label": "ליצירת קשר:", "detail": ["שירות לקוחות", "שטראוס 6860*"] }
+        },
+        "storageInfo": {
+          "heading": "יש לשמור במקום:",
+          "labels": { "shaded": "מוצל", "cool": "קריר", "dry": "יבש" }
         }
       },
       "en": {
@@ -98,6 +110,17 @@
           "dairySupervision": { "line1": "Israeli milk", "line2": "Under Nof HaGalil Rabbinate supervision. Contains legumes" },
           "ouDairy": { "line1": "Orthodox", "line2Bold": "Union", "line2Light": "- Dairy", "line3Bold": "Year-round" },
           "badatzBeitYosef": { "line1": "Beit Yosef Badatz", "line2": "Kosher for Passover", "line3": "Contains legumes", "line4": "Dairy" }
+        },
+        "manufacturerInfo": {
+          "producedBy": {
+            "label": "Manufactured by:",
+            "detail": ["Strauss Group Ltd.,", "10 Menachem Ariav St.,", "Nof HaGalil."]
+          },
+          "contact": { "label": "For contact:", "detail": ["Customer service", "Strauss *6860"] }
+        },
+        "storageInfo": {
+          "heading": "Store in a place that is:",
+          "labels": { "shaded": "Shaded", "cool": "Cool", "dry": "Dry" }
         }
       },
       "ar": {
@@ -135,6 +158,17 @@
           "dairySupervision": { "line1": "حليب إسرائيلي", "line2": "تحت إشراف حاخامية نوف هجليل. يحتوي على البقوليات" },
           "ouDairy": { "line1": "Orthodox", "line2Bold": "Union", "line2Light": "- Dairy", "line3Bold": "على مدار السنة" },
           "badatzBeitYosef": { "line1": "بداتس بيت يوسف", "line2": "كوشير لعيد الفصح", "line3": "يحتوي على البقوليات", "line4": "ألبان" }
+        },
+        "manufacturerInfo": {
+          "producedBy": {
+            "label": "تصنيع:",
+            "detail": ["شتراوس جروب المحدودة،", "شارع مناحيم أرياف 10،", "نوف هجليل."]
+          },
+          "contact": { "label": "للتواصل:", "detail": ["خدمة عملاء", "شتراوس 6860*"] }
+        },
+        "storageInfo": {
+          "heading": "يُحفظ في مكان:",
+          "labels": { "shaded": "مظلل", "cool": "بارد", "dry": "جاف" }
         }
       }
     }
