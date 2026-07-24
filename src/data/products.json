@@ -5,7 +5,7 @@
     },
     "categoryIds": ["ingredients", "allergens", "nutrition"],
     "allergensHeight": 780,
-    "nutritionHeight": 675,
+    "nutritionHeight": 636,
     "nutritionColors": {
       "sodium": "#43AA49",
       "satFat": "#F5851F",
