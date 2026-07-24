@@ -538,6 +538,15 @@
   bottom: 0;
 }
 
+/* A single-child group (e.g. Energybar's totalCarbs → polyols) has almost no
+   height to work with — the regular tick (29%) and foot (bottom) sit close
+   enough to visually merge into a single blocky glyph. One elbow line,
+   vertically centered, reads as a clean connector instead. */
+.category-sheet__fact-table-sub-bracket-tick--solo {
+  top: 50%;
+  transform: translateY(-50%);
+}
+
 .category-sheet__fact-table-labels span,
 .category-sheet__fact-table-values span {
   color: var(--sheet-fg);

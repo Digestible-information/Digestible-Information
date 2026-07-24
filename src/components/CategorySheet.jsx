@@ -283,15 +283,27 @@ function NutritionBody({ data, fontStep, iconScale, dir }) {
                     />
                     {/* Tick/foot always reach from the stem's position (wherever the first
                         word's width puts it) over to the indented text — a fixed 0.8em
-                        beyond the stem, matching how far out that text's own margin starts. */}
-                    <span
-                      className="category-sheet__fact-table-sub-bracket-tick"
-                      style={{ insetInlineStart: `${stemCenterPx}px`, width: '0.8em' }}
-                    />
-                    <span
-                      className="category-sheet__fact-table-sub-bracket-foot"
-                      style={{ insetInlineStart: `${stemCenterPx}px`, width: '0.8em' }}
-                    />
+                        beyond the stem, matching how far out that text's own margin starts.
+                        A single-child group (e.g. totalCarbs → polyols) has almost no height
+                        for a separate tick+foot pair to sit apart in — they'd visually merge
+                        into one blocky glyph — so it gets one centered elbow line instead. */}
+                    {group.childIndices.length === 1 ? (
+                      <span
+                        className="category-sheet__fact-table-sub-bracket-tick category-sheet__fact-table-sub-bracket-tick--solo"
+                        style={{ insetInlineStart: `${stemCenterPx}px`, width: '0.8em' }}
+                      />
+                    ) : (
+                      <>
+                        <span
+                          className="category-sheet__fact-table-sub-bracket-tick"
+                          style={{ insetInlineStart: `${stemCenterPx}px`, width: '0.8em' }}
+                        />
+                        <span
+                          className="category-sheet__fact-table-sub-bracket-foot"
+                          style={{ insetInlineStart: `${stemCenterPx}px`, width: '0.8em' }}
+                        />
+                      </>
+                    )}
                   </span>
                 )
               })}
