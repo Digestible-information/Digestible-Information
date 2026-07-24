@@ -1,6 +1,5 @@
 import { Fragment, useLayoutEffect, useRef, useState, useEffect } from 'react'
 import logo from '../assets/header-logo.svg'
-import productPhoto from '../assets/product-photo.png'
 import CategoryChip from '../components/CategoryChip.jsx'
 import CategoryListRow from '../components/CategoryListRow.jsx'
 import CameraButton from '../components/CameraButton.jsx'
@@ -14,6 +13,8 @@ import { manufacturerBodyIcon } from '../data/manufacturerInfo.js'
 import { storageRows } from '../data/storageInfo.js'
 import { recyclingBodyIcon } from '../data/recyclingInfo.js'
 import { useLanguage } from '../i18n/LanguageContext.jsx'
+import { ALLERGEN_STATEMENT_ORDER } from '../i18n/translations.js'
+import { useProduct } from '../hooks/useProduct.js'
 import './HomeScreen.css'
 
 const LANGUAGES = [
@@ -23,8 +24,6 @@ const LANGUAGES = [
 ]
 
 const SHEET_CATEGORIES = new Set(['ingredients', 'allergens', 'nutrition', 'kosher', 'manufacturer', 'storage', 'recycling'])
-const primaryCategories = categories.filter((category) => category.group === 'primary')
-const secondaryCategories = categories.filter((category) => category.group === 'secondary')
 
 // Fluid CSS (clamp()-based spacing) handles most short screens on its own. This is the
 // last-resort fallback for the extreme cases where even that isn't enough (e.g. an
@@ -96,11 +95,27 @@ export default function HomeScreen() {
   const [openSheet, setOpenSheet] = useState(null)
   const [imageOpen, setImageOpen] = useState(false)
   const { language, setLanguage, t, dir } = useLanguage()
+  const { product, content } = useProduct()
   const buttonRefs = useRef({})
   const [underline, setUnderline] = useState({ left: 0, width: 0 })
   const contentRef = useRef(null)
   const middleRef = useRef(null)
   const scale = useFitToViewport(contentRef, middleRef, [language])
+
+  const includedCategories = categories.filter((category) => product.categoryIds.includes(category.id))
+  const primaryCategories = includedCategories.filter((category) => category.group === 'primary')
+  const secondaryCategories = includedCategories.filter((category) => category.group === 'secondary')
+
+  const allergenGroups = ALLERGEN_STATEMENT_ORDER.map((statementKey) => ({
+    statementKey,
+    heading: t.allergenStatements[statementKey],
+    items: product.allergens
+      .filter((allergen) => allergen.statement === statementKey)
+      .map((allergen) => ({
+        ...allergenIcons.find((icon) => icon.id === allergen.id),
+        label: content.allergenLabels[allergen.id],
+      })),
+  })).filter((group) => group.items.length > 0)
 
   useLayoutEffect(() => {
     const activeButton = buttonRefs.current[language]
@@ -123,16 +138,16 @@ export default function HomeScreen() {
               type="button"
               className="product-card__photo-button"
               onClick={() => setImageOpen(true)}
-              aria-label={t.brand}
+              aria-label={content.brand}
             >
-              <img src={productPhoto} alt="" className="product-card__photo" />
+              <img src={`${import.meta.env.BASE_URL}${product.meta.photo}`} alt="" className="product-card__photo" />
             </button>
             <div className="product-card__text" dir={dir}>
               <p className="product-card__heading">
-                <span className="product-card__brand">{t.brand}</span>
-                <span className="product-card__weight">{t.weightValue}</span>
+                <span className="product-card__brand">{content.brand}</span>
+                <span className="product-card__weight">{content.weightValue}</span>
               </p>
-              <p className="product-card__description">{t.productName}</p>
+              <p className="product-card__description">{content.productName}</p>
             </div>
           </div>
 
@@ -194,81 +209,103 @@ export default function HomeScreen() {
         </footer>
       </div>
 
-      <CategorySheet
-        open={openSheet === 'ingredients'}
-        onClose={() => setOpenSheet(null)}
-        title={t.ingredientsTitle}
-        bodyText={t.ingredientsText}
-      />
+      {product.categoryIds.includes('ingredients') && (
+        <CategorySheet
+          open={openSheet === 'ingredients'}
+          onClose={() => setOpenSheet(null)}
+          title={t.ingredientsTitle}
+          bodyText={content.ingredientsText}
+        />
+      )}
 
-      <CategorySheet
-        open={openSheet === 'allergens'}
-        onClose={() => setOpenSheet(null)}
-        title={t.categories.allergens}
-        bodyHeading={t.allergensIntro}
-        bodyHeadingColor="#EA2427"
-        bodyIcons={allergenIcons.map((item) => ({ ...item, label: t.allergenLabels[item.id] }))}
-      />
+      {product.categoryIds.includes('allergens') && (
+        <CategorySheet
+          open={openSheet === 'allergens'}
+          onClose={() => setOpenSheet(null)}
+          title={t.categories.allergens}
+          bodyHeadingColor="#EA2427"
+          bodyIcons={allergenGroups}
+        />
+      )}
 
-      <CategorySheet
-        open={openSheet === 'nutrition'}
-        onClose={() => setOpenSheet(null)}
-        title={t.nutritionTitle}
-        subtitle={t.nutritionSubtitle}
-        bodyNutrition={{
-          cards: nutritionStatCards.map((item) => ({ ...item, ...t.nutritionFacts[item.id] })),
-          table: nutritionTableRowIds.map((id) => ({ id, ...t.nutritionFacts[id] })),
-          sugarBox: {
-            sugar: { ...nutritionSugarBoxIcons.sugar, ...t.nutritionFacts.sugar },
-            teaspoons: { ...nutritionSugarBoxIcons.teaspoons, ...t.nutritionFacts.teaspoons },
-          },
-        }}
-      />
+      {product.categoryIds.includes('nutrition') && (
+        <CategorySheet
+          open={openSheet === 'nutrition'}
+          onClose={() => setOpenSheet(null)}
+          title={t.nutritionTitle}
+          subtitle={content.nutritionSubtitle}
+          bodyNutrition={{
+            cards: nutritionStatCards.map((item) => ({ ...item, ...content.nutritionFacts[item.id] })),
+            table: nutritionTableRowIds.map((id) => ({ id, ...content.nutritionFacts[id] })),
+            sugarBox: {
+              sugar: { ...nutritionSugarBoxIcons.sugar, ...content.nutritionFacts.sugar },
+              teaspoons: { ...nutritionSugarBoxIcons.teaspoons, ...content.nutritionFacts.teaspoons },
+            },
+          }}
+        />
+      )}
 
-      <CategorySheet
-        open={openSheet === 'kosher'}
-        onClose={() => setOpenSheet(null)}
-        title={t.kosherTitle}
-        bodyKosher={{
-          badgeSwatchColor: kosherBadgeSwatchColor,
-          badge: t.kosherInfo.dairyBadge,
-          supervision: t.kosherInfo.dairySupervision,
-          rows: kosherRows.map((row) => ({ ...row, ...t.kosherInfo[row.id] })),
-        }}
-      />
+      {product.categoryIds.includes('kosher') && (
+        <CategorySheet
+          open={openSheet === 'kosher'}
+          onClose={() => setOpenSheet(null)}
+          title={t.kosherTitle}
+          bodyKosher={{
+            badgeSwatchColor: kosherBadgeSwatchColor,
+            badge: content.kosherInfo.dairyBadge,
+            supervision: content.kosherInfo.dairySupervision,
+            rows: kosherRows
+              .filter((row) => product.kosherRowIds.includes(row.id))
+              .map((row) => ({ ...row, ...content.kosherInfo[row.id] })),
+          }}
+        />
+      )}
 
-      <CategorySheet
-        open={openSheet === 'manufacturer'}
-        onClose={() => setOpenSheet(null)}
-        title={t.manufacturerTitle}
-        bodyManufacturer={{
-          icon: manufacturerBodyIcon,
-          producedBy: t.manufacturerInfo.producedBy,
-          contact: t.manufacturerInfo.contact,
-        }}
-      />
+      {product.categoryIds.includes('manufacturer') && (
+        <CategorySheet
+          open={openSheet === 'manufacturer'}
+          onClose={() => setOpenSheet(null)}
+          title={t.manufacturerTitle}
+          bodyManufacturer={{
+            icon: manufacturerBodyIcon,
+            producedBy: content.manufacturerInfo.producedBy,
+            contact: content.manufacturerInfo.contact,
+          }}
+        />
+      )}
 
-      <CategorySheet
-        open={openSheet === 'storage'}
-        onClose={() => setOpenSheet(null)}
-        title={t.storageTitle}
-        bodyHeading={t.storageInfo.heading}
-        bodyStorage={{
-          rows: storageRows.map((row) => ({ ...row, label: t.storageInfo.labels[row.id] })),
-        }}
-      />
+      {product.categoryIds.includes('storage') && (
+        <CategorySheet
+          open={openSheet === 'storage'}
+          onClose={() => setOpenSheet(null)}
+          title={t.storageTitle}
+          bodyHeading={content.storageInfo.heading}
+          bodyStorage={{
+            rows: storageRows
+              .filter((row) => product.storageRowIds.includes(row.id))
+              .map((row) => ({ ...row, label: content.storageInfo.labels[row.id] })),
+          }}
+        />
+      )}
 
-      <CategorySheet
-        open={openSheet === 'recycling'}
-        onClose={() => setOpenSheet(null)}
-        title={t.recyclingTitle}
-        bodyRecycling={{
-          ...recyclingBodyIcon,
-          segments: t.recyclingInfo.segments,
-        }}
-      />
+      {product.categoryIds.includes('recycling') && (
+        <CategorySheet
+          open={openSheet === 'recycling'}
+          onClose={() => setOpenSheet(null)}
+          title={t.recyclingTitle}
+          bodyRecycling={{
+            ...recyclingBodyIcon,
+            segments: content.recyclingInfo.segments,
+          }}
+        />
+      )}
 
-      <ImageLightbox open={imageOpen} onClose={() => setImageOpen(false)} src={productPhoto} alt={t.brand} />
+      <ImageLightbox
+        open={imageOpen}
+        onClose={() => setImageOpen(false)}
+        src={`${import.meta.env.BASE_URL}${product.meta.photo}`}
+        alt={content.brand}
+      />
     </>
   )
 }

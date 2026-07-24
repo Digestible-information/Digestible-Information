@@ -293,7 +293,7 @@ function KosherBody({ data, fontStep, iconScale }) {
   // puts it on the correct side per direction: left in ltr (English), right
   // in rtl (Hebrew/Arabic) — no per-direction branching needed here.
 
-  const supervisionText = (
+  const supervisionText = data.supervision && (
     <div className="category-sheet__kosher-row-text" style={textStyle}>
       <p>{data.supervision.line1}</p>
       <p>{data.supervision.line2}</p>
@@ -302,7 +302,8 @@ function KosherBody({ data, fontStep, iconScale }) {
   )
   // One-off text+swatch layout (not a repeatable icon), so it's rendered
   // directly here rather than driven from data.rows like the other two.
-  const badge = (
+  // Optional: a future non-dairy/non-kosher product can omit `badge` entirely.
+  const badge = data.badge && (
     <div className="category-sheet__kosher-badge">
       <span className="category-sheet__kosher-badge-label" style={{ fontSize: fontPx(KOSHER_BADGE_TEXT_BASE_CQW) }}>
         {data.badge.top}
@@ -318,10 +319,12 @@ function KosherBody({ data, fontStep, iconScale }) {
 
   return (
     <div className="category-sheet__kosher">
-      <div className="category-sheet__kosher-row">
-        {badge}
-        {supervisionText}
-      </div>
+      {(badge || supervisionText) && (
+        <div className="category-sheet__kosher-row">
+          {badge}
+          {supervisionText}
+        </div>
+      )}
 
       {data.rows.map((row) => {
         const text = (
@@ -543,10 +546,11 @@ export default function CategorySheet({
         ].join(', ')
       : bodyKosher
       ? [
-          `${bodyKosher.badge.top} ${bodyKosher.badge.bottom}`,
-          [bodyKosher.supervision.line1, bodyKosher.supervision.line2, bodyKosher.supervision.line3]
-            .filter(Boolean)
-            .join(' '),
+          bodyKosher.badge && `${bodyKosher.badge.top} ${bodyKosher.badge.bottom}`,
+          bodyKosher.supervision &&
+            [bodyKosher.supervision.line1, bodyKosher.supervision.line2, bodyKosher.supervision.line3]
+              .filter(Boolean)
+              .join(' '),
           // ouDairy uses line2Bold/line2Light instead of line2/line3 (see KosherBody's
           // rendering split below) — read those too, or its "Union - Dairy" half gets
           // silently dropped from speech.
@@ -555,7 +559,9 @@ export default function CategorySheet({
               ? [row.line1, row.line2Bold, row.line2Light].filter(Boolean).join(' ')
               : [row.line1, row.line2, row.line3].filter(Boolean).join(' '),
           ),
-        ].join(', ')
+        ]
+          .filter(Boolean)
+          .join(', ')
       : bodyManufacturer
       ? [
           `${bodyManufacturer.producedBy.label} ${bodyManufacturer.producedBy.detail.join(' ')}`,
@@ -566,7 +572,7 @@ export default function CategorySheet({
       : bodyRecycling
       ? bodyRecycling.segments.map((segment) => segment.text).join('')
       : bodyIcons
-      ? bodyIcons.map((item) => item.label).join(', ')
+      ? bodyIcons.flatMap((group) => [group.heading, ...group.items.map((item) => item.label)]).join(', ')
       : bodyText
     const speechLead = bodyHeading || subtitle
     const utterance = new SpeechSynthesisUtterance(speechLead ? `${speechLead} ${spokenBody}` : spokenBody)
@@ -692,7 +698,10 @@ export default function CategorySheet({
           {bodyHeading && (
             <p
               className="category-sheet__body-heading"
-              style={{ fontSize: `${BASE_FONT_SIZE + 4 + fontStep * FONT_STEP_SIZE}px`, color: bodyHeadingColor }}
+              style={{
+                fontSize: `${BASE_FONT_SIZE + 4 + fontStep * FONT_STEP_SIZE}px`,
+                color: highContrast ? '#FFFFFF' : bodyHeadingColor,
+              }}
             >
               {bodyHeading}
             </p>
@@ -708,35 +717,50 @@ export default function CategorySheet({
           ) : bodyRecycling ? (
             <RecyclingBody data={bodyRecycling} fontStep={fontStep} iconScale={iconScale} />
           ) : bodyIcons ? (
-            <div className="category-sheet__icon-grid">
-              {[bodyIcons.slice(0, ICONS_PER_ROW), bodyIcons.slice(ICONS_PER_ROW)]
-                .filter((row) => row.length > 0)
-                .map((row, rowIndex) => (
-                  <div key={rowIndex} className="category-sheet__icon-row">
-                    {row.map((item) => {
-                      const iconBudgetCqw = (ICON_BUDGET_CQW / Math.max(item.width, item.height)) * iconScale
-                      return (
-                        <div key={item.id} className="category-sheet__icon-item">
-                          <img
-                            src={item.icon}
-                            alt=""
-                            className="category-sheet__icon-item-img"
-                            style={{
-                              width: `${item.width * iconBudgetCqw}cqw`,
-                              height: `${item.height * iconBudgetCqw}cqw`,
-                            }}
-                          />
-                          <span
-                            className="category-sheet__icon-item-label"
-                            style={{ fontSize: `calc(${LABEL_BASE_CQW}cqw + ${fontStep * FONT_STEP_SIZE}px)` }}
-                          >
-                            {item.label}
-                          </span>
+            <div className="category-sheet__icon-groups">
+              {bodyIcons.map((group) => (
+                <div key={group.statementKey} className="category-sheet__icon-group">
+                  <p
+                    className="category-sheet__body-heading"
+                    style={{
+                      fontSize: `${BASE_FONT_SIZE + 4 + fontStep * FONT_STEP_SIZE}px`,
+                      color: highContrast ? '#FFFFFF' : bodyHeadingColor,
+                    }}
+                  >
+                    {group.heading}
+                  </p>
+                  <div className="category-sheet__icon-grid">
+                    {[group.items.slice(0, ICONS_PER_ROW), group.items.slice(ICONS_PER_ROW)]
+                      .filter((row) => row.length > 0)
+                      .map((row, rowIndex) => (
+                        <div key={rowIndex} className="category-sheet__icon-row">
+                          {row.map((item) => {
+                            const iconBudgetCqw = (ICON_BUDGET_CQW / Math.max(item.width, item.height)) * iconScale
+                            return (
+                              <div key={item.id} className="category-sheet__icon-item">
+                                <img
+                                  src={item.icon}
+                                  alt=""
+                                  className="category-sheet__icon-item-img"
+                                  style={{
+                                    width: `${item.width * iconBudgetCqw}cqw`,
+                                    height: `${item.height * iconBudgetCqw}cqw`,
+                                  }}
+                                />
+                                <span
+                                  className="category-sheet__icon-item-label"
+                                  style={{ fontSize: `calc(${LABEL_BASE_CQW}cqw + ${fontStep * FONT_STEP_SIZE}px)` }}
+                                >
+                                  {item.label}
+                                </span>
+                              </div>
+                            )
+                          })}
                         </div>
-                      )
-                    })}
+                      ))}
                   </div>
-                ))}
+                </div>
+              ))}
             </div>
           ) : (
             <p style={{ fontSize: `${BODY_TEXT_BASE_FONT_SIZE + fontStep * FONT_STEP_SIZE}px` }}>{bodyText}</p>

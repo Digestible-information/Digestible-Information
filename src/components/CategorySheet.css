@@ -284,6 +284,14 @@
   margin-bottom: 12px;
 }
 
+/* Allergens are grouped by statement type (e.g. "Contains" / "May contain"),
+   each its own heading + icon-grid — this just spaces the groups apart. */
+.category-sheet__icon-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
 .category-sheet__icon-grid {
   container-type: inline-size;
   display: flex;

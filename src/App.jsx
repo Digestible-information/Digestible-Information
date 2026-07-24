@@ -11,6 +11,7 @@ export default function App() {
     <>
       <Routes>
         <Route path="/" element={<HomeScreen />} />
+        <Route path="/:productId" element={<HomeScreen />} />
         <Route path="/category/:categoryId" element={<CategoryPage />} />
       </Routes>
       {showSplash && <SplashScreen onFinished={() => setShowSplash(false)} />}
