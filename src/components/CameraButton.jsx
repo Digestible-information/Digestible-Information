@@ -1,4 +1,4 @@
-import { useId, useRef } from 'react'
+import { useId, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { useLanguage } from '../i18n/LanguageContext.jsx'
 import './CameraButton.css'
 
@@ -15,13 +15,16 @@ const RING_R = 58.36
 const RING_STROKE = 2.28
 const BADGE_COLOR = '#29256A'
 
-// The curved label sits on its own arc below the circle, wide enough (300°)
+// The curved label sits on its own arc below the circle, wide enough (330°)
 // that even the longest translation (English) never runs out of track —
 // unused track is simply blank, so over-sizing this has no visual cost.
 // Radius is the ring's own radius plus a gap so the label's ascenders don't
 // touch the ring.
 const TEXT_ARC_RADIUS = RING_R + 18
-const TEXT_ARC_HALF_SPAN_DEG = 150
+const TEXT_ARC_HALF_SPAN_DEG = 165
+const TEXT_ARC_LENGTH = TEXT_ARC_RADIUS * ((2 * TEXT_ARC_HALF_SPAN_DEG * Math.PI) / 180)
+// Blank arc-length between words, in the same user-units as the SVG viewBox.
+const WORD_GAP = 4
 
 function polarPoint(angleDeg) {
   // angleDeg measured clockwise from 12 o'clock, matching how the arc's
@@ -35,16 +38,62 @@ function polarPoint(angleDeg) {
 // the reverse winding (swap endpoints + sweep-flag 1) still hits the same
 // bottom arc but renders every glyph upside down, because textPath keeps
 // glyphs on a fixed side of the path regardless of travel direction. So the
-// path itself never flips for rtl; direction is handled by reversing the
-// *character order* instead (see the bidi-override below).
+// path itself never winds differently per language — direction is handled
+// per-word instead, see ScanBadge below.
 function buildTextArcPath() {
   const [leftX, leftY] = polarPoint(180 + TEXT_ARC_HALF_SPAN_DEG)
   const [rightX, rightY] = polarPoint(180 - TEXT_ARC_HALF_SPAN_DEG)
   return `M ${leftX} ${leftY} A ${TEXT_ARC_RADIUS} ${TEXT_ARC_RADIUS} 0 1 0 ${rightX} ${rightY}`
 }
 
+// A single textPath run of the whole label turned out to be unreliable
+// across engines for rtl: reversing the string (or forcing it via
+// unicode-bidi: bidi-override) to read right-to-left worked in one engine's
+// textPath implementation and came out mirrored (every word, and every
+// letter within each word, backwards) in another's. And even for plain ltr
+// English, a single run silently drops any glyphs that don't fit within
+// TEXT_ARC_LENGTH once centered — on a device whose font metrics render the
+// label wider than assumed, that clipped the first/last letters.
+//
+// Placing each *word* on the arc individually sidesteps both problems: each
+// word is measured (getComputedTextLength, in the same hidden pass below)
+// and positioned with an explicit startOffset, so nothing depends on how
+// wide the rendered text turns out to be, and a word's own characters are
+// never reordered — only which word sits in which left-to-right slot changes
+// with direction — so native text shaping (Hebrew/Arabic letter joining)
+// stays completely intact.
+function useWordSlots(label) {
+  const words = useMemo(() => label.split(' ').filter(Boolean), [label])
+  const measureRefs = useRef([])
+  const [widths, setWidths] = useState(null)
+
+  useLayoutEffect(() => {
+    setWidths(words.map((_, i) => measureRefs.current[i]?.getComputedTextLength() ?? 0))
+  }, [words])
+
+  return { words, measureRefs, widths }
+}
+
 function ScanBadge({ label, dir }) {
   const pathId = useId()
+  const { words, measureRefs, widths } = useWordSlots(label)
+
+  // Slot 0 is the arc's leftmost position. ltr keeps word order as-is; rtl
+  // reads right-to-left, so the first (logically-read-first) word belongs in
+  // the rightmost (last) slot instead.
+  const slotWordIndices = dir === 'rtl' ? [...words.keys()].reverse() : words.map((_, i) => i)
+
+  let slotOffsets = null
+  if (widths) {
+    const slotWidths = slotWordIndices.map((i) => widths[i])
+    const totalWidth = slotWidths.reduce((sum, w) => sum + w, 0) + WORD_GAP * Math.max(0, words.length - 1)
+    let cursor = TEXT_ARC_LENGTH / 2 - totalWidth / 2
+    slotOffsets = slotWidths.map((w) => {
+      const center = cursor + w / 2
+      cursor += w + WORD_GAP
+      return center
+    })
+  }
 
   return (
     <svg
@@ -82,21 +131,24 @@ function ScanBadge({ label, dir }) {
         <path d="M19.31 10.08V19.1H11.57V13.66H15.71V10.08H19.31Z" />
       </g>
       <path id={pathId} d={buildTextArcPath()} fill="none" stroke="none" />
-      {/* The arc always winds left-to-right (see buildTextArcPath) since that's
-          the only winding that renders upright, so rtl languages need their
-          characters fed in reverse — bidi-override forces that reversal
-          regardless of the string's own Hebrew/Arabic bidi class, instead of
-          relying on the (unrelated) automatic bidi reordering. */}
-      <text
-        fill={BADGE_COLOR}
-        fontSize="15"
-        fontWeight="600"
-        style={{ direction: dir, unicodeBidi: dir === 'rtl' ? 'bidi-override' : 'normal' }}
-      >
-        <textPath href={`#${pathId}`} startOffset="50%" textAnchor="middle">
-          {label}
-        </textPath>
+      {/* Off-canvas measurement pass: plain (non-path) text so
+          getComputedTextLength reflects each word's true rendered advance on
+          this device/font, independent of anything path-related. */}
+      <text fontSize="15" fontWeight="600" x={-9999} y={-9999} aria-hidden="true">
+        {words.map((word, i) => (
+          <tspan key={i} ref={(el) => (measureRefs.current[i] = el)}>
+            {word}
+          </tspan>
+        ))}
       </text>
+      {slotOffsets &&
+        slotWordIndices.map((wordIndex, slot) => (
+          <text key={wordIndex} fill={BADGE_COLOR} fontSize="15" fontWeight="600" style={{ direction: dir }}>
+            <textPath href={`#${pathId}`} startOffset={slotOffsets[slot]} textAnchor="middle">
+              {words[wordIndex]}
+            </textPath>
+          </text>
+        ))}
     </svg>
   )
 }
