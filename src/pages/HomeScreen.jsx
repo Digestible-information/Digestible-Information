@@ -7,7 +7,12 @@ import CategorySheet from '../components/CategorySheet.jsx'
 import ImageLightbox from '../components/ImageLightbox.jsx'
 import { categories } from '../data/categories.js'
 import { allergenIcons } from '../data/allergenIcons.js'
-import { nutritionStatCards, nutritionTableRowIds, nutritionSugarBoxIcons } from '../data/nutritionFacts.js'
+import {
+  nutritionStatCards,
+  nutritionTableRowIds,
+  nutritionSugarBoxIcons,
+  nutritionSugarStatCards,
+} from '../data/nutritionFacts.js'
 import { kosherRows, kosherBadgeSwatchColor } from '../data/kosherInfo.js'
 import { manufacturerBodyIcon } from '../data/manufacturerInfo.js'
 import { storageRows } from '../data/storageInfo.js'
@@ -246,11 +251,21 @@ export default function HomeScreen() {
               id,
               ...content.nutritionFacts[id],
             })),
-            sugarBox: {
-              bg: product.nutritionColors.sugarBox,
-              sugar: { ...nutritionSugarBoxIcons.sugar, ...content.nutritionFacts.sugar },
-              teaspoons: { ...nutritionSugarBoxIcons.teaspoons, ...content.nutritionFacts.teaspoons },
-            },
+            ...(product.nutritionLayout === 'stacked'
+              ? {
+                  sugarCards: nutritionSugarStatCards.map((item) => ({
+                    ...item,
+                    ...content.nutritionFacts[item.id],
+                    bg: product.nutritionColors.sugarBox,
+                  })),
+                }
+              : {
+                  sugarBox: {
+                    bg: product.nutritionColors.sugarBox,
+                    sugar: { ...nutritionSugarBoxIcons.sugar, ...content.nutritionFacts.sugar },
+                    teaspoons: { ...nutritionSugarBoxIcons.teaspoons, ...content.nutritionFacts.teaspoons },
+                  },
+                }),
           }}
         />
       )}

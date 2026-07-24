@@ -24,6 +24,22 @@ export const nutritionSugarBoxIcons = {
   teaspoons: { icon: spoonIcon, iconWidth: 58, iconHeight: 27 },
 }
 
+// Stacked-layout variant (e.g. "Energybar", see products.json's
+// `nutritionLayout: "stacked"`): sugar/teaspoons render as their own row of
+// stat-card-styled boxes — same fixed card size as nutritionStatCards above
+// (not a custom wider card), so all 5 nodes share one visual scale and this
+// 2-card row simply centers under the 3-card row via the row's own
+// justify-content instead of stretching to fill it. iconWidth/iconHeight
+// (same values as nutritionSugarBoxIcons) keep each icon at its own original
+// sugar-box size — a flat spoon, a small cube pair — instead of stretching
+// edge-to-edge like the top row's icons do.
+// Physical left-to-right order matches the Figma reference (teaspoons box
+// on the left, sugars box on the right).
+export const nutritionSugarStatCards = [
+  { id: 'teaspoons', icon: spoonIcon, iconWidth: 58, iconHeight: 27 },
+  { id: 'sugar', icon: sugarCubesIcon, iconWidth: 39, iconHeight: 37 },
+]
+
 // Sub-item groupings within the fact table: each group's parent row is
 // bracketed to its children (e.g. transFat/cholesterol nest under totalFat),
 // matching Figma's connector glyph. Keyed off row id rather than position, so

@@ -450,6 +450,23 @@
   margin-top: 3.9%;
 }
 
+/* Stacked layout's sugar/teaspoons row (see data.sugarCards in
+   CategorySheet.jsx) — same .category-sheet__stat-row otherwise (identical
+   card size, centered via that row's own justify-content since only 2 cards
+   sit in it instead of 3), just spaced below the 3-up row like
+   .category-sheet__fact-row is. */
+.category-sheet__stat-row--secondary {
+  margin-top: 3.9%;
+}
+
+/* Stacked layout's fact table (see data.sugarCards) sits alone on its own
+   line below the sugar-card row instead of sharing .category-sheet__fact-row
+   with a sugar-box — full width, same spacing as that row would've had. */
+.category-sheet__fact-table--standalone {
+  width: 100%;
+  margin-top: 3.9%;
+}
+
 /* Width/height are set inline (see FACT_TABLE_BASE_PCT/FACT_ROW_GROWTH_PCT in
    CategorySheet.jsx) so this box grows with the font stepper instead of just
    its text — at fontStep 0 it sits side-by-side with the sugar box same as
@@ -536,15 +553,6 @@
 
 .category-sheet__fact-table-sub-bracket-foot {
   bottom: 0;
-}
-
-/* A single-child group (e.g. Energybar's totalCarbs → polyols) has almost no
-   height to work with — the regular tick (29%) and foot (bottom) sit close
-   enough to visually merge into a single blocky glyph. One elbow line,
-   vertically centered, reads as a clean connector instead. */
-.category-sheet__fact-table-sub-bracket-tick--solo {
-  top: 50%;
-  transform: translateY(-50%);
 }
 
 .category-sheet__fact-table-labels span,

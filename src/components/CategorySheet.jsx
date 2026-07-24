@@ -184,75 +184,62 @@ function NutritionBody({ data, fontStep, iconScale, dir }) {
     )
   }
 
-  return (
-    <div className="category-sheet__nutrition">
-      <div className="category-sheet__stat-row" dir="ltr">
-        {data.cards.map((card) => (
-          <div
-            key={card.id}
-            className="category-sheet__stat-card"
-            style={{ backgroundColor: card.bg, width: `${statCardWidthPct}%`, height: `${statCardWidthPct}cqw` }}
-          >
-            <span className="category-sheet__stat-card-label" style={{ fontSize: fontPx(STAT_CARD_LABEL_BASE_CQW) }}>
-              {card.label}
-            </span>
-            <span className="category-sheet__stat-card-icon-wrap">
-              <img src={card.icon} alt="" className="category-sheet__stat-card-icon" />
-            </span>
-            <span className="category-sheet__stat-card-divider" />
-            <span className="category-sheet__stat-card-value" style={{ fontSize: fontPx(STAT_CARD_VALUE_BASE_CQW) }}>
-              {renderAmount(card.amount)}
-            </span>
-          </div>
-        ))}
-      </div>
+  // Shared by the top 3-up stat-row and (for the stacked layout — see
+  // data.sugarCards below) the sugar/teaspoons row: identical card size/style
+  // for both, so a row with fewer than 3 cards just centers under the row
+  // above via .category-sheet__stat-row's own justify-content instead of
+  // stretching to fill it. The icon itself defaults to filling the card
+  // (object-fit: contain, via the plain CSS class) exactly as the top row
+  // always has — pass fixedIconStyle only for sugar/teaspoons, restoring
+  // their original sugar-box sizing (a flat spoon, a small cube pair) instead
+  // of stretching them edge-to-edge like the top row's icons.
+  const renderStatCard = (card, fixedIconStyle) => (
+    <div
+      key={card.id}
+      className="category-sheet__stat-card"
+      style={{ backgroundColor: card.bg, width: `${statCardWidthPct}%`, height: `${statCardWidthPct}cqw` }}
+    >
+      <span className="category-sheet__stat-card-label" style={{ fontSize: fontPx(STAT_CARD_LABEL_BASE_CQW) }}>
+        {card.label}
+      </span>
+      <span className="category-sheet__stat-card-icon-wrap">
+        <img src={card.icon} alt="" className="category-sheet__stat-card-icon" style={fixedIconStyle} />
+      </span>
+      <span className="category-sheet__stat-card-divider" />
+      <span className="category-sheet__stat-card-value" style={{ fontSize: fontPx(STAT_CARD_VALUE_BASE_CQW) }}>
+        {renderAmount(card.amount)}
+      </span>
+    </div>
+  )
 
-      <div className="category-sheet__fact-row" dir="ltr">
-        <div
-          className="category-sheet__sugar-box"
-          dir={dir}
-          style={{
-            flexBasis: `${sugarBoxWidthPct}%`,
-            height: factRowHeight,
-            order: factRowStacked ? 1 : 2,
-            backgroundColor: data.sugarBox.bg,
-          }}
-        >
-          {[data.sugarBox.sugar, data.sugarBox.teaspoons].map((item, index) => (
-            <div key={index} className="category-sheet__sugar-box-col">
-              <span className="category-sheet__sugar-box-label" style={{ fontSize: fontPx(SUGAR_BOX_LABEL_BASE_CQW) }}>
-                {item.label}
-              </span>
-              <span className="category-sheet__sugar-box-icon-wrap" style={{ height: sugarBoxIconWrapHeight }}>
-                <img
-                  src={item.icon}
-                  alt=""
-                  className="category-sheet__sugar-box-icon"
-                  style={{
-                    width: `${item.iconWidth * FIGMA_PX_TO_CQW * iconScale}cqw`,
-                    height: `${item.iconHeight * FIGMA_PX_TO_CQW * iconScale}cqw`,
-                  }}
-                />
-              </span>
-              <span className="category-sheet__sugar-box-divider" />
-              <span
-                className="category-sheet__sugar-box-value"
-                style={{ fontSize: fontPx(SUGAR_BOX_VALUE_BASE_CQW) }}
-              >
-                {renderAmount(item.amount)}
-              </span>
-            </div>
-          ))}
-        </div>
+  // Restores each sugar-card icon's original sugar-box sizing (see
+  // nutritionSugarStatCards' iconWidth/iconHeight) instead of the top row's
+  // stretch-to-fill default — position: static overrides the CSS class's
+  // absolute-fill positioning so the explicit width/height actually take effect.
+  const sugarCardIconStyle = (card) => ({
+    position: 'static',
+    width: `${card.iconWidth * FIGMA_PX_TO_CQW * iconScale}cqw`,
+    height: `${card.iconHeight * FIGMA_PX_TO_CQW * iconScale}cqw`,
+  })
 
-        <div
-          className="category-sheet__fact-table"
-          dir={dir}
-          style={{ flexBasis: `${factTableWidthPct}%`, height: factRowHeight, order: factRowStacked ? 2 : 1 }}
-        >
-          <div className="category-sheet__fact-table-labels">
-            <div className="category-sheet__fact-table-labels-inner">
-              {indentGroups.map((group) => {
+  // Shared between the two fact-table layouts below (side-by-side with the
+  // sugar box, or standalone under the stacked sugar-card row) — only the
+  // outer wrapper's sizing/positioning differs between them.
+  const factTableInner = (
+    <>
+      <div className="category-sheet__fact-table-labels">
+        <div className="category-sheet__fact-table-labels-inner">
+          {indentGroups.map((group) => {
+                // A single-child group (e.g. Energybar's totalCarbs → polyols) has
+                // only one row of height to draw a bracket in — every attempt at a
+                // graphic there (tick+foot, or a single centered tick) reads as a
+                // tiny, blocky glitch rather than a clean connector. Real nutrition
+                // labels don't bother bracketing a single sub-item either — the
+                // indentation alone (still applied via childIndentInfo below)
+                // already reads unambiguously as "belongs to the row above," so
+                // multi-child groups keep their bracket and solo ones just skip it.
+                if (group.childIndices.length === 1) return null
+
                 // The two rows' line-boxes include leading below the glyphs, so a
                 // full N-row-tall bracket overshoots past the actual text — trimmed
                 // a quarter row-height short of the full box to land right at the
@@ -283,27 +270,15 @@ function NutritionBody({ data, fontStep, iconScale, dir }) {
                     />
                     {/* Tick/foot always reach from the stem's position (wherever the first
                         word's width puts it) over to the indented text — a fixed 0.8em
-                        beyond the stem, matching how far out that text's own margin starts.
-                        A single-child group (e.g. totalCarbs → polyols) has almost no height
-                        for a separate tick+foot pair to sit apart in — they'd visually merge
-                        into one blocky glyph — so it gets one centered elbow line instead. */}
-                    {group.childIndices.length === 1 ? (
-                      <span
-                        className="category-sheet__fact-table-sub-bracket-tick category-sheet__fact-table-sub-bracket-tick--solo"
-                        style={{ insetInlineStart: `${stemCenterPx}px`, width: '0.8em' }}
-                      />
-                    ) : (
-                      <>
-                        <span
-                          className="category-sheet__fact-table-sub-bracket-tick"
-                          style={{ insetInlineStart: `${stemCenterPx}px`, width: '0.8em' }}
-                        />
-                        <span
-                          className="category-sheet__fact-table-sub-bracket-foot"
-                          style={{ insetInlineStart: `${stemCenterPx}px`, width: '0.8em' }}
-                        />
-                      </>
-                    )}
+                        beyond the stem, matching how far out that text's own margin starts. */}
+                    <span
+                      className="category-sheet__fact-table-sub-bracket-tick"
+                      style={{ insetInlineStart: `${stemCenterPx}px`, width: '0.8em' }}
+                    />
+                    <span
+                      className="category-sheet__fact-table-sub-bracket-foot"
+                      style={{ insetInlineStart: `${stemCenterPx}px`, width: '0.8em' }}
+                    />
                   </span>
                 )
               })}
@@ -347,8 +322,82 @@ function NutritionBody({ data, fontStep, iconScale, dir }) {
               ))}
             </div>
           </div>
-        </div>
+    </>
+  )
+
+  return (
+    <div className="category-sheet__nutrition">
+      <div className="category-sheet__stat-row" dir="ltr">
+        {data.cards.map((card) => renderStatCard(card))}
       </div>
+
+      {data.sugarCards ? (
+        <>
+          {/* Stacked layout (e.g. "Energybar"): sugar/teaspoons get their own
+              row of stat-card-styled boxes (identical size to the top row,
+              just centered since there are only 2), and the fact table sits
+              alone on its own line below — matching the Figma reference,
+              unlike twist's side-by-side sugar-box + fact-table row further
+              down. */}
+          <div className="category-sheet__stat-row category-sheet__stat-row--secondary" dir="ltr">
+            {data.sugarCards.map((card) => renderStatCard(card, sugarCardIconStyle(card)))}
+          </div>
+          <div
+            className="category-sheet__fact-table category-sheet__fact-table--standalone"
+            dir={dir}
+            style={{ height: factRowHeight }}
+          >
+            {factTableInner}
+          </div>
+        </>
+      ) : (
+        <div className="category-sheet__fact-row" dir="ltr">
+          <div
+            className="category-sheet__sugar-box"
+            dir={dir}
+            style={{
+              flexBasis: `${sugarBoxWidthPct}%`,
+              height: factRowHeight,
+              order: factRowStacked ? 1 : 2,
+              backgroundColor: data.sugarBox.bg,
+            }}
+          >
+            {[data.sugarBox.sugar, data.sugarBox.teaspoons].map((item, index) => (
+              <div key={index} className="category-sheet__sugar-box-col">
+                <span className="category-sheet__sugar-box-label" style={{ fontSize: fontPx(SUGAR_BOX_LABEL_BASE_CQW) }}>
+                  {item.label}
+                </span>
+                <span className="category-sheet__sugar-box-icon-wrap" style={{ height: sugarBoxIconWrapHeight }}>
+                  <img
+                    src={item.icon}
+                    alt=""
+                    className="category-sheet__sugar-box-icon"
+                    style={{
+                      width: `${item.iconWidth * FIGMA_PX_TO_CQW * iconScale}cqw`,
+                      height: `${item.iconHeight * FIGMA_PX_TO_CQW * iconScale}cqw`,
+                    }}
+                  />
+                </span>
+                <span className="category-sheet__sugar-box-divider" />
+                <span
+                  className="category-sheet__sugar-box-value"
+                  style={{ fontSize: fontPx(SUGAR_BOX_VALUE_BASE_CQW) }}
+                >
+                  {renderAmount(item.amount)}
+                </span>
+              </div>
+            ))}
+          </div>
+
+          <div
+            className="category-sheet__fact-table"
+            dir={dir}
+            style={{ flexBasis: `${factTableWidthPct}%`, height: factRowHeight, order: factRowStacked ? 2 : 1 }}
+          >
+            {factTableInner}
+          </div>
+        </div>
+      )}
     </div>
   )
 }
