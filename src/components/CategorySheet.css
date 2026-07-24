@@ -558,12 +558,20 @@
 }
 
 /* A single-child group (e.g. Energybar's totalCarbs → polyols) only gets one
-   tick, no separate foot (see the `isSolo` check in CategorySheet.jsx) —
-   centered instead of sitting at the regular 29% so it reads as a clean
-   small connector rather than crowding toward the top of its short box. */
+   tick, no separate foot (see the `isSolo` check in CategorySheet.jsx). Its
+   own box is short (just one row), so the regular 29% tick position reads as
+   too short a stem — moved further down (past the halfway point) to give the
+   hook more visible height. The stem is cut off right at the tick (instead of
+   spanning the full box, symmetric around a centered tick) so it still reads
+   as a small clean "⌐" hook rather than a floating dash with a stub above
+   and below it. */
 .category-sheet__fact-table-sub-bracket-tick--solo {
-  top: 50%;
-  transform: translateY(-50%);
+  top: 60%;
+}
+
+.category-sheet__fact-table-sub-bracket-stem--solo {
+  bottom: auto;
+  height: 60%;
 }
 
 .category-sheet__fact-table-labels span,

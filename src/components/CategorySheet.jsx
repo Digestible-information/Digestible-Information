@@ -270,7 +270,7 @@ function NutritionBody({ data, fontStep, iconScale, dir }) {
                         (via preserveAspectRatio="none") renders anisotropic strokes, making
                         the horizontal ticks look bolder than the vertical stem. */}
                     <span
-                      className="category-sheet__fact-table-sub-bracket-stem"
+                      className={`category-sheet__fact-table-sub-bracket-stem${isSolo ? ' category-sheet__fact-table-sub-bracket-stem--solo' : ''}`}
                       style={{ insetInlineStart: `${stemCenterPx - 0.625}px` }}
                     />
                     {/* Tick/foot always reach from the stem's position (wherever the first
@@ -468,12 +468,14 @@ function KosherBody({ data, fontStep, iconScale }) {
                 <p>
                   <span style={{ fontWeight: 700 }}>{row.line2Bold}</span> <span style={{ fontWeight: 400 }}>{row.line2Light}</span>
                 </p>
+                {row.line3Bold && <p style={{ fontWeight: 700 }}>{row.line3Bold}</p>}
               </>
             ) : (
               <>
                 <p>{row.line1}</p>
                 {row.line2 && <p>{row.line2}</p>}
                 {row.line3 && <p>{row.line3}</p>}
+                {row.line4 && <p>{row.line4}</p>}
               </>
             )}
           </div>

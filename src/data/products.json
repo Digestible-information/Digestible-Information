@@ -3,8 +3,9 @@
     "meta": {
       "photo": "products/Energybar/photo.png"
     },
-    "categoryIds": ["ingredients", "allergens", "nutrition"],
+    "categoryIds": ["ingredients", "allergens", "kosher", "nutrition"],
     "allergensHeight": 780,
+    "kosherRowIds": ["ouDairy", "badatzBeitYosef"],
     "nutritionHeight": 636,
     "nutritionLayout": "stacked",
     "nutritionColors": {
@@ -53,6 +54,12 @@
           "protein": { "label": "חלבונים", "amount": "5.9 גר׳" },
           "sugar": { "label": "סוכרים", "amount": "19.6 גר׳" },
           "teaspoons": { "label": "כפיות סוכר", "amount": "5" }
+        },
+        "kosherInfo": {
+          "dairyBadge": { "top": "כשר לפסח", "bottom": "חלבי" },
+          "dairySupervision": { "line1": "חלב ישראל", "line2": "בהשגחת הרבנות נוף הגליל. מכיל קטניות" },
+          "ouDairy": { "line1": "Orthodox", "line2Bold": "Union", "line2Light": "- Dairy", "line3Bold": "לימות השנה" },
+          "badatzBeitYosef": { "line1": "בד״צ בית יוסף", "line2": "כשר לפסח", "line3": "מכיל קטניות", "line4": "חלבי" }
         }
       },
       "en": {
@@ -84,6 +91,12 @@
           "protein": { "label": "Protein", "amount": "5.9 g" },
           "sugar": { "label": "Sugars", "amount": "19.6 g" },
           "teaspoons": { "label": "Sugar teaspoons", "amount": "5" }
+        },
+        "kosherInfo": {
+          "dairyBadge": { "top": "Kosher for Passover", "bottom": "Dairy" },
+          "dairySupervision": { "line1": "Israeli milk", "line2": "Under Nof HaGalil Rabbinate supervision. Contains legumes" },
+          "ouDairy": { "line1": "Orthodox", "line2Bold": "Union", "line2Light": "- Dairy", "line3Bold": "Year-round" },
+          "badatzBeitYosef": { "line1": "Beit Yosef Badatz", "line2": "Kosher for Passover", "line3": "Contains legumes", "line4": "Dairy" }
         }
       },
       "ar": {
@@ -115,6 +128,12 @@
           "protein": { "label": "البروتين", "amount": "5.9 غ" },
           "sugar": { "label": "السكريات", "amount": "19.6 غ" },
           "teaspoons": { "label": "ملاعق صغيرة من السكر", "amount": "5" }
+        },
+        "kosherInfo": {
+          "dairyBadge": { "top": "كوشير لعيد الفصح", "bottom": "ألبان" },
+          "dairySupervision": { "line1": "حليب إسرائيلي", "line2": "تحت إشراف حاخامية نوف هجليل. يحتوي على البقوليات" },
+          "ouDairy": { "line1": "Orthodox", "line2Bold": "Union", "line2Light": "- Dairy", "line3Bold": "على مدار السنة" },
+          "badatzBeitYosef": { "line1": "بداتس بيت يوسف", "line2": "كوشير لعيد الفصح", "line3": "يحتوي على البقوليات", "line4": "ألبان" }
         }
       }
     }
