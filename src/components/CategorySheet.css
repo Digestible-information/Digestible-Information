@@ -718,7 +718,12 @@
 .category-sheet__kosher-badge-label {
   color: var(--sheet-fg);
   font-weight: 700;
-  white-space: nowrap;
+  /* Was a fixed nowrap word ("Kosher"/"כשר") for every existing product, but
+     a longer phrase ("Kosher for Passover") overflows the sheet in English —
+     same root cause as .category-sheet__kosher-row-text's max-width comment
+     above, just for the badge instead of the cert rows. */
+  max-width: 40%;
+  text-align: center;
   transition: color 0.25s ease;
 }
 
