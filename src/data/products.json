@@ -3,26 +3,62 @@
     "meta": {
       "photo": "products/Energybar/photo.png"
     },
-    "categoryIds": [],
-    "allergens": [],
+    "categoryIds": ["allergens"],
+    "allergensHeight": 700,
+    "allergens": [
+      { "id": "eggs", "statement": "contains" },
+      { "id": "nuts", "statement": "contains" },
+      { "id": "milk", "statement": "contains" },
+      { "id": "peanuts", "statement": "contains" },
+      { "id": "soy", "statement": "mayContain" },
+      { "id": "sesame", "statement": "mayContain" },
+      { "id": "gluten", "statement": "doesNotContain" }
+    ],
     "content": {
       "he": {
         "brand": "אנרג'י",
         "productName": "חטיף דגנים עם שברי אגוזים ושוקולד חלב מעולה",
         "productNameBreakAfter": null,
-        "weightValue": "24 גר'"
+        "weightValue": "24 גר'",
+        "allergenLabels": {
+          "eggs": "ביצים",
+          "nuts": "אגוזים",
+          "milk": "חלב",
+          "peanuts": "בוטנים",
+          "soy": "סויה",
+          "sesame": "שומשום",
+          "gluten": "גלוטן"
+        }
       },
       "en": {
         "brand": "Energy",
         "productName": "Cereal snack with nut pieces and premium milk chocolate",
         "productNameBreakAfter": null,
-        "weightValue": "24 g"
+        "weightValue": "24 g",
+        "allergenLabels": {
+          "eggs": "Eggs",
+          "nuts": "Nuts",
+          "milk": "Milk",
+          "peanuts": "Peanuts",
+          "soy": "Soy",
+          "sesame": "Sesame",
+          "gluten": "Gluten"
+        }
       },
       "ar": {
         "brand": "إنرجي",
         "productName": "وجبة خفيفة من الحبوب مع قطع المكسرات وشوكولاتة حليب فاخرة",
         "productNameBreakAfter": null,
-        "weightValue": "غ 24"
+        "weightValue": "غ 24",
+        "allergenLabels": {
+          "eggs": "بيض",
+          "nuts": "مكسرات",
+          "milk": "حليب",
+          "peanuts": "فول سوداني",
+          "soy": "صويا",
+          "sesame": "سمسم",
+          "gluten": "غلوتين"
+        }
       }
     }
   },
@@ -31,6 +67,7 @@
       "photo": "products/twist/photo.png"
     },
     "categoryIds": ["ingredients", "allergens", "kosher", "nutrition", "storage", "manufacturer", "recycling"],
+    "allergensHeight": 500,
     "kosherRowIds": ["ouDairy", "rabbinicalSeal"],
     "storageRowIds": ["shaded", "cool", "dry"],
     "nutritionColors": {

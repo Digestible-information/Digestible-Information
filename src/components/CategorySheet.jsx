@@ -511,6 +511,7 @@ export default function CategorySheet({
   bodyManufacturer,
   bodyStorage,
   bodyRecycling,
+  bodyHeightPx,
 }) {
   const { t, dir } = useLanguage()
   const [dragY, setDragY] = useState(0)
@@ -636,7 +637,14 @@ export default function CategorySheet({
       />
       <div
         className={`category-sheet${bodyNutrition ? ' category-sheet--nutrition' : ''}${bodyKosher ? ' category-sheet--kosher' : ''}${bodyManufacturer ? ' category-sheet--manufacturer' : ''}${bodyStorage ? ' category-sheet--storage' : ''}${bodyRecycling ? ' category-sheet--recycling' : ''}${open ? ' category-sheet--open' : ''}${highContrast ? ' category-sheet--high-contrast' : ''}`}
-        style={dragging ? { transform: `translateY(${dragY}px)`, transition: 'none' } : undefined}
+        style={{
+          // Per-product override of the sheet's height budget (see the plain
+          // `.category-sheet`/`--<variant>` `top` rules in CategorySheet.css)
+          // — inline style naturally wins over whichever of those would
+          // otherwise apply, without needing a variant class per height.
+          ...(bodyHeightPx != null ? { top: `max(9vh, calc(100vh - ${bodyHeightPx}px))` } : null),
+          ...(dragging ? { transform: `translateY(${dragY}px)`, transition: 'none' } : null),
+        }}
         role="dialog"
         aria-modal="true"
         aria-label={title}
@@ -744,7 +752,7 @@ export default function CategorySheet({
                     className="category-sheet__body-heading"
                     style={{
                       fontSize: `${BASE_FONT_SIZE + 4 + fontStep * FONT_STEP_SIZE}px`,
-                      color: highContrast ? '#FFFFFF' : bodyHeadingColor,
+                      color: highContrast ? '#FFFFFF' : group.headingColor,
                     }}
                   >
                     {group.heading}
@@ -758,18 +766,27 @@ export default function CategorySheet({
                             const iconBudgetCqw = (ICON_BUDGET_CQW / Math.max(item.width, item.height)) * iconScale
                             return (
                               <div key={item.id} className="category-sheet__icon-item">
-                                <img
-                                  src={item.icon}
-                                  alt=""
+                                {/* A mask (not <img>) so the icon can be tinted per statement
+                                    group via background-color — the source SVGs have their red
+                                    baked into the fill, so an <img> can't be recolored via CSS
+                                    the way a currentColor-based inline SVG could. */}
+                                <span
+                                  aria-hidden="true"
                                   className="category-sheet__icon-item-img"
                                   style={{
                                     width: `${item.width * iconBudgetCqw}cqw`,
                                     height: `${item.height * iconBudgetCqw}cqw`,
+                                    backgroundColor: highContrast ? '#FFFFFF' : group.headingColor,
+                                    WebkitMaskImage: `url(${item.icon})`,
+                                    maskImage: `url(${item.icon})`,
                                   }}
                                 />
                                 <span
                                   className="category-sheet__icon-item-label"
-                                  style={{ fontSize: `calc(${LABEL_BASE_CQW}cqw + ${fontStep * FONT_STEP_SIZE}px)` }}
+                                  style={{
+                                    fontSize: `calc(${LABEL_BASE_CQW}cqw + ${fontStep * FONT_STEP_SIZE}px)`,
+                                    color: highContrast ? '#FFFFFF' : group.headingColor,
+                                  }}
                                 >
                                   {item.label}
                                 </span>

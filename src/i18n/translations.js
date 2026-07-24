@@ -3,8 +3,16 @@ export const DIRECTIONS = { he: 'rtl', en: 'ltr', ar: 'rtl' }
 // Fixed, app-wide vocabulary for allergen statement types — shown as a group
 // heading above that group's icon grid. A future statement type is added
 // here (×3 languages) plus one entry in ALLERGEN_STATEMENT_ORDER; no product
-// config or component code needs to change.
-export const ALLERGEN_STATEMENT_ORDER = ['contains', 'mayContain']
+// config or component code needs to change. ALLERGEN_STATEMENT_COLORS is the
+// same kind of fixed vocabulary (not per-product) — every product gets the
+// same color per statement type.
+export const ALLERGEN_STATEMENT_ORDER = ['contains', 'mayContain', 'doesNotContain']
+
+export const ALLERGEN_STATEMENT_COLORS = {
+  contains: '#EA2427',
+  mayContain: '#F5851F',
+  doesNotContain: '#43AA49',
+}
 
 export const translations = {
   he: {
@@ -26,6 +34,7 @@ export const translations = {
     allergenStatements: {
       contains: 'המוצר מכיל',
       mayContain: 'המוצר עלול להכיל',
+      doesNotContain: 'המוצר אינו מכיל',
     },
     nutritionTitle: 'סימון תזונתי',
     kosherTitle: 'כשרות',
@@ -61,6 +70,7 @@ export const translations = {
     allergenStatements: {
       contains: 'Contains',
       mayContain: 'May contain',
+      doesNotContain: 'Does not contain',
     },
     nutritionTitle: 'Nutrition facts',
     kosherTitle: 'Kosher',
@@ -96,6 +106,7 @@ export const translations = {
     allergenStatements: {
       contains: 'يحتوي على',
       mayContain: 'قد يحتوي على',
+      doesNotContain: 'لا يحتوي على',
     },
     nutritionTitle: 'القيمة الغذائية',
     kosherTitle: 'كوشر',

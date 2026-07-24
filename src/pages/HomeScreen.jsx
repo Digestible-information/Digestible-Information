@@ -13,7 +13,7 @@ import { manufacturerBodyIcon } from '../data/manufacturerInfo.js'
 import { storageRows } from '../data/storageInfo.js'
 import { recyclingBodyIcon } from '../data/recyclingInfo.js'
 import { useLanguage } from '../i18n/LanguageContext.jsx'
-import { ALLERGEN_STATEMENT_ORDER } from '../i18n/translations.js'
+import { ALLERGEN_STATEMENT_ORDER, ALLERGEN_STATEMENT_COLORS } from '../i18n/translations.js'
 import { useProduct } from '../hooks/useProduct.js'
 import './HomeScreen.css'
 
@@ -109,6 +109,7 @@ export default function HomeScreen() {
   const allergenGroups = ALLERGEN_STATEMENT_ORDER.map((statementKey) => ({
     statementKey,
     heading: t.allergenStatements[statementKey],
+    headingColor: ALLERGEN_STATEMENT_COLORS[statementKey],
     items: (product.allergens ?? [])
       .filter((allergen) => allergen.statement === statementKey)
       .map((allergen) => ({
@@ -223,8 +224,8 @@ export default function HomeScreen() {
           open={openSheet === 'allergens'}
           onClose={() => setOpenSheet(null)}
           title={t.categories.allergens}
-          bodyHeadingColor="#EA2427"
           bodyIcons={allergenGroups}
+          bodyHeightPx={product.allergensHeight ?? 500}
         />
       )}
 
