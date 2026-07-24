@@ -314,14 +314,26 @@
 
 .category-sheet__icon-item-img {
   display: block;
-  transition: width 0.15s ease, height 0.15s ease;
+  transition: width 0.15s ease, height 0.15s ease, filter 0.25s ease;
+}
+
+/* The allergen icons are red line-art (#EA2427 baked into the SVG), not the
+   black line-art invert(1) works for elsewhere — brightness(0) first flattens
+   any color to solid black (keeping the SVG's transparency), then invert(1)
+   takes it to white against the sheet's black high-contrast background. */
+.category-sheet--high-contrast .category-sheet__icon-item-img {
+  filter: brightness(0) invert(1);
 }
 
 .category-sheet__icon-item-label {
   color: #ea2427;
   font-weight: 600;
   text-align: center;
-  transition: font-size 0.15s ease;
+  transition: font-size 0.15s ease, color 0.25s ease;
+}
+
+.category-sheet--high-contrast .category-sheet__icon-item-label {
+  color: var(--sheet-fg);
 }
 
 .category-sheet__nutrition {

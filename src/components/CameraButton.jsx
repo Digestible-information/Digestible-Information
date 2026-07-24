@@ -17,7 +17,7 @@ export default function CameraButton() {
   }
 
   return (
-    <div className="camera-button">
+    <div className="camera-button" dir="ltr">
       <button
         type="button"
         className="camera-button__trigger"
