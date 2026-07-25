@@ -476,6 +476,7 @@
     "kosherBadgeSwatchColor": "#F5851F",
     "kosherHeight": 800,
     "storageRowIds": ["shaded", "cool"],
+    "nutritionHeight": 620,
     "nutritionLayout": "compact",
     "nutritionColors": { "sodium": "#43AA49", "energy": "#43AA49", "sugarBox": "#EA2427" },
     "nutritionTableRowIds": ["totalFat", "totalCarbs", "protein"],
