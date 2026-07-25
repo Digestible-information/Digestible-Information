@@ -642,5 +642,64 @@
         }
       }
     }
+  },
+  "Icecream": {
+    "meta": {
+      "photo": "products/Icecream/photo.png",
+      "photoAspectRatio": "374 / 479",
+      "photoScale": 0.85
+    },
+    "categoryIds": [],
+    "disabledCategoryIds": ["ingredients", "allergens", "kosher", "nutrition", "manufacturer", "storage", "recycling", "warnings"],
+    "allergens": [],
+    "content": {
+      "he": {
+        "brand": "פינה קולדה",
+        "productName": "סורבה קוקס עם אננס",
+        "productNameBreakAfter": null,
+        "weightValue": "400 גר"
+      },
+      "en": {
+        "brand": "Piña Colada",
+        "productName": "Coconut sorbet with pineapple",
+        "productNameBreakAfter": null,
+        "weightValue": "400 g"
+      },
+      "ar": {
+        "brand": "بينا كولادا",
+        "productName": "سوربيه جوز الهند مع الأناناس",
+        "productNameBreakAfter": null,
+        "weightValue": "غ 400"
+      }
+    }
+  },
+  "Ketchup": {
+    "meta": {
+      "photo": "products/Ketchup/photo.png",
+      "photoAspectRatio": "5 / 4"
+    },
+    "categoryIds": [],
+    "disabledCategoryIds": ["ingredients", "allergens", "kosher", "nutrition", "manufacturer", "storage", "recycling", "warnings"],
+    "allergens": [],
+    "content": {
+      "he": {
+        "brand": "קטשופ",
+        "productName": "קטשופ עגבניות HEINZ",
+        "productNameBreakAfter": "עגבניות",
+        "weightValue": "700 גר'"
+      },
+      "en": {
+        "brand": "Ketchup",
+        "productName": "HEINZ Tomato Ketchup",
+        "productNameBreakAfter": null,
+        "weightValue": "700 g"
+      },
+      "ar": {
+        "brand": "كاتشب",
+        "productName": "كاتشب طماطم HEINZ",
+        "productNameBreakAfter": null,
+        "weightValue": "غ 700"
+      }
+    }
   }
 }

@@ -20,6 +20,11 @@
   transform: scale(0.97);
 }
 
+.category-chip--disabled {
+  pointer-events: none;
+  cursor: default;
+}
+
 .category-chip__tab {
   display: flex;
   align-items: center;

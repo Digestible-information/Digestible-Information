@@ -108,7 +108,10 @@ export default function HomeScreen() {
   const middleRef = useRef(null)
   const scale = useFitToViewport(contentRef, middleRef, [language])
 
-  const includedCategories = categories.filter((category) => product.categoryIds.includes(category.id))
+  const disabledCategoryIds = product.disabledCategoryIds ?? []
+  const includedCategories = categories.filter(
+    (category) => product.categoryIds.includes(category.id) || disabledCategoryIds.includes(category.id)
+  )
   const primaryCategories = includedCategories.filter((category) => category.group === 'primary')
   const secondaryCategories = includedCategories.filter((category) => category.group === 'secondary')
 
@@ -144,6 +147,10 @@ export default function HomeScreen() {
             <button
               type="button"
               className="product-card__photo-button"
+              style={{
+                ...(product.meta.photoAspectRatio ? { '--photo-aspect-ratio': product.meta.photoAspectRatio } : undefined),
+                ...(product.meta.photoScale ? { '--photo-scale': product.meta.photoScale } : undefined),
+              }}
               onClick={() => setImageOpen(true)}
               aria-label={content.brand}
             >
@@ -166,14 +173,18 @@ export default function HomeScreen() {
           <hr className="section-divider" />
 
           <div className="category-grid" dir="ltr">
-            {primaryCategories.map((category) => (
-              <CategoryChip
-                key={category.id}
-                {...category}
-                label={t.categories[category.id]}
-                onClick={SHEET_CATEGORIES.has(category.id) ? () => setOpenSheet(category.id) : undefined}
-              />
-            ))}
+            {primaryCategories.map((category) => {
+              const isActive = product.categoryIds.includes(category.id)
+              return (
+                <CategoryChip
+                  key={category.id}
+                  {...category}
+                  label={t.categories[category.id]}
+                  disabled={!isActive}
+                  onClick={isActive && SHEET_CATEGORIES.has(category.id) ? () => setOpenSheet(category.id) : undefined}
+                />
+              )
+            })}
           </div>
 
           <div className="more-info-divider">
@@ -183,14 +194,18 @@ export default function HomeScreen() {
           </div>
 
           <div className="category-list">
-            {secondaryCategories.map((category) => (
-              <CategoryListRow
-                key={category.id}
-                {...category}
-                label={t.categories[category.id]}
-                onClick={SHEET_CATEGORIES.has(category.id) ? () => setOpenSheet(category.id) : undefined}
-              />
-            ))}
+            {secondaryCategories.map((category) => {
+              const isActive = product.categoryIds.includes(category.id)
+              return (
+                <CategoryListRow
+                  key={category.id}
+                  {...category}
+                  label={t.categories[category.id]}
+                  disabled={!isActive}
+                  onClick={isActive && SHEET_CATEGORIES.has(category.id) ? () => setOpenSheet(category.id) : undefined}
+                />
+              )
+            })}
           </div>
 
           <CameraButton />
