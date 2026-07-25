@@ -242,6 +242,23 @@ function NutritionBody({ data, fontStep, iconScale, dir }) {
     height: `${card.iconHeight * FIGMA_PX_TO_CQW * iconScale}cqw`,
   })
 
+  // Compact layout's natural-size icons (see data.rows below): sized off the
+  // card's own width growth (statCardWidthPct / STAT_CARD_BASE_PCT) instead
+  // of the generic iconScale above — iconScale grows at a different rate
+  // than the card itself (STAT_CARD_GROWTH_PCT is additive percentage-points,
+  // iconScale is a font-size ratio), so at higher font steps a
+  // sugarCardIconStyle-sized icon fell increasingly behind the card's own
+  // growth instead of scaling up with it. Tying the icon's growth directly to
+  // the card's own width percentage keeps them in lockstep at every step.
+  const compactCardIconStyle = (card) => {
+    const cardScaleRatio = statCardWidthPct / STAT_CARD_BASE_PCT
+    return {
+      position: 'static',
+      width: `${card.iconWidth * FIGMA_PX_TO_CQW * cardScaleRatio}cqw`,
+      height: `${card.iconHeight * FIGMA_PX_TO_CQW * cardScaleRatio}cqw`,
+    }
+  }
+
   // Shared between the two fact-table layouts below (side-by-side with the
   // sugar box, or standalone under the stacked sugar-card row) — only the
   // outer wrapper's sizing/positioning differs between them.
@@ -343,6 +360,36 @@ function NutritionBody({ data, fontStep, iconScale, dir }) {
           </div>
     </>
   )
+
+  // Compact layout (e.g. "Tomatosauce"): a variable number of plain stat-card
+  // rows (every card full-bleed via renderStatCard's default icon sizing, no
+  // top 3-up row / no data.cards or data.sugarCards distinction) followed by
+  // the standalone fact table — same fact-table wrapper the stacked layout
+  // below already uses, just reused directly rather than duplicated. This is
+  // a sibling early return, not a wrapper around the default/stacked return
+  // below, so that existing rendering stays completely untouched.
+  if (data.rows) {
+    return (
+      <div className="category-sheet__nutrition">
+        {data.rows.map((row, index) => (
+          <div
+            key={index}
+            className={`category-sheet__stat-row${index > 0 ? ' category-sheet__stat-row--secondary' : ''}`}
+            dir="ltr"
+          >
+            {row.map((card) => renderStatCard(card, card.useNaturalIconSize ? compactCardIconStyle(card) : undefined))}
+          </div>
+        ))}
+        <div
+          className="category-sheet__fact-table category-sheet__fact-table--standalone"
+          dir={dir}
+          style={{ height: factRowHeight, width: `${standaloneFactTableWidthPct}%` }}
+        >
+          {factTableInner}
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="category-sheet__nutrition">
@@ -560,24 +607,57 @@ function StorageBody({ data, fontStep, iconScale }) {
 
   return (
     <div className="category-sheet__storage">
-      {data.rows.map((row) => (
-        <div key={row.id} className="category-sheet__storage-row">
-          {/* See .claude/skills/rtl-icon-text-order — icon always reads first
-              (DOM order: icon, then label), in every language. */}
-          <img
-            src={row.icon}
-            alt=""
-            className={`category-sheet__storage-icon${row.invertOnHighContrast ? ' category-sheet__storage-icon--invertible' : ''}`}
-            style={{
-              width: `${row.iconWidth * FIGMA_PX_TO_CQW * iconScale}cqw`,
-              height: `${row.iconHeight * FIGMA_PX_TO_CQW * iconScale}cqw`,
-            }}
-          />
-          <span className="category-sheet__storage-label" style={{ fontSize: fontPx(STORAGE_TEXT_BASE_CQW) }}>
-            {row.label}
-          </span>
-        </div>
-      ))}
+      <div className="category-sheet__storage-rows">
+        {data.rows.map((row) => (
+          <div key={row.id} className="category-sheet__storage-row">
+            {/* See .claude/skills/rtl-icon-text-order — icon always reads first
+                (DOM order: icon, then label), in every language. */}
+            <img
+              src={row.icon}
+              alt=""
+              className={`category-sheet__storage-icon${row.invertOnHighContrast ? ' category-sheet__storage-icon--invertible' : ''}`}
+              style={{
+                width: `${row.iconWidth * FIGMA_PX_TO_CQW * iconScale}cqw`,
+                height: `${row.iconHeight * FIGMA_PX_TO_CQW * iconScale}cqw`,
+              }}
+            />
+            <span className="category-sheet__storage-label" style={{ fontSize: fontPx(STORAGE_TEXT_BASE_CQW) }}>
+              {row.label}
+            </span>
+          </div>
+        ))}
+      </div>
+      {/* Optional (e.g. "Tomatosauce"): a second block below a divider, for
+          products with post-opening storage guidance the top rows don't cover. */}
+      {data.afterOpening && (
+        <>
+          <span className="category-sheet__storage-divider" />
+          <div className="category-sheet__storage-after-opening">
+            <p
+              className="category-sheet__storage-after-opening-heading"
+              style={{ fontSize: fontPx(STORAGE_TEXT_BASE_CQW) }}
+            >
+              {data.afterOpening.heading}
+            </p>
+            <div className="category-sheet__storage-after-opening-row">
+              {/* See .claude/skills/rtl-icon-text-order — icon always reads first
+                  (DOM order: icon, then text), in every language. */}
+              <img
+                src={data.afterOpening.icon.icon}
+                alt=""
+                className={`category-sheet__storage-icon${data.afterOpening.icon.invertOnHighContrast ? ' category-sheet__storage-icon--invertible' : ''}`}
+                style={{
+                  width: `${data.afterOpening.icon.iconWidth * FIGMA_PX_TO_CQW * iconScale}cqw`,
+                  height: `${data.afterOpening.icon.iconHeight * FIGMA_PX_TO_CQW * iconScale}cqw`,
+                }}
+              />
+              <span className="category-sheet__storage-label" style={{ fontSize: fontPx(STORAGE_TEXT_BASE_CQW) }}>
+                {data.afterOpening.text}
+              </span>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   )
 }
@@ -742,15 +822,22 @@ export default function CategorySheet({
     // that means starting from the visually-rightmost (last) item.
     const inReadingOrder = (list) => (dir === 'rtl' ? [...list].reverse() : list)
     const spokenBody = bodyNutrition
-      ? [
-          ...inReadingOrder(bodyNutrition.cards).map(factToSpeech),
-          ...inReadingOrder(bodyNutrition.table).map(factToSpeech),
-          // Stacked layout (see data.sugarCards in CategorySheet.jsx's NutritionBody)
-          // has no sugarBox — twist's combined layout still does.
-          ...(bodyNutrition.sugarCards
-            ? inReadingOrder(bodyNutrition.sugarCards).map(factToSpeech)
-            : [factToSpeech(bodyNutrition.sugarBox.sugar), factToSpeech(bodyNutrition.sugarBox.teaspoons)]),
-        ].join(', ')
+      ? // Compact layout (see data.rows in CategorySheet.jsx's NutritionBody) has
+        // no `cards`/`sugarCards`/`sugarBox` — just a variable number of card rows.
+        bodyNutrition.rows
+        ? [
+            ...bodyNutrition.rows.flatMap((row) => inReadingOrder(row).map(factToSpeech)),
+            ...inReadingOrder(bodyNutrition.table).map(factToSpeech),
+          ].join(', ')
+        : [
+            ...inReadingOrder(bodyNutrition.cards).map(factToSpeech),
+            ...inReadingOrder(bodyNutrition.table).map(factToSpeech),
+            // Stacked layout (see data.sugarCards in CategorySheet.jsx's NutritionBody)
+            // has no sugarBox — twist's combined layout still does.
+            ...(bodyNutrition.sugarCards
+              ? inReadingOrder(bodyNutrition.sugarCards).map(factToSpeech)
+              : [factToSpeech(bodyNutrition.sugarBox.sugar), factToSpeech(bodyNutrition.sugarBox.teaspoons)]),
+          ].join(', ')
       : bodyKosher
       ? [
           bodyKosher.badge && `${bodyKosher.badge.top} ${bodyKosher.badge.bottom}`,
@@ -775,7 +862,12 @@ export default function CategorySheet({
           `${bodyManufacturer.contact.label} ${bodyManufacturer.contact.detail.join(' ')}`,
         ].join(', ')
       : bodyStorage
-      ? bodyStorage.rows.map((row) => row.label).join(', ')
+      ? [
+          ...bodyStorage.rows.map((row) => row.label),
+          // Optional (see data.afterOpening in CategorySheet.jsx's StorageBody) —
+          // only Tomatosauce-style products with an after-opening note have this.
+          ...(bodyStorage.afterOpening ? [bodyStorage.afterOpening.heading, bodyStorage.afterOpening.text] : []),
+        ].join(', ')
       : bodyRecycling
       ? bodyRecycling.rows.map((row) => row.segments.map((segment) => segment.text).join('')).join(', ')
       : bodyWarnings

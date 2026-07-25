@@ -791,20 +791,57 @@
 
 .category-sheet__storage {
   container-type: inline-size;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  row-gap: 1.4em;
+  padding-top: 6px;
+}
+
+.category-sheet__storage-rows {
   display: grid;
   grid-template-columns: auto auto;
   justify-content: center;
   align-items: center;
   column-gap: 4%;
   row-gap: 0.9em;
-  padding-top: 6px;
 }
 
 /* display: contents lets each row's icon/label become direct grid children of
-   .category-sheet__storage, so every icon lands in the same grid column
+   .category-sheet__storage-rows, so every icon lands in the same grid column
    (aligned one beneath the other) no matter how wide that row's own icon is. */
 .category-sheet__storage-row {
   display: contents;
+}
+
+/* Optional post-opening block (see data.afterOpening in CategorySheet.jsx's
+   StorageBody) — only present for products with this extra guidance. */
+.category-sheet__storage-divider {
+  width: 80%;
+  height: 1.5px;
+  flex-shrink: 0;
+  background: currentColor;
+  opacity: 0.9;
+}
+
+.category-sheet__storage-after-opening {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  row-gap: 0.7em;
+}
+
+.category-sheet__storage-after-opening-heading {
+  color: var(--sheet-fg);
+  font-weight: 600;
+  text-align: center;
+  transition: color 0.25s ease;
+}
+
+.category-sheet__storage-after-opening-row {
+  display: flex;
+  align-items: center;
+  column-gap: 4%;
 }
 
 .category-sheet__storage-label {

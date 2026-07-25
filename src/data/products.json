@@ -7,6 +7,7 @@
     "ingredientsHeight": 620,
     "allergensHeight": 780,
     "kosherRowIds": ["ouDairy", "badatzBeitYosef"],
+    "kosherBadgeSwatchColor": "#39C5EC",
     "kosherHeight": 820,
     "storageRowIds": ["shaded", "cool", "dry"],
     "nutritionHeight": 636,
@@ -266,6 +267,7 @@
     "categoryIds": ["ingredients", "allergens", "kosher", "nutrition", "storage", "manufacturer", "recycling"],
     "allergensHeight": 500,
     "kosherRowIds": ["ouDairy", "rabbinicalSeal"],
+    "kosherBadgeSwatchColor": "#39C5EC",
     "storageRowIds": ["shaded", "cool", "dry"],
     "nutritionColors": {
       "sodium": "#00AE38",
@@ -466,10 +468,17 @@
     "meta": {
       "photo": "products/Tomatosauce/photo.png"
     },
-    "categoryIds": ["ingredients", "allergens"],
+    "categoryIds": ["ingredients", "allergens", "kosher", "nutrition", "manufacturer", "storage", "recycling"],
     "ingredientsHeight": 300,
     "allergensHeight": 260,
     "brandFontSize": "6cqw",
+    "kosherRowIds": ["regionalRabbinate", "badatzBeitYosef"],
+    "kosherBadgeSwatchColor": "#F5851F",
+    "kosherHeight": 800,
+    "storageRowIds": ["shaded", "cool"],
+    "nutritionLayout": "compact",
+    "nutritionColors": { "sodium": "#43AA49", "energy": "#43AA49", "sugarBox": "#EA2427" },
+    "nutritionTableRowIds": ["totalFat", "totalCarbs", "protein"],
     "allergens": [
       { "id": "sesame", "statement": "mayContain" },
       { "id": "soy", "statement": "mayContain" }
@@ -484,6 +493,47 @@
         "allergenLabels": {
           "sesame": "שומשום",
           "soy": "סויה"
+        },
+        "kosherInfo": {
+          "dairyBadge": { "top": "כשר לפסח", "bottom": "פרווה" },
+          "dairySupervision": { "line1": "מכיל קטניות", "line2": "ללא חשש טבל ושביעית" },
+          "regionalRabbinate": { "line1": "בהשגחת הרבנות", "line2": "האזורית עמק יזרעאל" },
+          "badatzBeitYosef": { "line1": "בד״צ בית יוסף", "line2": "כשר לפסח", "line3": "מכיל קטניות" }
+        },
+        "nutritionSubtitle": "ל-100 גרם מוצר",
+        "nutritionFacts": {
+          "sodium": { "label": "נתרן", "amount": "19 מ״ג" },
+          "energy": { "label": "אנרגיה", "amount": "69 ק״ל" },
+          "sugar": { "label": "סוכרים", "amount": "13.3 גר׳" },
+          "teaspoons": { "label": "כפיות סוכר", "amount": "3.25" },
+          "totalFat": { "label": "סך השומנים", "amount": "0 גר׳" },
+          "totalCarbs": { "label": "סך הפחמימות", "amount": "14.3 גר׳" },
+          "protein": { "label": "חלבונים", "amount": "2 גר׳" }
+        },
+        "manufacturerInfo": {
+          "producedBy": {
+            "label": "מיוצר על ידי:",
+            "detail": ["זנלכל בע״מ,", "א.ת אלון תבור,", "עפולה."]
+          },
+          "contact": { "label": "ליצירת קשר:", "detail": ["שירות צרכנים", "050-6320985"] }
+        },
+        "storageInfo": {
+          "heading": "יש לשמור במקום:",
+          "labels": { "shaded": "מוצל", "cool": "קריר" },
+          "afterOpening": { "heading": "לאחר הפתיחה:", "text": "לשמור במקרר ולצרוך תוך מספר ימים" }
+        },
+        "recyclingInfo": {
+          "bins": [
+            {
+              "color": "orange",
+              "segments": [
+                { "text": "את " },
+                { "text": "האריזה", "bold": true },
+                { "text": " יש להשליך " },
+                { "text": "לפח הכתום", "bold": true, "highlight": true }
+              ]
+            }
+          ]
         }
       },
       "en": {
@@ -495,6 +545,47 @@
         "allergenLabels": {
           "sesame": "Sesame",
           "soy": "Soy"
+        },
+        "kosherInfo": {
+          "dairyBadge": { "top": "Kosher for Passover", "bottom": "Parve" },
+          "dairySupervision": { "line1": "Contains legumes", "line2": "No tevel or shviit concern" },
+          "regionalRabbinate": { "line1": "Under supervision of the", "line2": "Emek Yizrael Regional Rabbinate" },
+          "badatzBeitYosef": { "line1": "Beit Yosef Badatz", "line2": "Kosher for Passover", "line3": "Contains legumes" }
+        },
+        "nutritionSubtitle": "Per 100g of product",
+        "nutritionFacts": {
+          "sodium": { "label": "Sodium", "amount": "19 mg" },
+          "energy": { "label": "Energy", "amount": "69 kcal" },
+          "sugar": { "label": "Sugars", "amount": "13.3 g" },
+          "teaspoons": { "label": "Sugar teaspoons", "amount": "3.25" },
+          "totalFat": { "label": "Total fat", "amount": "0 g" },
+          "totalCarbs": { "label": "Total carbs", "amount": "14.3 g" },
+          "protein": { "label": "Protein", "amount": "2 g" }
+        },
+        "manufacturerInfo": {
+          "producedBy": {
+            "label": "Manufactured by:",
+            "detail": ["Zanlakol Ltd.,", "Alon Tavor Industrial Zone,", "Afula."]
+          },
+          "contact": { "label": "For contact:", "detail": ["Consumer service", "050-6320985"] }
+        },
+        "storageInfo": {
+          "heading": "Store in a place that is:",
+          "labels": { "shaded": "Shaded", "cool": "Cool" },
+          "afterOpening": { "heading": "After opening:", "text": "Store in the refrigerator and consume within a few days" }
+        },
+        "recyclingInfo": {
+          "bins": [
+            {
+              "color": "orange",
+              "segments": [
+                { "text": "The " },
+                { "text": "container", "bold": true },
+                { "text": " should be discarded in the " },
+                { "text": "orange bin", "bold": true, "highlight": true }
+              ]
+            }
+          ]
         }
       },
       "ar": {
@@ -506,6 +597,47 @@
         "allergenLabels": {
           "sesame": "سمسم",
           "soy": "صويا"
+        },
+        "kosherInfo": {
+          "dairyBadge": { "top": "كوشير لعيد الفصح", "bottom": "بارڤي" },
+          "dairySupervision": { "line1": "يحتوي على البقوليات", "line2": "لا شبهة طبل أو شبيعيت" },
+          "regionalRabbinate": { "line1": "بإشراف حاخامية", "line2": "عيمق يزراعيل الإقليمية" },
+          "badatzBeitYosef": { "line1": "بداتس بيت يوسف", "line2": "كوشير لعيد الفصح", "line3": "يحتوي على البقوليات" }
+        },
+        "nutritionSubtitle": "لكل 100 غرام من المنتج",
+        "nutritionFacts": {
+          "sodium": { "label": "الصوديوم", "amount": "19 مغ" },
+          "energy": { "label": "الطاقة", "amount": "69 ك.كال" },
+          "sugar": { "label": "السكريات", "amount": "13.3 غ" },
+          "teaspoons": { "label": "ملاعق صغيرة من السكر", "amount": "3.25" },
+          "totalFat": { "label": "إجمالي الدهون", "amount": "0 غ" },
+          "totalCarbs": { "label": "إجمالي الكربوهيدرات", "amount": "14.3 غ" },
+          "protein": { "label": "البروتين", "amount": "2 غ" }
+        },
+        "manufacturerInfo": {
+          "producedBy": {
+            "label": "تصنيع:",
+            "detail": ["زانلاكول المحدودة،", "منطقة ألون تابور الصناعية،", "عفولة."]
+          },
+          "contact": { "label": "للتواصل:", "detail": ["خدمة المستهلكين", "050-6320985"] }
+        },
+        "storageInfo": {
+          "heading": "يُحفظ في مكان:",
+          "labels": { "shaded": "مظلل", "cool": "بارد" },
+          "afterOpening": { "heading": "بعد الفتح:", "text": "يُحفظ في الثلاجة ويُستهلك خلال عدة أيام" }
+        },
+        "recyclingInfo": {
+          "bins": [
+            {
+              "color": "orange",
+              "segments": [
+                { "text": "يجب التخلص من " },
+                { "text": "العبوة", "bold": true },
+                { "text": " في " },
+                { "text": "السلة البرتقالية", "bold": true, "highlight": true }
+              ]
+            }
+          ]
         }
       }
     }

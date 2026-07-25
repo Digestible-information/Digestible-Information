@@ -13,9 +13,9 @@ import {
   nutritionSugarBoxIcons,
   nutritionSugarStatCards,
 } from '../data/nutritionFacts.js'
-import { kosherRows, kosherBadgeSwatchColor } from '../data/kosherInfo.js'
+import { kosherRows } from '../data/kosherInfo.js'
 import { manufacturerBodyIcon } from '../data/manufacturerInfo.js'
-import { storageRows } from '../data/storageInfo.js'
+import { storageRows, storageAfterOpeningIcon } from '../data/storageInfo.js'
 import { recyclingBinIcons } from '../data/recyclingInfo.js'
 import { warningsBodyIcon } from '../data/warningsInfo.js'
 import { useLanguage } from '../i18n/LanguageContext.jsx'
@@ -248,32 +248,63 @@ export default function HomeScreen() {
           title={t.nutritionTitle}
           subtitle={content.nutritionSubtitle}
           bodyHeightPx={product.nutritionHeight}
-          bodyNutrition={{
-            cards: nutritionStatCards.map((item) => ({
-              ...item,
-              ...content.nutritionFacts[item.id],
-              bg: product.nutritionColors[item.id],
-            })),
-            table: (product.nutritionTableRowIds ?? nutritionTableRowIds).map((id) => ({
-              id,
-              ...content.nutritionFacts[id],
-            })),
-            ...(product.nutritionLayout === 'stacked'
+          bodyNutrition={
+            product.nutritionLayout === 'compact'
               ? {
-                  sugarCards: nutritionSugarStatCards.map((item) => ({
-                    ...item,
-                    ...content.nutritionFacts[item.id],
-                    bg: product.nutritionColors.sugarBox,
+                  // Compact layout (e.g. "Tomatosauce"): 2 plain stat-card rows
+                  // (no top 3-up row, no satFat card) + the standalone fact
+                  // table — see NutritionBody's `data.rows` branch.
+                  rows: [
+                    nutritionSugarStatCards.map((item) => ({
+                      ...item,
+                      ...content.nutritionFacts[item.id],
+                      bg: product.nutritionColors.sugarBox,
+                      // Same natural-size icon treatment as the stacked layout's
+                      // sugar/teaspoons row (see sugarCardIconStyle in
+                      // CategorySheet.jsx) — full-bleed made these two icons look
+                      // oversized compared to how they render everywhere else.
+                      useNaturalIconSize: true,
+                    })),
+                    nutritionStatCards
+                      .filter((item) => item.id !== 'satFat')
+                      .map((item) => ({
+                        ...item,
+                        ...content.nutritionFacts[item.id],
+                        bg: product.nutritionColors[item.id],
+                      })),
+                  ],
+                  table: (product.nutritionTableRowIds ?? nutritionTableRowIds).map((id) => ({
+                    id,
+                    ...content.nutritionFacts[id],
                   })),
                 }
               : {
-                  sugarBox: {
-                    bg: product.nutritionColors.sugarBox,
-                    sugar: { ...nutritionSugarBoxIcons.sugar, ...content.nutritionFacts.sugar },
-                    teaspoons: { ...nutritionSugarBoxIcons.teaspoons, ...content.nutritionFacts.teaspoons },
-                  },
-                }),
-          }}
+                  cards: nutritionStatCards.map((item) => ({
+                    ...item,
+                    ...content.nutritionFacts[item.id],
+                    bg: product.nutritionColors[item.id],
+                  })),
+                  table: (product.nutritionTableRowIds ?? nutritionTableRowIds).map((id) => ({
+                    id,
+                    ...content.nutritionFacts[id],
+                  })),
+                  ...(product.nutritionLayout === 'stacked'
+                    ? {
+                        sugarCards: nutritionSugarStatCards.map((item) => ({
+                          ...item,
+                          ...content.nutritionFacts[item.id],
+                          bg: product.nutritionColors.sugarBox,
+                        })),
+                      }
+                    : {
+                        sugarBox: {
+                          bg: product.nutritionColors.sugarBox,
+                          sugar: { ...nutritionSugarBoxIcons.sugar, ...content.nutritionFacts.sugar },
+                          teaspoons: { ...nutritionSugarBoxIcons.teaspoons, ...content.nutritionFacts.teaspoons },
+                        },
+                      }),
+                }
+          }
         />
       )}
 
@@ -284,7 +315,7 @@ export default function HomeScreen() {
           title={t.kosherTitle}
           bodyHeightPx={product.kosherHeight}
           bodyKosher={{
-            badgeSwatchColor: kosherBadgeSwatchColor,
+            badgeSwatchColor: product.kosherBadgeSwatchColor,
             badge: content.kosherInfo.dairyBadge,
             supervision: content.kosherInfo.dairySupervision,
             rows: kosherRows
@@ -317,6 +348,9 @@ export default function HomeScreen() {
             rows: storageRows
               .filter((row) => product.storageRowIds.includes(row.id))
               .map((row) => ({ ...row, label: content.storageInfo.labels[row.id] })),
+            ...(content.storageInfo.afterOpening && {
+              afterOpening: { ...content.storageInfo.afterOpening, icon: storageAfterOpeningIcon },
+            }),
           }}
         />
       )}
