@@ -1,28 +1,49 @@
+/* Pinned to the trailing edge (left in RTL, right in LTR) via a logical
+   property so it auto-mirrors with the page's real direction — floats above
+   and overlaps the bottom rows of .category-list, matching the Figma mock. */
 .camera-button {
-  margin-top: auto;
-  flex-shrink: 0;
-  display: flex;
-  padding: clamp(4px, 1vh, 8px) 0 clamp(2px, 0.5vh, 4px);
+  position: absolute;
+  inset-inline-end: 0;
+  bottom: clamp(90px, 20vh, 140px);
+  z-index: 5;
 }
 
-/* The badge's own viewBox widens dynamically for longer labels (see
-   ScanBadge's viewBoxMinX/viewBoxWidth in CameraButton.jsx, which grows past
-   the circle's own footprint whenever a label needs more room than that to
-   avoid clipping its outermost letters) — so its aspect ratio isn't fixed
-   the way a plain circle icon's would be. Sized off a fixed height instead,
-   with width left to follow the SVG's own (variable) intrinsic ratio. */
+/* The shape rounds its leading edge (inline-start) and stays flat on the
+   trailing edge (inline-end) — logical corners so it mirrors with direction:
+   round-right/flat-left for RTL (he/ar), round-left/flat-right for LTR (en).
+   Confirmed by sampling Figma's own rendered pixels for the English frame —
+   its Tailwind-exported class names looked identical to Hebrew's, but the
+   actual render is mirrored (Figma flips the whole frame as an instance and
+   then counter-flips the icon/label content to keep it readable; using
+   logical border-radius here gets the same mirrored shape for free, without
+   needing that counter-flip on the content at all).
+   Padding is set inline per-language (see BADGE_LAYOUT in the JSX). */
 .camera-button__trigger {
-  height: clamp(58px, 11vh, 88px);
-  width: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
   border: none;
-  background: transparent;
-  padding: 0;
   cursor: pointer;
+  background: #2c2969;
+  border-start-start-radius: 100px;
+  border-end-start-radius: 100px;
+  border-start-end-radius: 0;
+  border-end-end-radius: 0;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.35));
 }
 
-.camera-button__badge {
-  height: 100%;
-  width: auto;
+/* Size and inner offsets are set inline per-language (see BADGE_LAYOUT) —
+   the icon/label aren't at the same offsets across he/en/ar. */
+.camera-button__stack {
+  position: relative;
+  display: block;
+  flex-shrink: 0;
+}
+
+.camera-button__icon,
+.camera-button__label {
+  position: absolute;
   display: block;
 }
 
