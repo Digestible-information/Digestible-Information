@@ -702,5 +702,61 @@
         "weightValue": "غ 700"
       }
     }
+  },
+  "Pastrami": {
+    "meta": {
+      "photo": "products/Pastrami/photo.png"
+    },
+    "categoryIds": [],
+    "disabledCategoryIds": ["ingredients", "allergens", "kosher", "nutrition", "manufacturer", "storage", "recycling"],
+    "allergens": [],
+    "content": {
+      "he": {
+        "brand": "פסטרמה גחלים",
+        "productName": "נתחי הודו טחונים, מעוצבים אפויים ומעושנים",
+        "productNameBreakAfter": null,
+        "weightValue": "330 גר'"
+      },
+      "en": {
+        "brand": "Charcoal Pastrami",
+        "productName": "Ground turkey pieces, shaped, baked and smoked",
+        "productNameBreakAfter": null,
+        "weightValue": "330 g"
+      },
+      "ar": {
+        "brand": "بسطرمة الفحم",
+        "productName": "قطع ديك رومي مفرومة، مشكّلة، مخبوزة ومدخّنة",
+        "productNameBreakAfter": null,
+        "weightValue": "غ 330"
+      }
+    }
+  },
+  "Yogurt": {
+    "meta": {
+      "photo": "products/Yogurt/photo.png"
+    },
+    "categoryIds": [],
+    "disabledCategoryIds": ["ingredients", "allergens", "kosher", "nutrition", "manufacturer", "storage", "recycling"],
+    "allergens": [],
+    "content": {
+      "he": {
+        "brand": "יוגורט BIO",
+        "productName": "יוגורט 3% שומן",
+        "productNameBreakAfter": null,
+        "weightValue": "150 גר'"
+      },
+      "en": {
+        "brand": "Yogurt BIO",
+        "productName": "Yogurt 3% fat",
+        "productNameBreakAfter": null,
+        "weightValue": "150 g"
+      },
+      "ar": {
+        "brand": "زبادي BIO",
+        "productName": "زبادي 3% دسم",
+        "productNameBreakAfter": null,
+        "weightValue": "غ 150"
+      }
+    }
   }
 }
