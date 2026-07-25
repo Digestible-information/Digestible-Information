@@ -707,6 +707,7 @@
     "meta": {
       "photo": "products/Pastrami/photo.png"
     },
+    "brandFontSize": "5.5cqw",
     "categoryIds": [],
     "disabledCategoryIds": ["ingredients", "allergens", "kosher", "nutrition", "manufacturer", "storage", "recycling"],
     "allergens": [],
