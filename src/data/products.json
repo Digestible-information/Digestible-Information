@@ -647,10 +647,10 @@
     "meta": {
       "photo": "products/Icecream/photo.png",
       "photoAspectRatio": "374 / 479",
-      "photoScale": 0.85
+      "photoScale": 0.65
     },
     "categoryIds": [],
-    "disabledCategoryIds": ["ingredients", "allergens", "kosher", "nutrition", "manufacturer", "storage", "recycling", "warnings"],
+    "disabledCategoryIds": ["ingredients", "allergens", "kosher", "nutrition", "manufacturer", "storage", "recycling"],
     "allergens": [],
     "content": {
       "he": {
@@ -676,10 +676,11 @@
   "Ketchup": {
     "meta": {
       "photo": "products/Ketchup/photo.png",
-      "photoAspectRatio": "5 / 4"
+      "photoAspectRatio": "5 / 4",
+      "photoScale": 0.65
     },
     "categoryIds": [],
-    "disabledCategoryIds": ["ingredients", "allergens", "kosher", "nutrition", "manufacturer", "storage", "recycling", "warnings"],
+    "disabledCategoryIds": ["ingredients", "allergens", "kosher", "nutrition", "manufacturer", "storage", "recycling"],
     "allergens": [],
     "content": {
       "he": {
