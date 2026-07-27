@@ -709,27 +709,72 @@
       "photo": "products/Pastrami/photo.png"
     },
     "brandFontSize": "5.5cqw",
-    "categoryIds": [],
-    "disabledCategoryIds": ["ingredients", "allergens", "kosher", "nutrition", "manufacturer", "storage", "recycling"],
-    "allergens": [],
+    "categoryIds": ["ingredients", "allergens", "storage", "kosher"],
+    "disabledCategoryIds": ["nutrition", "manufacturer", "recycling"],
+    "storageRowIds": [],
+    "kosherRowIds": ["regionalRabbinate"],
+    "kosherBadgeSwatchColor": "#DE0405",
+    "allergens": [
+      { "id": "soy", "statement": "mayContain" },
+      { "id": "gluten", "statement": "doesNotContain" }
+    ],
     "content": {
       "he": {
         "brand": "פסטרמה גחלים",
         "productName": "נתחי הודו טחונים, מעוצבים אפויים ומעושנים",
         "productNameBreakAfter": null,
-        "weightValue": "330 גר'"
+        "weightValue": "330 גר'",
+        "ingredientsText": "בשר הודו (68%), מים, עמילן, מווסתי חומציות (אשלגן לקטט, נתרן דיאצטט, נתרן קרבונט), עמילן מעובד (E1420), סוכרים, מלח, מייצבים (טרי, פולי ודי פוספטים, קראגינן, קסנתאן גאם), מלטודקסטרין, חומרי טעם וריח, מעכבי חימצון (נתרן אריתוברט, חומצה אסקורבית), חומר משמר (ניטריט הנתרן), תבלינים.",
+        "allergenLabels": {
+          "soy": "סויה",
+          "gluten": "גלוטן"
+        },
+        "storageInfo": {
+          "heading": "",
+          "labels": {},
+          "afterOpening": { "heading": "יש לשמור:", "text": "בקירור, 0-4°C ולצרוך עד 5 ימים מהפתיחה" }
+        },
+        "kosherInfo": {
+          "dairyBadge": { "top": "כשר", "bottom": "בשרי" }
+        }
       },
       "en": {
         "brand": "Charcoal Pastrami",
         "productName": "Ground turkey pieces, shaped, baked and smoked",
         "productNameBreakAfter": null,
-        "weightValue": "330 g"
+        "weightValue": "330 g",
+        "ingredientsText": "Turkey meat (68%), water, starch, acidity regulators (potassium lactate, sodium diacetate, sodium carbonate), modified starch (E1420), sugars, salt, stabilizers (tri-, di- and polyphosphates, carrageenan, xanthan gum), maltodextrin, flavorings, antioxidants (sodium erythorbate, ascorbic acid), preservative (sodium nitrite), spices.",
+        "allergenLabels": {
+          "soy": "Soy",
+          "gluten": "Gluten"
+        },
+        "storageInfo": {
+          "heading": "",
+          "labels": {},
+          "afterOpening": { "heading": "Must be stored:", "text": "Refrigerated, 0-4°C, and consumed within 5 days of opening" }
+        },
+        "kosherInfo": {
+          "dairyBadge": { "top": "Kosher", "bottom": "Meat" }
+        }
       },
       "ar": {
         "brand": "بسطرمة الفحم",
         "productName": "قطع ديك رومي مفرومة، مشكّلة، مخبوزة ومدخّنة",
         "productNameBreakAfter": null,
-        "weightValue": "غ 330"
+        "weightValue": "غ 330",
+        "ingredientsText": "لحم ديك رومي (68%)، ماء، نشا، منظمات حموضة (لاكتات البوتاسيوم، ثنائي أسيتات الصوديوم، كربونات الصوديوم)، نشا معدّل (E1420)، سكريات، ملح، مثبتات (فوسفات ثلاثية وثنائية ومتعددة، كاراجينان، صمغ الزانثان)، مالتوديكسترين، منكهات، مضادات أكسدة (إريثوربات الصوديوم، حمض الأسكوربيك)، مادة حافظة (نيتريت الصوديوم)، بهارات.",
+        "allergenLabels": {
+          "soy": "صويا",
+          "gluten": "غلوتين"
+        },
+        "storageInfo": {
+          "heading": "",
+          "labels": {},
+          "afterOpening": { "heading": "يجب الحفظ:", "text": "في التبريد، 0-4°م، ويُستهلك خلال 5 أيام من الفتح" }
+        },
+        "kosherInfo": {
+          "dairyBadge": { "top": "كوشير", "bottom": "لحمي" }
+        }
       }
     }
   },

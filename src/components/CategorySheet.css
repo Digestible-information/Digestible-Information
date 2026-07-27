@@ -30,7 +30,6 @@
   margin: 0 auto;
   background: var(--sheet-bg);
   border-radius: 28px 28px 0 0;
-  box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.08);
   z-index: 1101;
   transform: translateY(100%);
   transition: transform 0.32s cubic-bezier(0.32, 0.72, 0, 1), background-color 0.25s ease;
@@ -39,8 +38,13 @@
   overflow: hidden;
 }
 
+/* box-shadow only while open: this element stays mounted (just translated
+   fully off-screen) even when closed, and a shadow on the base rule would
+   project upward from its off-screen top edge and bleed back into view at
+   the bottom of the viewport, right over the language switcher bar. */
 .category-sheet--open {
   transform: translateY(0);
+  box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.08);
 }
 
 /* Nutrition sheet has more content than the others (stat cards, fact table,
