@@ -786,6 +786,7 @@
   font: inherit;
   font-weight: inherit;
   text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 .category-sheet__manufacturer-icon {
