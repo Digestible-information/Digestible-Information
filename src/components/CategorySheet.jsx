@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { Fragment, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import contrastInner from '../assets/icons/sheet/contrast-inner.svg'
 import volumeSpeaker from '../assets/icons/sheet/volume-speaker.svg'
 import volumeWave1 from '../assets/icons/sheet/volume-wave1.svg'
@@ -506,6 +506,66 @@ function KosherBody({ data, fontStep, iconScale }) {
     </div>
   )
 
+  const rows = data.rows.map((row) => {
+    const text = (
+      <div className="category-sheet__kosher-row-text" style={textStyle} dir={row.forceLtrText ? 'ltr' : undefined}>
+        {row.line2Bold ? (
+          // "Orthodox Union" reads as the certifying body's name (bold),
+          // "- Dairy" is just the sub-designation (lighter) — Figma splits
+          // them across 2 lines with "Orthodox" alone on the first.
+          <>
+            <p style={{ fontWeight: 700 }}>{row.line1}</p>
+            <p>
+              <span style={{ fontWeight: 700 }}>{row.line2Bold}</span> <span style={{ fontWeight: 400 }}>{row.line2Light}</span>
+            </p>
+            {row.line3Bold && <p style={{ fontWeight: 700 }}>{row.line3Bold}</p>}
+          </>
+        ) : (
+          <>
+            <p>{row.line1}</p>
+            {row.line2 && <p>{row.line2}</p>}
+            {row.line3 && <p>{row.line3}</p>}
+            {row.line4 && <p>{row.line4}</p>}
+          </>
+        )}
+      </div>
+    )
+    const icon = (
+      <img
+        src={row.icon}
+        alt=""
+        className={`category-sheet__kosher-icon${row.invertOnHighContrast ? ' category-sheet__kosher-icon--invertible' : ''}`}
+        style={{
+          width: `${row.iconWidth * FIGMA_PX_TO_CQW * KOSHER_SCALE * iconScale}cqw`,
+          height: `${row.iconHeight * FIGMA_PX_TO_CQW * KOSHER_SCALE * iconScale}cqw`,
+        }}
+      />
+    )
+    return { id: row.id, icon, text }
+  })
+
+  // Opt-in per-product layout (see product.kosherLayout in products.json):
+  // badge and rows share a single horizontal row instead of each stacking on
+  // its own row. Only set on products whose Figma reference lays them out
+  // side by side — every other product leaves kosherLayout unset and keeps
+  // the default stacked layout below untouched.
+  if (data.layout === 'horizontal') {
+    return (
+      <div className="category-sheet__kosher">
+        <div className="category-sheet__kosher-row">
+          {badge}
+          {supervisionText}
+          {rows.map(({ id, icon, text }) => (
+            <Fragment key={id}>
+              {icon}
+              {text}
+            </Fragment>
+          ))}
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="category-sheet__kosher">
       {(badge || supervisionText) && (
@@ -515,48 +575,12 @@ function KosherBody({ data, fontStep, iconScale }) {
         </div>
       )}
 
-      {data.rows.map((row) => {
-        const text = (
-          <div className="category-sheet__kosher-row-text" style={textStyle} dir={row.forceLtrText ? 'ltr' : undefined}>
-            {row.line2Bold ? (
-              // "Orthodox Union" reads as the certifying body's name (bold),
-              // "- Dairy" is just the sub-designation (lighter) — Figma splits
-              // them across 2 lines with "Orthodox" alone on the first.
-              <>
-                <p style={{ fontWeight: 700 }}>{row.line1}</p>
-                <p>
-                  <span style={{ fontWeight: 700 }}>{row.line2Bold}</span> <span style={{ fontWeight: 400 }}>{row.line2Light}</span>
-                </p>
-                {row.line3Bold && <p style={{ fontWeight: 700 }}>{row.line3Bold}</p>}
-              </>
-            ) : (
-              <>
-                <p>{row.line1}</p>
-                {row.line2 && <p>{row.line2}</p>}
-                {row.line3 && <p>{row.line3}</p>}
-                {row.line4 && <p>{row.line4}</p>}
-              </>
-            )}
-          </div>
-        )
-        const icon = (
-          <img
-            src={row.icon}
-            alt=""
-            className={`category-sheet__kosher-icon${row.invertOnHighContrast ? ' category-sheet__kosher-icon--invertible' : ''}`}
-            style={{
-              width: `${row.iconWidth * FIGMA_PX_TO_CQW * KOSHER_SCALE * iconScale}cqw`,
-              height: `${row.iconHeight * FIGMA_PX_TO_CQW * KOSHER_SCALE * iconScale}cqw`,
-            }}
-          />
-        )
-        return (
-          <div key={row.id} className="category-sheet__kosher-row">
-            {icon}
-            {text}
-          </div>
-        )
-      })}
+      {rows.map(({ id, icon, text }) => (
+        <div key={id} className="category-sheet__kosher-row">
+          {icon}
+          {text}
+        </div>
+      ))}
     </div>
   )
 }
@@ -654,10 +678,12 @@ function StorageBody({ data, fontStep, iconScale }) {
         ))}
       </div>
       {/* Optional (e.g. "Tomatosauce"): a second block below a divider, for
-          products with post-opening storage guidance the top rows don't cover. */}
+          products with post-opening storage guidance the top rows don't cover.
+          The divider only makes sense when there are rows above it to separate
+          from (e.g. Pastrami has no rows, only this block). */}
       {data.afterOpening && (
         <>
-          <span className="category-sheet__storage-divider" />
+          {data.rows.length > 0 && <span className="category-sheet__storage-divider" />}
           <div className="category-sheet__storage-after-opening">
             <p
               className="category-sheet__storage-after-opening-heading"

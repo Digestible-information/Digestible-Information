@@ -709,11 +709,14 @@
       "photo": "products/Pastrami/photo.png"
     },
     "brandFontSize": "5.5cqw",
-    "categoryIds": ["ingredients", "allergens", "storage", "kosher"],
-    "disabledCategoryIds": ["nutrition", "manufacturer", "recycling"],
+    "categoryIds": ["ingredients", "allergens", "storage", "kosher", "recycling", "manufacturer"],
+    "disabledCategoryIds": ["nutrition"],
+    "ingredientsHeight": 420,
     "storageRowIds": [],
     "kosherRowIds": ["regionalRabbinate"],
     "kosherBadgeSwatchColor": "#DE0405",
+    "kosherHeight": 420,
+    "kosherLayout": "horizontal",
     "allergens": [
       { "id": "soy", "statement": "mayContain" },
       { "id": "gluten", "statement": "doesNotContain" }
@@ -736,6 +739,26 @@
         },
         "kosherInfo": {
           "dairyBadge": { "top": "כשר", "bottom": "בשרי" }
+        },
+        "manufacturerInfo": {
+          "producedBy": {
+            "label": "מיוצר על ידי:",
+            "detail": ["זוגלובק 200,", "שלומי."]
+          },
+          "contact": { "label": "ליצירת קשר:", "detail": ["פניות הציבור", "1-800-555-000"] }
+        },
+        "recyclingInfo": {
+          "bins": [
+            {
+              "color": "orange",
+              "segments": [
+                { "text": "את " },
+                { "text": "עטיפת המוצר", "bold": true },
+                { "text": " יש להשליך " },
+                { "text": "לפח הכתום", "bold": true, "highlight": true }
+              ]
+            }
+          ]
         }
       },
       "en": {
@@ -755,6 +778,26 @@
         },
         "kosherInfo": {
           "dairyBadge": { "top": "Kosher", "bottom": "Meat" }
+        },
+        "manufacturerInfo": {
+          "producedBy": {
+            "label": "Manufactured by:",
+            "detail": ["Zoglowek 200,", "Shlomi."]
+          },
+          "contact": { "label": "For contact:", "detail": ["Public inquiries", "1-800-555-000"] }
+        },
+        "recyclingInfo": {
+          "bins": [
+            {
+              "color": "orange",
+              "segments": [
+                { "text": "The " },
+                { "text": "product wrapper", "bold": true },
+                { "text": " should be discarded in the " },
+                { "text": "orange bin", "bold": true, "highlight": true }
+              ]
+            }
+          ]
         }
       },
       "ar": {
@@ -774,6 +817,26 @@
         },
         "kosherInfo": {
           "dairyBadge": { "top": "كوشير", "bottom": "لحمي" }
+        },
+        "manufacturerInfo": {
+          "producedBy": {
+            "label": "تصنيع:",
+            "detail": ["زوجلوبيك 200،", "شلومي."]
+          },
+          "contact": { "label": "للتواصل:", "detail": ["استفسارات الجمهور", "1-800-555-000"] }
+        },
+        "recyclingInfo": {
+          "bins": [
+            {
+              "color": "orange",
+              "segments": [
+                { "text": "يجب التخلص من " },
+                { "text": "غلاف المنتج", "bold": true },
+                { "text": " في " },
+                { "text": "السلة البرتقالية", "bold": true, "highlight": true }
+              ]
+            }
+          ]
         }
       }
     }

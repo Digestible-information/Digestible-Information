@@ -333,6 +333,7 @@ export default function HomeScreen() {
             badgeSwatchColor: product.kosherBadgeSwatchColor,
             badge: content.kosherInfo.dairyBadge,
             supervision: content.kosherInfo.dairySupervision,
+            layout: product.kosherLayout,
             rows: kosherRows
               .filter((row) => product.kosherRowIds.includes(row.id))
               .map((row) => ({ ...row, ...content.kosherInfo[row.id] })),

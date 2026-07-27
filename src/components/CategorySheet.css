@@ -51,7 +51,7 @@
    sugar box), so it gets a taller budget — starts higher up the screen —
    without affecting the ingredients/allergens sheets. */
 .category-sheet--nutrition {
-  top: max(5vh, calc(100vh - 560px));
+  top: max(5vh, calc(100vh - 580px));
 }
 
 /* Kosher sheet has 3 stacked certification rows — sized to fit without
