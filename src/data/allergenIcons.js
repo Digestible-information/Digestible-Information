@@ -7,7 +7,7 @@
 // this same id) — these are just the sizing metrics.
 export const allergenIcons = [
   { id: 'eggs', width: 38, height: 54 },
-  { id: 'gluten', width: 27, height: 68 },
+  { id: 'gluten', width: 47.2198, height: 68 },
   { id: 'soy', width: 46, height: 46 },
   { id: 'sesame', width: 38, height: 36 },
   { id: 'peanuts', width: 49, height: 55 },

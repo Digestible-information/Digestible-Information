@@ -345,6 +345,7 @@ export default function HomeScreen() {
           open={openSheet === 'manufacturer'}
           onClose={() => setOpenSheet(null)}
           title={t.manufacturerTitle}
+          bodyHeightPx={product.manufacturerHeight}
           bodyManufacturer={{
             icon: manufacturerBodyIcon,
             producedBy: content.manufacturerInfo.producedBy,

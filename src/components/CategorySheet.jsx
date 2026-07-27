@@ -561,6 +561,32 @@ function KosherBody({ data, fontStep, iconScale }) {
   )
 }
 
+// Contact detail lines carry a phone/star-code number, sometimes bundled with
+// the company name on the same line (e.g. "שטראוס 6860*"/"Strauss *6860") and
+// sometimes alone (e.g. "050-6320985") — this matches just the digit run
+// (plus an adjacent `*`, on either side) and turns it into a tel: link so
+// tapping it offers to call, without disturbing the surrounding text.
+const PHONE_PATTERN = /\*?\d[\d\s-]{2,}\d\*?/
+
+function renderContactLine(line) {
+  const match = line.match(PHONE_PATTERN)
+  if (!match) return line
+  const phoneText = match[0]
+  const start = match.index
+  const end = start + phoneText.length
+  const digits = phoneText.replace(/\D/g, '')
+  const href = phoneText.includes('*') ? `tel:*${digits}` : `tel:${digits}`
+  return (
+    <>
+      {line.slice(0, start)}
+      <a href={href} className="category-sheet__manufacturer-phone-link">
+        {phoneText}
+      </a>
+      {line.slice(end)}
+    </>
+  )
+}
+
 function ManufacturerBody({ data, fontStep, iconScale }) {
   const fontPx = (baseCqw) => `max(10px, calc(${baseCqw}cqw + ${fontStep * FONT_STEP_SIZE}px))`
   const textStyle = { fontSize: fontPx(MANUFACTURER_TEXT_BASE_CQW) }
@@ -568,12 +594,12 @@ function ManufacturerBody({ data, fontStep, iconScale }) {
   // Both label lines need bold (not just the block's first line), so this
   // is explicit per-paragraph styling rather than the kosher rows' generic
   // `p:first-child` CSS rule — same reasoning as the ouDairy special case.
-  const pair = (labelDetail) => (
+  const pair = (labelDetail, { linkifyPhone = false } = {}) => (
     <div className="category-sheet__manufacturer-pair">
       <p style={{ fontWeight: 700 }}>{labelDetail.label}</p>
       {labelDetail.detail.map((line) => (
         <p key={line} style={{ fontWeight: 400 }}>
-          {line}
+          {linkifyPhone ? renderContactLine(line) : line}
         </p>
       ))}
     </div>
@@ -595,7 +621,7 @@ function ManufacturerBody({ data, fontStep, iconScale }) {
         />
         <div className="category-sheet__manufacturer-text" style={textStyle}>
           {pair(data.producedBy)}
-          {pair(data.contact)}
+          {pair(data.contact, { linkifyPhone: true })}
         </div>
       </div>
     </div>
@@ -875,7 +901,10 @@ export default function CategorySheet({
       : bodyIcons
       ? bodyIcons.flatMap((group) => [group.heading, ...group.items.map((item) => item.label)]).join(', ')
       : bodyText
-    const speechLead = bodyHeading || subtitle
+    // subtitle here is nutrition's "ל-100 גרם מוצר" (per-100g) note — visual-only,
+    // not meaningful to narrate, so it's excluded even though it's the only other
+    // fallback for speechLead.
+    const speechLead = bodyHeading
     const utterance = new SpeechSynthesisUtterance(speechLead ? `${speechLead} ${spokenBody}` : spokenBody)
     utterance.lang = t.speechLang
     utterance.rate = 0.92
