@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import jsQR from 'jsqr'
+import QrScanner from 'qr-scanner'
 import { X } from 'lucide-react'
 import { useLanguage } from '../i18n/LanguageContext.jsx'
 import productsData from '../data/products.json'
@@ -19,9 +19,7 @@ export default function QrScannerOverlay({ open, onClose }) {
   const { t } = useLanguage()
   const navigate = useNavigate()
   const videoRef = useRef(null)
-  const canvasRef = useRef(document.createElement('canvas'))
-  const streamRef = useRef(null)
-  const frameRef = useRef(null)
+  const notFoundTimerRef = useRef(null)
   const [error, setError] = useState(null)
   const [notFoundFlash, setNotFoundFlash] = useState(false)
 
@@ -31,53 +29,31 @@ export default function QrScannerOverlay({ open, onClose }) {
     let cancelled = false
     setError(null)
 
-    const scanFrame = () => {
-      const video = videoRef.current
-      const canvas = canvasRef.current
-      if (video && video.readyState === video.HAVE_ENOUGH_DATA) {
-        canvas.width = video.videoWidth
-        canvas.height = video.videoHeight
-        const ctx = canvas.getContext('2d', { willReadFrequently: true })
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height)
-        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
-        const code = jsQR(imageData.data, imageData.width, imageData.height)
-        if (code?.data) {
-          const productId = extractProductId(code.data)
-          if (productId) {
-            onClose()
-            navigate(`/${productId}`)
-            return
-          }
-          setNotFoundFlash(true)
-          setTimeout(() => setNotFoundFlash(false), 1200)
-        }
-      }
-      frameRef.current = requestAnimationFrame(scanFrame)
-    }
-
-    navigator.mediaDevices
-      ?.getUserMedia({ video: { facingMode: 'environment' } })
-      .then((stream) => {
-        if (cancelled) {
-          stream.getTracks().forEach((track) => track.stop())
+    const scanner = new QrScanner(
+      videoRef.current,
+      (result) => {
+        const productId = extractProductId(result.data)
+        if (productId) {
+          onClose()
+          navigate(`/${productId}`)
           return
         }
-        streamRef.current = stream
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream
-          videoRef.current.play()
-        }
-        frameRef.current = requestAnimationFrame(scanFrame)
-      })
-      .catch(() => {
-        if (!cancelled) setError(t.qrScannerError)
-      })
+        setNotFoundFlash(true)
+        clearTimeout(notFoundTimerRef.current)
+        notFoundTimerRef.current = setTimeout(() => setNotFoundFlash(false), 1200)
+      },
+      { preferredCamera: 'environment' },
+    )
+
+    scanner.start().catch(() => {
+      if (!cancelled) setError(t.qrScannerError)
+    })
 
     return () => {
       cancelled = true
-      if (frameRef.current) cancelAnimationFrame(frameRef.current)
-      streamRef.current?.getTracks().forEach((track) => track.stop())
-      streamRef.current = null
+      clearTimeout(notFoundTimerRef.current)
+      scanner.stop()
+      scanner.destroy()
     }
   }, [open, navigate, onClose, t.qrScannerError])
 
