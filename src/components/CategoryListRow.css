@@ -42,6 +42,7 @@
   letter-spacing: -0.02em;
   color: var(--row-color, #29256a);
   overflow-wrap: break-word;
+  white-space: pre-line;
 }
 
 .category-list-row__chevron {

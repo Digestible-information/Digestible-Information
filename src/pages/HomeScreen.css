@@ -173,6 +173,9 @@
   font-size: 20px;
   font-weight: 700;
   color: #1c1c28;
+  outline: 5px solid lime;
+  box-shadow: none !important;
+  filter: none !important;
 }
 
 /* Positioned ancestor for the underline, sized to just the text row (not the

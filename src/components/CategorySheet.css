@@ -68,7 +68,7 @@
 /* Storage's 3 rows are now scaled up (STORAGE_SCALE) enough to fill a
    shorter sheet than the shared default budget above. */
 .category-sheet--storage {
-  top: max(16vh, calc(100vh - 500px));
+  top: max(18vh, calc(100vh - 460px));
 }
 
 /* Recycling has only one short block of content (icon + one sentence), so it
@@ -78,9 +78,10 @@
 }
 
 /* Warnings is the same shape of content as recycling's single-bin layout
-   (one icon + one short block of text), so it gets the same budget. */
+   (one icon + one short block of text), so it starts from that same budget
+   but trimmed shorter still — its text block is the shortest of any sheet. */
 .category-sheet--warnings {
-  top: max(15vh, calc(100vh - 560px));
+  top: max(17vh, calc(100vh - 520px));
 }
 
 .category-sheet--high-contrast {
@@ -113,6 +114,7 @@
   font-weight: 700;
   color: var(--sheet-fg);
   text-align: center;
+  white-space: pre-line;
   transition: color 0.25s ease;
 }
 

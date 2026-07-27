@@ -768,7 +768,10 @@ function WarningsBody({ data, fontStep, iconScale }) {
       />
       <p className="category-sheet__warnings-text" style={{ fontSize: fontPx(WARNINGS_TEXT_BASE_CQW) }}>
         {data.segments.map((segment, index) => (
-          <span key={index} style={{ fontWeight: segment.bold ? 700 : 400 }}>
+          // The bold/highlighted segment is a short age-limit callout (e.g.
+          // "מתחת לגיל 5") that should always read as one unit — nowrap keeps
+          // it from splitting across lines at the default font size.
+          <span key={index} style={{ fontWeight: segment.bold ? 700 : 400, whiteSpace: segment.bold ? 'nowrap' : undefined }}>
             {segment.text}
           </span>
         ))}
