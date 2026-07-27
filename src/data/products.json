@@ -716,6 +716,8 @@
     "kosherBadgeSwatchColor": "#DE0405",
     "kosherHeight": 340,
     "kosherLayout": "horizontal",
+    "manufacturerHeight": 420,
+    "nutritionHeight": 480,
     "nutritionColors": {
       "sodium": "#FF000E",
       "satFat": "#00AE38",
