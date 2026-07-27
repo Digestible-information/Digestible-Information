@@ -11,7 +11,7 @@
     "kosherHeight": 820,
     "manufacturerHeight": 490,
     "storageRowIds": ["shaded", "cool", "dry"],
-    "nutritionHeight": 636,
+    "nutritionHeight": 700,
     "recyclingHeight": 500,
     "nutritionLayout": "stacked",
     "nutritionColors": {
@@ -709,14 +709,19 @@
       "photo": "products/Pastrami/photo.png"
     },
     "brandFontSize": "5.5cqw",
-    "categoryIds": ["ingredients", "allergens", "storage", "kosher", "recycling", "manufacturer"],
-    "disabledCategoryIds": ["nutrition"],
+    "categoryIds": ["ingredients", "allergens", "storage", "kosher", "nutrition", "recycling", "manufacturer"],
     "ingredientsHeight": 420,
     "storageRowIds": [],
-    "kosherRowIds": ["regionalRabbinate"],
+    "kosherRowIds": ["nahariyaRabbinate"],
     "kosherBadgeSwatchColor": "#DE0405",
-    "kosherHeight": 420,
+    "kosherHeight": 340,
     "kosherLayout": "horizontal",
+    "nutritionColors": {
+      "sodium": "#FF000E",
+      "satFat": "#00AE38",
+      "energy": "#00AE38",
+      "sugarBox": "#00AE38"
+    },
     "allergens": [
       { "id": "soy", "statement": "mayContain" },
       { "id": "gluten", "statement": "doesNotContain" }
@@ -731,6 +736,19 @@
         "allergenLabels": {
           "soy": "סויה",
           "gluten": "גלוטן"
+        },
+        "nutritionSubtitle": "ל-100 גרם מוצר",
+        "nutritionFacts": {
+          "sodium": { "label": "נתרן", "amount": "850 מ״ג" },
+          "satFat": { "label": "שומן רווי", "amount": "1 גר׳" },
+          "energy": { "label": "אנרגיה", "amount": "115 ק״ל" },
+          "totalFat": { "label": "סך השומנים", "amount": "3 גר׳" },
+          "transFat": { "label": "שומן טראנס", "amount": "0.5 גר׳" },
+          "cholesterol": { "label": "כולסטרול", "amount": "45 מ״ג" },
+          "totalCarbs": { "label": "סך הפחמימות", "amount": "7 גר׳" },
+          "protein": { "label": "חלבונים", "amount": "15 גר׳" },
+          "sugar": { "label": "סוכרים", "amount": "2 גר׳" },
+          "teaspoons": { "label": "כפיות", "amount": "0.5" }
         },
         "storageInfo": {
           "heading": "",
@@ -771,6 +789,19 @@
           "soy": "Soy",
           "gluten": "Gluten"
         },
+        "nutritionSubtitle": "Per 100g of product",
+        "nutritionFacts": {
+          "sodium": { "label": "Sodium", "amount": "850 mg" },
+          "satFat": { "label": "Saturated fat", "amount": "1 g" },
+          "energy": { "label": "Energy", "amount": "115 kcal" },
+          "totalFat": { "label": "Total fat", "amount": "3 g" },
+          "transFat": { "label": "Trans fat", "amount": "0.5 g" },
+          "cholesterol": { "label": "Cholesterol", "amount": "45 mg" },
+          "totalCarbs": { "label": "Total carbs", "amount": "7 g" },
+          "protein": { "label": "Protein", "amount": "15 g" },
+          "sugar": { "label": "Sugars", "amount": "2 g" },
+          "teaspoons": { "label": "Teaspoons", "amount": "0.5" }
+        },
         "storageInfo": {
           "heading": "",
           "labels": {},
@@ -809,6 +840,19 @@
         "allergenLabels": {
           "soy": "صويا",
           "gluten": "غلوتين"
+        },
+        "nutritionSubtitle": "لكل 100 غرام من المنتج",
+        "nutritionFacts": {
+          "sodium": { "label": "الصوديوم", "amount": "850 مغ" },
+          "satFat": { "label": "الدهون المشبعة", "amount": "1 غ" },
+          "energy": { "label": "الطاقة", "amount": "115 ك.كال" },
+          "totalFat": { "label": "إجمالي الدهون", "amount": "3 غ" },
+          "transFat": { "label": "الدهون المتحولة", "amount": "0.5 غ" },
+          "cholesterol": { "label": "الكوليسترول", "amount": "45 مغ" },
+          "totalCarbs": { "label": "إجمالي الكربوهيدرات", "amount": "7 غ" },
+          "protein": { "label": "البروتين", "amount": "15 غ" },
+          "sugar": { "label": "السكريات", "amount": "2 غ" },
+          "teaspoons": { "label": "ملاعق صغيرة", "amount": "0.5" }
         },
         "storageInfo": {
           "heading": "",

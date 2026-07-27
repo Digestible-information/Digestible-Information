@@ -552,7 +552,7 @@ function KosherBody({ data, fontStep, iconScale }) {
   if (data.layout === 'horizontal') {
     return (
       <div className="category-sheet__kosher">
-        <div className="category-sheet__kosher-row">
+        <div className="category-sheet__kosher-row category-sheet__kosher-row--horizontal">
           {badge}
           {supervisionText}
           {rows.map(({ id, icon, text }) => (

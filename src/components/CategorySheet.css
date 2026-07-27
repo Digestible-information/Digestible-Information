@@ -679,6 +679,14 @@
   gap: 3%;
 }
 
+/* Wider gap for the horizontal kosherLayout variant (see product.kosherLayout
+   in products.json) — badge and seal sit right next to each other in one
+   row here, unlike the default layout where 3% only ever separates a single
+   row's own icon from its text. */
+.category-sheet__kosher-row--horizontal {
+  gap: 10%;
+}
+
 .category-sheet__kosher-row-text {
   color: var(--sheet-fg);
   font-weight: 400;
