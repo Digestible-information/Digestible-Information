@@ -46,11 +46,3 @@
   position: absolute;
   display: block;
 }
-
-.camera-button__input {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  opacity: 0;
-  pointer-events: none;
-}

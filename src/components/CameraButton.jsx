@@ -1,5 +1,6 @@
-import { useRef } from 'react'
+import { useState } from 'react'
 import { useLanguage } from '../i18n/LanguageContext.jsx'
+import QrScannerOverlay from './QrScannerOverlay.jsx'
 import scanIcon from '../assets/icons/scan-badge/icon.svg'
 import scanLabelHe from '../assets/icons/scan-badge/label-he.svg'
 import scanLabelEn from '../assets/icons/scan-badge/label-en.svg'
@@ -44,17 +45,8 @@ const BADGE_LAYOUT = {
 
 export default function CameraButton() {
   const { t, language } = useLanguage()
-  const inputRef = useRef(null)
+  const [scannerOpen, setScannerOpen] = useState(false)
   const layout = BADGE_LAYOUT[language]
-
-  const handleCapture = (event) => {
-    const file = event.target.files?.[0]
-    if (file) {
-      // TODO: wire up to the real scan/product-lookup flow
-      console.log('Captured file:', file)
-    }
-    event.target.value = ''
-  }
 
   return (
     <div className="camera-button">
@@ -62,7 +54,7 @@ export default function CameraButton() {
         type="button"
         className="camera-button__trigger"
         style={{ padding: layout.padding }}
-        onClick={() => inputRef.current?.click()}
+        onClick={() => setScannerOpen(true)}
         aria-label={t.scanMore}
       >
         <span
@@ -83,14 +75,7 @@ export default function CameraButton() {
           />
         </span>
       </button>
-      <input
-        ref={inputRef}
-        type="file"
-        accept="image/*"
-        capture="environment"
-        onChange={handleCapture}
-        className="camera-button__input"
-      />
+      <QrScannerOverlay open={scannerOpen} onClose={() => setScannerOpen(false)} />
     </div>
   )
 }
