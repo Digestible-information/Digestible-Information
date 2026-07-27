@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { readBarcodes, prepareZXingModule } from 'zxing-wasm/reader'
 import zxingWasmUrl from 'zxing-wasm/reader/zxing_reader.wasm?url'
-import { X } from 'lucide-react'
+import { X, ExternalLink } from 'lucide-react'
 import { useLanguage } from '../i18n/LanguageContext.jsx'
 import productsData from '../data/products.json'
 import './QrScannerOverlay.css'
@@ -18,11 +18,32 @@ prepareZXingModule({
 const READER_OPTIONS = { formats: ['QRCode'], tryHarder: true, maxNumberOfSymbols: 1 }
 
 // Accepts a bare product id ("Energybar") — whatever's left after a printed
-// QR code on packaging is confirmed not to be a URL (see handleValue below).
+// QR code on packaging is confirmed not to be a URL (see resolveAction below).
 function extractProductId(rawValue) {
   const candidate = rawValue.trim().split(/[/?#]/).filter(Boolean).pop() ?? ''
   const matchedKey = Object.keys(productsData).find((key) => key.toLowerCase() === candidate.toLowerCase())
   return matchedKey ?? null
+}
+
+// A QR code on real packaging can encode anything: our own product URL, or a
+// third-party "dynamic" QR shortlink (e.g. me-qr.com) that only resolves to
+// the real destination once a browser actually requests it and follows the
+// redirect. We can't peek at where a shortlink goes with client-side string
+// parsing — so for any URL, a real navigation is used and the browser
+// resolves it (redirects included), same as tapping the link anywhere else
+// would. A bare id resolves to an in-app route instead.
+function resolveAction(rawValue, navigate) {
+  const value = rawValue.trim()
+  if (/^https?:\/\//i.test(value)) {
+    return () => {
+      window.location.href = value
+    }
+  }
+  const productId = extractProductId(value)
+  if (productId) {
+    return () => navigate(`/${productId}`)
+  }
+  return null
 }
 
 export default function QrScannerOverlay({ open, onClose }) {
@@ -32,8 +53,10 @@ export default function QrScannerOverlay({ open, onClose }) {
   const streamRef = useRef(null)
   const rafRef = useRef(null)
   const notFoundTimerRef = useRef(null)
+  const pendingRef = useRef(null)
   const [error, setError] = useState(null)
   const [notFoundFlash, setNotFoundFlash] = useState(false)
+  const [pending, setPending] = useState(null)
 
   useEffect(() => {
     if (!open) return undefined
@@ -41,37 +64,8 @@ export default function QrScannerOverlay({ open, onClose }) {
     let cancelled = false
     let decoding = false
     setError(null)
-
-    // Returns true once the value is handled (navigated away / matched), so
-    // the caller knows to stop the scan loop instead of grabbing another frame.
-    const handleValue = (rawValue) => {
-      const value = rawValue.trim()
-
-      // A QR code on real packaging can encode anything: our own product
-      // URL, or a third-party "dynamic" QR shortlink (e.g. me-qr.com) that
-      // only resolves to the real destination once a browser actually
-      // requests it and follows the redirect. We can't peek at where a
-      // shortlink goes with client-side string parsing — so for any URL,
-      // do a real navigation and let the browser resolve it (redirects
-      // included), same as tapping the link anywhere else would.
-      if (/^https?:\/\//i.test(value)) {
-        onClose()
-        window.location.href = value
-        return true
-      }
-
-      const productId = extractProductId(value)
-      if (productId) {
-        onClose()
-        navigate(`/${productId}`)
-        return true
-      }
-
-      setNotFoundFlash(true)
-      clearTimeout(notFoundTimerRef.current)
-      notFoundTimerRef.current = setTimeout(() => setNotFoundFlash(false), 1200)
-      return false
-    }
+    setPending(null)
+    pendingRef.current = null
 
     const canvas = document.createElement('canvas')
     const ctx = canvas.getContext('2d', { willReadFrequently: true })
@@ -79,7 +73,10 @@ export default function QrScannerOverlay({ open, onClose }) {
     const scanFrame = async () => {
       if (cancelled) return
       const video = videoRef.current
-      if (video && !decoding && video.readyState === video.HAVE_ENOUGH_DATA) {
+      // Skip decoding while a match is awaiting the user's tap-to-confirm —
+      // the camera stream stays live behind the banner, same as iOS's own
+      // QR banner, but we don't burn cycles decoding frames no one asked for.
+      if (!pendingRef.current && video && !decoding && video.readyState === video.HAVE_ENOUGH_DATA) {
         decoding = true
         canvas.width = video.videoWidth
         canvas.height = video.videoHeight
@@ -87,7 +84,18 @@ export default function QrScannerOverlay({ open, onClose }) {
         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
         try {
           const [result] = await readBarcodes(imageData, READER_OPTIONS)
-          if (!cancelled && result?.text && handleValue(result.text)) return
+          if (!cancelled && result?.text) {
+            const run = resolveAction(result.text, navigate)
+            if (run) {
+              const next = { label: result.text, run }
+              pendingRef.current = next
+              setPending(next)
+            } else {
+              setNotFoundFlash(true)
+              clearTimeout(notFoundTimerRef.current)
+              notFoundTimerRef.current = setTimeout(() => setNotFoundFlash(false), 1200)
+            }
+          }
         } catch {
           // Decode failure on this frame — just try the next one.
         }
@@ -123,7 +131,18 @@ export default function QrScannerOverlay({ open, onClose }) {
       streamRef.current?.getTracks().forEach((track) => track.stop())
       streamRef.current = null
     }
-  }, [open, navigate, onClose, t.qrScannerError])
+  }, [open, navigate, t.qrScannerError])
+
+  const handleConfirm = () => {
+    const run = pendingRef.current?.run
+    onClose()
+    run?.()
+  }
+
+  const handleDismiss = () => {
+    pendingRef.current = null
+    setPending(null)
+  }
 
   if (!open) return null
 
@@ -138,9 +157,21 @@ export default function QrScannerOverlay({ open, onClose }) {
         <>
           <video ref={videoRef} className="qr-scanner__video" playsInline muted />
           <div className="qr-scanner__frame" aria-hidden="true" />
-          <p className="qr-scanner__message">
-            {notFoundFlash ? t.qrScannerNotFound : t.qrScannerInstructions}
-          </p>
+          {pending ? (
+            <div className="qr-scanner__confirm">
+              <button type="button" className="qr-scanner__confirm-open" onClick={handleConfirm}>
+                <ExternalLink size={18} aria-hidden="true" />
+                <span className="qr-scanner__confirm-label">{pending.label}</span>
+              </button>
+              <button type="button" className="qr-scanner__confirm-dismiss" onClick={handleDismiss}>
+                {t.qrScannerKeepScanning}
+              </button>
+            </div>
+          ) : (
+            <p className="qr-scanner__message">
+              {notFoundFlash ? t.qrScannerNotFound : t.qrScannerInstructions}
+            </p>
+          )}
         </>
       )}
     </div>
