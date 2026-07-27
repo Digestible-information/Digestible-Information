@@ -168,14 +168,11 @@
   justify-content: center;
   display: flex;
   align-items: center;
-  background: #e2e2e2;
+  background: #ff00ff;
   padding: clamp(8px, 1.6vh, 14px) 16px calc(clamp(8px, 2.2vh, 20px) + env(safe-area-inset-bottom));
   font-size: 20px;
   font-weight: 700;
   color: #1c1c28;
-  outline: 5px solid lime;
-  box-shadow: none !important;
-  filter: none !important;
 }
 
 /* Positioned ancestor for the underline, sized to just the text row (not the
