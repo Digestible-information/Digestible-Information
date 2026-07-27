@@ -81,7 +81,7 @@
    (one icon + one short block of text), so it starts from that same budget
    but trimmed shorter still — its text block is the shortest of any sheet. */
 .category-sheet--warnings {
-  top: max(17vh, calc(100vh - 520px));
+  top: max(24vh, calc(100vh - 400px));
 }
 
 .category-sheet--high-contrast {

@@ -12,7 +12,7 @@
     "manufacturerHeight": 490,
     "storageRowIds": ["shaded", "cool", "dry"],
     "nutritionHeight": 636,
-    "recyclingHeight": 640,
+    "recyclingHeight": 500,
     "nutritionLayout": "stacked",
     "nutritionColors": {
       "sodium": "#43AA49",

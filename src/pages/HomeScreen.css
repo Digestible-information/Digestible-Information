@@ -168,7 +168,7 @@
   justify-content: center;
   display: flex;
   align-items: center;
-  background: #ff00ff;
+  background: #e2e2e2;
   padding: clamp(8px, 1.6vh, 14px) 16px calc(clamp(8px, 2.2vh, 20px) + env(safe-area-inset-bottom));
   font-size: 20px;
   font-weight: 700;
