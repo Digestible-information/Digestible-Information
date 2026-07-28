@@ -160,7 +160,13 @@ export default function HomeScreen() {
               <p className="product-card__heading">
                 <span
                   className="product-card__brand"
-                  style={product.brandFontSize ? { fontSize: product.brandFontSize } : undefined}
+                  style={(() => {
+                    const size =
+                      typeof product.brandFontSize === 'object'
+                        ? product.brandFontSize[language]
+                        : product.brandFontSize
+                    return size ? { fontSize: size } : undefined
+                  })()}
                 >
                   {content.brand}
                 </span>
